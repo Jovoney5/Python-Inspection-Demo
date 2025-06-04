@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Swimming Pool Inspection Form - Jamaica</title>
+    <style>
+        body {
+            font-family: 'Verdana', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZmFkZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigxMzUsIDE4NSwgNzUpIiBzdG9wLW9wYWNpdHk9IjAuOCIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjUwJSIgc3RvcC1jb2xvcj0icmdiKDIzNSwgMjA1LCA1NSkiIHN0b3Atb3BhY2l0eT0iMC41Ii8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0icmdiKDEzNSwgMTg1LCA3NSkiIHN0b3Atb3BhY2l0eT0iMC44Ii8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogIDwvZGVmcz4KICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2ZhZGUpIi8+CiAgPHBhdGggZD0iTTAgMEw1MCA1MEwxMDAgMEwwIDBaIiBmaWxsPSIjMDA5YjNhIiBvcGFjaXR5PSIwLjEiLz4KICA8cGF0aCBkPSJNMCAxMDBMNTAgNTBMMTAwIDEwMEwxMDAgMTAwWk0wIDEwMFoiIGZpbGw9IiMwMDliM2EiIG9wYWNpdHk9IjAuMSIvPgogIDxwYXRoIGQ9Ik0wIDBMMTAwIDEwMEwwIDBaIiBmaWxsPSIjZmZkMjAwIiBvcGFjaXR5PSIwLjEiLz4KICA8cGF0aCBkPSJNMCAxMDBMMTAwIDBMMTAwIDEwMFowIDEwMFoiIGZpbGw9IiNmZmQyMDAiIG9wYWNpdHk9IjAuMSIvPgogIDx0ZXh0IHg9IjUwJSIgeT0iNTAlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSJyZ2IoMCwgMCwgMCkgMCIgZm9udC1zaXplPSIyMCIgZm9udC1mYW1pbHk9IlZlcmRhbmEsIHNhbnMtc2VyaWYiIG9wYWNpdHk9IjAuMSI+SkFNRUNBTiBIRUFMVEggREVQQVJUTUVOVDwvdGV4dD4KPC9zdmc+');
+            background-size: cover;
+            background-attachment: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            color: #333;
+        }
+        .form-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            border-left: 5px solid #009b3a;
+            border-right: 5px solid #ffd200;
+        }
+        .form-header {
+            text-align: center;
+            font-size: 26px;
+            font-weight: bold;
+            color: #009b3a;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 3px solid #ffd200;
+            padding-bottom: 5px;
+        }
+        .score-box {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: #009b3a;
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 2px solid #ffd200;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.9);
+            width: 150px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            vertical-align: top;
+        }
+        .category-header {
+            font-weight: bold;
+            font-size: 16px;
+            background: #ffd200;
+            color: #009b3a;
+            padding: 8px;
+            border-radius: 5px;
+            margin: 5px 0;
+            text-transform: uppercase;
+        }
+        .critical {
+            background-color: rgba(0, 155, 58, 0.2);
+            border-left: 3px solid #000;
+        }
+        .input-field {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+            background: #f5f5f5;
+            transition: border-color 0.3s;
+        }
+        .input-field:focus {
+            border-color: #009b3a;
+            outline: none;
+            background: #fff;
+        }
+        .checkbox-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        input[type="radio"] {
+            margin: 0 5px 0 0;
+            transform: scale(1.2);
+            accent-color: #009b3a;
+        }
+        .comments {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+            background: #f5f5f5;
+            resize: vertical;
+        }
+        .comments:focus {
+            border-color: #009b3a;
+            outline: none;
+            background: #fff;
+        }
+        .buttons {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .btn {
+            padding: 10px 20px;
+            margin: 0 5px;
+            font-size: 14px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: #fff;
+            transition: background 0.3s;
+        }
+        .btn:hover {
+            opacity: 0.9;
+        }
+        #submit-btn { background: #009b3a; }
+        #submit-btn:hover { background: #007b2f; }
+        #print-btn { background: #ffd200; color: #000; }
+        #print-btn:hover { background: #e6b800; }
+        #save-btn { background: #000; }
+        #save-btn:hover { background: #333; }
+        #share-btn { background: #17a2b8; }
+        #share-btn:hover { background: #138496; }
+        #back-btn { background: #6c757d; }
+        #back-btn:hover { background: #5a6268; }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <div class="form-header">Swimming Pool Inspection Form</div>
+        <div class="score-box">Score: <span id="percentageScore">0%</span></div>
+        <form method="POST" action="{{ url_for('submit_swimming_pools') }}">
+            <table>
+                <tr>
+                    <td>Operator</td>
+                    <td><input type="text" class="input-field" name="operator" required></td>
+                    <td>Date Inspection</td>
+                    <td><input type="date" class="input-field" name="date_inspection" required></td>
+                    <td>Inspector's Id</td>
+                    <td><input type="text" class="input-field" name="inspector_id" required></td>
+                </tr>
+                <tr>
+                    <td>Pool Class</td>
+                    <td><input type="text" class="input-field" name="pool_class" required></td>
+                    <td>Address</td>
+                    <td colspan="3"><input type="text" class="input-field" name="address" required></td>
+                </tr>
+                <tr>
+                    <td>Physical Location</td>
+                    <td colspan="5"><input type="text" class="input-field" name="physical_location" required></td>
+                </tr>
+            </table>
+
+            <div class="category-header">1 - Documentation (15%)</div>
+            <table>
+                <tr class="critical">
+                    <td>A</td>
+                    <td>Written procedures for microbiological monitoring of pool water implemented</td>
+                    <td><div class="checkbox-group"><input type="radio" name="result_1A" value="yes"> Yes <input type="radio" name="result_1A" value="no"> No</div></td>
+                </tr>
+                <tr>
+                    <td>B</td>
+                    <td>Microbiological results</td>
+                    <td><div class="checkbox-group"><input type="radio" name="result_1B" value="yes"> Yes <input type="radio" name="result_1B" value="no"> No</div></td>
+                </tr>
+                <tr>
+                    <td>C</td>
+                    <td>Date of last testing within required frequency</td>
+                    <td><div class="checkbox-group"><input type="radio" name="result_1C" value="yes"> Yes <input type="radio" name="result_1C" value="no"> No</div></td>
+                </tr>
+                <tr class="critical">
+                    <td>D</td>
+                    <td>Acceptable monitoring procedures</td>
+                    <td><div class="checkbox-group"><input type="radio" name="result_1D" value="yes"> Yes <input type="radio" name="result_1D" value="no"> No</div></td>
+                </tr>
+                <tr>
+                    <td>E</td>
+                    <td>Daily log books and records up-to-date</td>
+                    <td><div class="checkbox-group"><input type="radio" name="result_1E" value="yes"> Yes <input type="radio" name="result_1E" value="no"> No</div></td>
+                </tr>
+                <tr class="critical">
+                    <td>F</td>
+                    <td>Written emergency procedures established and implemented</td>
+                    <td><div class="checkbox-group"><input type="radio" name="result_1F" value="yes"> Yes <input type="radio" name="result_1F" value="no"> No</div></td>
+                </tr>
+                <tr class="critical">
+                    <td>G</td>
+                    <td>Personal liability and accident insurance</td>
+                    <td><div class="checkbox-group"><input type="radio" name="result_1G" value="yes"> Yes <input type="radio" name="result_1G" value="no"> No</div></td>
+                </tr>
+                <tr class="critical">
+                    <td>H</td>
+                    <td>Lifeguard/Lifesaver certification</td>
+                    <td><div class="checkbox-group"><input type="radio" name="result_1H" value="yes"> Yes <input type="radio" name="result_1H" value="no"> No</div></td>
+                </tr>
+            </table>
+
+            <div class="category-header">2 - Physical condition of pool (10%)</div>
+            <table>
+                <tr>
+                    <td>A</td>
+                    <td>Defects in pool construction</td>
+                    <td><div class="checkbox-group"><input type="radio" name="result_2A" value="yes"> Yes <input type="radio" name="result_2A" value="no"> No</div></td>
+                </tr>
+                <tr>
+                    <td>B</td>
+                    <td>Evidence of flaking paint and/or mould growth</td>
+                    <td><div class="checkbox-group"><input type="radio" name="result_2B" value="yes"> Yes <input type="radio" name="result_2B" value="no"> No</div></td>
+                </tr>
+                <tr class="critical">
+                    <td>C</td>
+                    <td>All surfaces of the deck and pool free from</td>
+                    <td><div class="checkbox-group"><input type="radio" name="result_2C" value="yes"> Yes <input type="radio" name="result_2C" value="no"> No</div></td>
+                </tr>
+                <tr>
+                    <td>D</td>
+                    <td>Exposed piping: - identified/colour coded</td>
+                    <td><div class="checkbox-group"><input type="radio" name="result_2D" value="yes"> Yes <input type="radio" name="result_2D" value="no"> No</div></td>
+                </tr>
+                <tr>
+                    <td>E</td>
+                    <td>In good repair</td>
+                    <td><div class="checkbox-group"><input type="radio" name="result_2E" value="yes"> Yes <input type="radio" name="result_2E" value="no"> No</div></td>
+                </tr>
+                <tr>
+                    <td>F</td>
+                    <td>Suction fittings/inlets: - in good repair</td>
+                    <td><div class="checkbox-group"><input type="radio" name="result_2F" value="yes"> Yes <input type="radio" name="result_2F" value="no"> No</div></td>
+                </tr>
+                <tr class="critical">
+                    <td>G</td>
+                    <td>At least two suction orifices equipped with anti-</td>
+                    <td><div class="checkbox-group"><input type="radio" name="result_2G" value="yes"> Yes <input type="radio" name="result_2G" value="no"> No</div></td>
+                </tr>
+                <tr>
+                    <td>H</td>
+                    <td>Perimeter drains free of debris</td>
+                    <td><div class="checkbox-group"><input type="radio" name="result_2H" value="yes"> Yes <input type="radio" name="result_2H" value="no"> No</div></td>
+                </tr>
+                <tr>
+                    <td>I</td>
+                    <td>Pool walls and floor clean</td>
+                    <td><div class="checkbox-group"><input type="radio" name="result_2I" value="yes"> Yes <input type="radio" name="result_2I" value="no"> No</div></td>
+                </tr>
+                <tr>
+                    <td>J</td>
+                    <td>Components of the re-circulating system maintained</td>
+                    <td><div class="checkbox-group"><input type="radio" name="result_2J" value="yes"> Yes <input type="radio" name="result_2J" value="no"> No</div></td>
+                </tr>
+            </table>
+
+            <div class="category-header">3 - Pool chemistry (20%)</div>
+            <table>
+                <tr class="critical">
+                    <td>A</td>
+                    <td>Clarity</td>
+                    <td><div class="checkbox-group"><input type="radio" name="result_3A" value="yes"> Yes <input type="radio" name="result_3A" value="no"> No</div></td>
+                </tr>
+                <tr class="critical">
+                    <td>B</td>
+                    <td>Chlorine residual > 0.5 mg/l. Level</td>
+                    <td><div class="checkbox-group"><input type="radio" name="result_3B" value="yes"> Yes <input type="radio" name="result_3B" value="no"> No</div></td>
+                </tr>
+                <tr class="critical">
+                    <td>C</td>
+                    <td>pH value within range of 7.5 and 7.8</td>
+                    <td><div class="checkbox-group"><input type="radio" name="result_3C" value="yes"> Yes <input type="radio" name="result_3C" value="no"> No</div></td>
+                </tr>
+                <tr>
+                    <td>D</td>
+                    <td>Well supplied and equipped</td>
+                    <td><div class="checkbox-group"><input type="radio" name="result_3D" value="yes"> Yes <input type="radio" name="result_3D" value="no"> No</div></td>
+                </tr>
+            </table>
+
+            <div class="category-header">4 - Pool chemicals (10%)</div>
+            <table>
+                <tr class="critical">
+                    <td>A</td>
+                    <td>Pool chemicals - stored safely</td>
+                    <td><div class="checkbox-group"><input type="radio" name="result_4A" value="yes"> Yes <input type="radio" name="result_4A" value="no"> No</div></td>
+                </tr>
+                <tr>
+                    <td>B</td>
+                    <td>Dispensed automatically or in a safe manner</td>
+                    <td><div class="checkbox-group"><input type="radio" name="result_4B" value="yes"> Yes <input type="radio" name="result_4B" value="no"> No</div></td>
+                </tr>
+            </table>
+
+            <div class="category-header">5 - Safety (10%)</div>
+            <table>
+                <tr>
+                    <td>A</td>
+                    <td>Depth markings clearly visible</td>
+                    <td><div class="checkbox-group"><input type="radio" name="result_5A" value="yes"> Yes <input type="radio" name="result_5A" value="no"> No</div></td>
+                </tr>
+                <tr>
+                    <td>B</td>
+                    <td>Working emergency phone</td>
+                    <td><div class="checkbox-group"><input type="radio" name="result_5B" value="yes"> Yes <input type="radio" name="result_5B" value="no"> No</div></td>
+                </tr>
+            </table>
+
+            <div class="category-header">6 - Safety Aids (10%)</div>
+            <table>
+                <tr>
+                    <td>A</td>
+                    <td>Reaching poles with hook</td>
+                    <td><div class="checkbox-group"><input type="radio" name="result_6A" value="yes"> Yes <input type="radio" name="result_6A" value="no"> No</div></td>
+                </tr>
+                <tr>
+                    <td>B</td>
+                    <td>Two throwing aids</td>
+                    <td><div class="checkbox-group"><input type="radio" name="result_6B" value="yes"> Yes <input type="radio" name="result_6B" value="no"> No</div></td>
+                </tr>
+                <tr>
+                    <td>C</td>
+                    <td>Spine board with cervical collar</td>
+                    <td><div class="checkbox-group"><input type="radio" name="result_6C" value="yes"> Yes <input type="radio" name="result_6C" value="no"> No</div></td>
+                </tr>
+                <tr>
+                    <td>D</td>
+                    <td>Well equipped first aid kit</td>
+                    <td><div class="checkbox-group"><input type="radio" name="result_6D" value="yes"> Yes <input type="radio" name="result_6D" value="no"> No</div></td>
+                </tr>
+            </table>
+
+            <div class="category-header">7 - Signs and notices (5%)</div>
+            <table>
+                <tr>
+                    <td>A</td>
+                    <td>Caution notices: - pool depth indications</td>
+                    <td><div class="checkbox-group"><input type="radio" name="result_7A" value="yes"> Yes <input type="radio" name="result_7A" value="no"> No</div></td>
+                </tr>
+                <tr>
+                    <td>B</td>
+                    <td>Public health notices</td>
+                    <td><div class="checkbox-group"><input type="radio" name="result_7B" value="yes"> Yes <input type="radio" name="result_7B" value="no"> No</div></td>
+                </tr>
+                <tr>
+                    <td>C</td>
+                    <td>Emergency procedures</td>
+                    <td><div class="checkbox-group"><input type="radio" name="result_7C" value="yes"> Yes <input type="radio" name="result_7C" value="no"> No</div></td>
+                </tr>
+                <tr>
+                    <td>D</td>
+                    <td>Maximum bathing load</td>
+                    <td><div class="checkbox-group"><input type="radio" name="result_7D" value="yes"> Yes <input type="radio" name="result_7D" value="no"> No</div></td>
+                </tr>
+                <tr>
+                    <td>E</td>
+                    <td>Lifeguard on duty"/bathe at your own risk" signs</td>
+                    <td><div class="checkbox-group"><input type="radio" name="result_7E" value="yes"> Yes <input type="radio" name="result_7E" value="no"> No</div></td>
+                </tr>
+            </table>
+
+            <div class="category-header">8 - Lifeguards/Lifesavers (10%)</div>
+            <table>
+                <tr>
+                    <td>A</td>
+                    <td>Licence Lifeguards always on duty during pool opening hours [N/A]</td>
+                    <td><div class="checkbox-group"><input type="radio" name="result_8A" value="yes"> Yes <input type="radio" name="result_8A" value="no"> No</div></td>
+                </tr>
+                <tr class="critical">
+                    <td>B</td>
+                    <td>If N/A are trained lifesavers readily available</td>
+                    <td><div class="checkbox-group"><input type="radio" name="result_8B" value="yes"> Yes <input type="radio" name="result_8B" value="no"> No</div></td>
+                </tr>
+                <tr>
+                    <td>C</td>
+                    <td>Number of lifeguard/lifesavers</td>
+                    <td><div class="checkbox-group"><input type="radio" name="result_8C" value="yes"> Yes <input type="radio" name="result_8C" value="no"> No</div></td>
+                </tr>
+            </table>
+
+            <div class="category-header">9 - Sanitary facilities (10%)</div>
+            <table>
+                <tr class="critical">
+                    <td>A</td>
+                    <td>Shower, toilet and dressing rooms: - clean and disinfected as required</td>
+                    <td><div class="checkbox-group"><input type="radio" name="result_9A" value="yes"> Yes <input type="radio" name="result_9A" value="no"> No</div></td>
+                </tr>
+                <tr>
+                    <td>B</td>
+                    <td>Vented</td>
+                    <td><div class="checkbox-group"><input type="radio" name="result_9B" value="yes"> Yes <input type="radio" name="result_9B" value="no"> No</div></td>
+                </tr>
+                <tr>
+                    <td>C</td>
+                    <td>Well supplied and equipped</td>
+                    <td><div class="checkbox-group"><input type="radio" name="result_9C" value="yes"> Yes <input type="radio" name="result_9C" value="no"> No</div></td>
+                </tr>
+            </table>
+
+            <div class="form-header">Inspector's Comments</div>
+            <textarea class="comments" name="inspector_comments"></textarea>
+
+            <table>
+                <tr>
+                    <td>Inspector's Signature</td>
+                    <td><input type="text" class="input-field" name="inspector_signature" required></td>
+                    <td>Date</td>
+                    <td><input type="date" class="input-field" name="inspector_date" required></td>
+                </tr>
+                <tr>
+                    <td>Manager's Signature</td>
+                    <td><input type="text" class="input-field" name="manager_signature" required></td>
+                    <td>Date</td>
+                    <td><input type="date" class="input-field" name="manager_date" required></td>
+                </tr>
+            </table>
+
+            <div class="buttons">
+                <button id="submit-btn" class="btn" type="submit">Submit</button>
+                <button id="print-btn" class="btn" type="button" onclick="window.print()">Print</button>
+                <button id="save-btn" class="btn" type="button" onclick="alert('Save functionality not implemented yet.')">Save</button>
+                <button id="share-btn" class="btn" type="button" onclick="alert('Share functionality not implemented yet.')">Share</button>
+                <a href="{{ url_for('login') }}" id="back-btn" class="btn">Back to Dashboard</a>
+            </div>
+        </form>
+        {% if success %}
+            <div class="buttons" style="text-align: center; margin-top: 20px;">
+                <a href="{{ url_for('login') }}" id="back-btn" class="btn">Back to Dashboard</a>
+            </div>
+            <p style="text-align: center; color: #009b3a; font-size: 16px;">Submission successful!</p>
+        {% endif %}
+    </div>
+    <script>
+        const radios = document.querySelectorAll('input[type="radio"]');
+        const percentageScore = document.getElementById('percentageScore');
+        const totalItems = 41; // Total number of items
+        const criticalItems = document.querySelectorAll('.critical').length; // Number of critical items (13)
+
+        function updateScore() {
+            let totalScore = 0;
+            const maxScore = (totalItems - criticalItems) * 2.5 + criticalItems * 5; // 28 * 2.5 + 13 * 5 = 70 + 65 = 135
+
+            radios.forEach(radio => {
+                const name = radio.name;
+                const key = name.replace(/^(result_)/, '').replace(/(yes|no)$/, '');
+                const isCritical = radio.closest('tr').classList.contains('critical');
+                const weight = isCritical ? 5 : 2.5; // Critical items worth 5, others 2.5
+
+                if (radio.checked && radio.value === 'yes') {
+                    totalScore += weight;
+                }
+            });
+            const percentage = Math.min(((totalScore / maxScore) * 100).toFixed(1), 100); // Cap at 100%
+            percentageScore.textContent = `${percentage}%`;
+        }
+
+        radios.forEach(radio => {
+            radio.addEventListener('change', updateScore);
+        });
+
+        // Initialize score
+        updateScore();
+    </script>
+</body>
+</html>

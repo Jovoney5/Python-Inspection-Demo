@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Inspector Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 90%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .form-select {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        #form-type {
+            padding: 10px;
+            font-size: 16px;
+            width: 300px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .tab-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ccc;
+        }
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #666;
+            transition: color 0.3s, border-bottom 0.3s;
+        }
+        .tab:hover {
+            color: #007bff;
+        }
+        .tab.active {
+            color: #007bff;
+            border-bottom: 2px solid #007bff;
+        }
+        .tab-content {
+            display: none;
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .tab-content.active {
+            display: block;
+        }
+        h2 {
+            margin-top: 0;
+            color: #333;
+        }
+        .search-container, .residential-search-container, .burial-search-container, .spirit-licence-search-container, .swimming-pool-search-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        #search, #residential-search, #burial-search, #spirit-licence-search, #swimming-pool-search {
+            width: 100%;
+            padding: 10px 40px 10px 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .search-icon, .residential-search-icon, .burial-search-icon, .spirit-licence-search-icon, .swimming-pool-search-icon {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+            color: #666;
+        }
+        .results {
+            margin-top: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f4f4f4;
+            font-weight: bold;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+            cursor: pointer;
+        }
+        .overview-stats {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+        .stat-card {
+            background: #fff;
+            padding: 20px;
+            margin: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            flex: 1;
+            min-width: 200px;
+        }
+        .stat-card h3 {
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+        .stat-card p {
+            font-size: 24px;
+            margin: 0;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Inspector Dashboard</h1>
+        <div class="form-select">
+            <select id="form-type">
+                <option value="" selected>Select a Form</option>
+                <option value="/new_form">Food Establishment Inspection Form</option>
+                <option value="/new_residential_form">Residential & Non-Residential Inspection Form</option>
+                <option value="/new_burial_form">Burial Site Inspection Form</option>
+                <option value="/new_spirit_licence_form">Spirit Licence Premises Inspection Form</option>
+                <option value="/new_swimming_pool_form">Swimming Pool Inspection Form</option>
+            </select>
+        </div>
+        <div class="tab-container">
+            <div class="tab active" data-tab="overview">Overview</div>
+            <div class="tab" data-tab="food">Food Inspection</div>
+            <div class="tab" data-tab="residential">Residential Inspection</div>
+            <div class="tab" data-tab="burial">Burial Inspection</div>
+            <div class="tab" data-tab="spirit_licence">Spirit Licence Inspection</div>
+            <div class="tab" data-tab="swimming_pool">Swimming Pool Inspection</div>
+        </div>
+        <div class="tab-content active" id="overview">
+            <h2>Overview</h2>
+            <div class="overview-stats">
+                <div class="stat-card">
+                    <h3>Total Inspections</h3>
+                    <p id="total-inspections">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Food Inspections</h3>
+                    <p id="food-inspections">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Residential Inspections</h3>
+                    <p id="residential-inspections">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Burial Inspections</h3>
+                    <p id="burial-inspections">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Spirit Licence Inspections</h3>
+                    <p id="spirit-licence-inspections">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Swimming Pool Inspections</h3>
+                    <p id="swimming-pool-inspections">0</p>
+                </div>
+            </div>
+        </div>
+        <div class="tab-content" id="food">
+            <h2>Food Establishment Inspection Forms</h2>
+            <div class="search-container">
+                <input type="text" id="search" placeholder="Search completed food establishment forms...">
+                <span class="search-icon">🔍</span>
+            </div>
+            <div class="results" id="food-results">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Form ID</th>
+                            <th>Establishment Name</th>
+                            <th>Date Completed</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="food-results-body"></tbody>
+                </table>
+            </div>
+        </div>
+        <div class="tab-content" id="residential">
+            <h2>Residential & Non-Residential Inspection Forms</h2>
+            <div class="residential-search-container">
+                <input type="text" id="residential-search" placeholder="Search completed residential forms...">
+                <span class="residential-search-icon">🔍</span>
+            </div>
+            <div class="results" id="residential-results">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Form ID</th>
+                            <th>Establishment Name</th>
+                            <th>Date Completed</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="residential-results-body"></tbody>
+                </table>
+            </div>
+        </div>
+        <div class="tab-content" id="burial">
+            <h2>Burial Site Inspection Forms</h2>
+            <div class="burial-search-container">
+                <input type="text" id="burial-search" placeholder="Search completed burial forms...">
+                <span class="burial-search-icon">🔍</span>
+            </div>
+            <div class="results" id="burial-results">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Form ID</th>
+                            <th>Deceased Name</th>
+                            <th>Date Completed</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="burial-results-body"></tbody>
+                </table>
+            </div>
+        </div>
+        <div class="tab-content" id="spirit_licence">
+            <h2>Spirit Licence Premises Inspection Forms</h2>
+            <div class="spirit-licence-search-container">
+                <input type="text" id="spirit-licence-search" placeholder="Search completed spirit licence forms...">
+                <span class="spirit-licence-search-icon">🔍</span>
+            </div>
+            <div class="results" id="spirit-licence-results">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Form ID</th>
+                            <th>Establishment Name</th>
+                            <th>Date Completed</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="spirit-licence-results-body"></tbody>
+                </table>
+            </div>
+        </div>
+        <div class="tab-content" id="swimming_pool">
+            <h2>Swimming Pool Inspection Forms</h2>
+            <div class="swimming-pool-search-container">
+                <input type="text" id="swimming-pool-search" placeholder="Search completed swimming pool forms...">
+                <span class="swimming-pool-search-icon">🔍</span>
+            </div>
+            <div class="results" id="swimming-pool-results">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Form ID</th>
+                            <th>Establishment Name</th>
+                            <th>Date Completed</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="swimming-pool-results-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.querySelector('#form-type').addEventListener('change', function() {
+            if (this.value) {
+                window.location.href = this.value;
+            }
+        });
+
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('active'));
+
+                tab.classList.add('active');
+                document.querySelector(`#${tab.dataset.tab}`).classList.add('active');
+
+                loadForms(tab.dataset.tab);
+            });
+        });
+
+        async function loadStats() {
+            try {
+                const response = await fetch('/stats');
+                const data = await response.json();
+                document.querySelector('#total-inspections').textContent = data.total;
+                document.querySelector('#food-inspections').textContent = data.food;
+                document.querySelector('#residential-inspections').textContent = data.residential;
+                document.querySelector('#burial-inspections').textContent = data.burial;
+                document.querySelector('#spirit-licence-inspections').textContent = data.spirit_licence;
+                document.querySelector('#swimming-pool-inspections').textContent = data.swimming_pool;
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        async function loadForms(tab) {
+            let tbody;
+            switch (tab) {
+                case 'food':
+                    tbody = document.querySelector('#food-results-body');
+                    break;
+                case 'residential':
+                    tbody = document.querySelector('#residential-results-body');
+                    break;
+                case 'burial':
+                    tbody = document.querySelector('#burial-results-body');
+                    break;
+                case 'spirit_licence':
+                    tbody = document.querySelector('#spirit-licence-results-body');
+                    break;
+                case 'swimming_pool':
+                    tbody = document.querySelector('#swimming-pool-results-body');
+                    break;
+                default:
+                    return;
+            }
+            tbody.innerHTML = '<tr><td colspan="4">Loading...</td></tr>';
+            try {
+                const response = await fetch(`/search_forms?query=&type=${tab}`);
+                const data = await response.json();
+                tbody.innerHTML = '';
+                if (data.forms && data.forms.length) {
+                    data.forms.sort((a, b) => (a.establishment_name || a.deceased_name || '').localeCompare(b.establishment_name || b.deceased_name || ''));
+                    data.forms.forEach(form => {
+                        const row = document.createElement('tr');
+                        if (tab === 'burial') {
+                            row.innerHTML = `
+                                <td>${form.id}</td>
+                                <td>${form.deceased_name}</td>
+                                <td>${form.created_at}</td>
+                                <td>${form.status}</td>
+                            `;
+                            row.addEventListener('click', () => {
+                                window.location.href = `/burial/inspection/${form.id}`;
+                            });
+                        } else {
+                            row.innerHTML = `
+                                <td>${form.id}</td>
+                                <td>${form.establishment_name}</td>
+                                <td>${form.created_at}</td>
+                                <td>${form.result}</td>
+                            `;
+                            row.addEventListener('click', () => {
+                                window.location.href = `/${tab}/inspection/${form.id}`;
+                            });
+                        }
+                        tbody.appendChild(row);
+                    });
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="4">No results found</td></tr>';
+                }
+            } catch (error) {
+                console.error(`Error loading ${tab} forms:`, error);
+                tbody.innerHTML = '<tr><td colspan="4">Error loading results</td></tr>';
+            }
+        }
+
+        document.querySelector('#search').addEventListener('input', async () => {
+            const query = document.querySelector('#search').value;
+            if (query.length < 2) {
+                document.querySelector('#food-results-body').innerHTML = '';
+                return;
+            }
+            try {
+                const response = await fetch(`/search_forms?query=${encodeURIComponent(query)}&type=food`);
+                const data = await response.json();
+                const tbody = document.querySelector('#food-results-body');
+                tbody.innerHTML = '';
+                if (data.forms && data.forms.length) {
+                    data.forms.sort((a, b) => a.establishment_name.localeCompare(b.establishment_name));
+                    data.forms.forEach(form => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${form.id}</td>
+                            <td>${form.establishment_name}</td>
+                            <td>${form.created_at}</td>
+                            <td>${form.result}</td>
+                        `;
+                        row.addEventListener('click', () => {
+                            window.location.href = `/food/inspection/${form.id}`;
+                        });
+                        tbody.appendChild(row);
+                    });
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="4">No results found</td></tr>';
+                }
+            } catch (error) {
+                console.error('Error searching foods:', error);
+                document.querySelector('#food-results-body').innerHTML = '<tr><td colspan="4">Error loading results</td></tr>';
+            }
+        });
+
+        document.querySelector('#residential-search').addEventListener('input', async () => {
+            const query = document.querySelector('#residential-search').value;
+            if (query.length < 2) {
+                document.querySelector('#residential-results-body').innerHTML = '';
+                return;
+            }
+            try {
+                const response = await fetch(`/search_forms?query=${encodeURIComponent(query)}&type=residential`);
+                const data = await response.json();
+                const tbody = document.querySelector('#residential-results-body');
+                tbody.innerHTML = '';
+                if (data.forms && data.forms.length) {
+                    data.forms.sort((a, b) => a.establishment_name.localeCompare(b.establishment_name));
+                    data.forms.forEach(form => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${form.id}</td>
+                            <td>${form.establishment_name}</td>
+                            <td>${form.created_at}</td>
+                            <td>${form.result}</td>
+                        `;
+                        row.addEventListener('click', () => {
+                            window.location.href = `/residential/inspection/${form.id}`;
+                        });
+                        tbody.appendChild(row);
+                    });
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="4">No results found</td></tr>';
+                }
+            } catch (error) {
+                console.error('Error searching residential forms:', error);
+                document.querySelector('#residential-results-body').innerHTML = '<tr><td colspan="4">Error loading results</td></tr>';
+            }
+        });
+
+        document.querySelector('#burial-search').addEventListener('input', async () => {
+            const query = document.querySelector('#burial-search').value;
+            if (query.length < 2) {
+                document.querySelector('#burial-results-body').innerHTML = '';
+                return;
+            }
+            try {
+                const response = await fetch(`/search_forms?query=${encodeURIComponent(query)}&type=burial`);
+                const data = await response.json();
+                const tbody = document.querySelector('#burial-results-body');
+                tbody.innerHTML = '';
+                if (data.forms && data.forms.length) {
+                    data.forms.sort((a, b) => a.deceased_name.localeCompare(b.deceased_name));
+                    data.forms.forEach(form => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${form.id}</td>
+                            <td>${form.deceased_name}</td>
+                            <td>${form.created_at}</td>
+                            <td>${form.status}</td>
+                        `;
+                        row.addEventListener('click', () => {
+                            window.location.href = `/burial/inspection/${form.id}`;
+                        });
+                        tbody.appendChild(row);
+                    });
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="4">No results found</td></tr>';
+                }
+            } catch (error) {
+                console.error('Error searching burial forms:', error);
+                document.querySelector('#burial-results-body').innerHTML = '<tr><td colspan="4">Error loading results</td></tr>';
+            }
+        });
+
+        document.querySelector('#spirit-licence-search').addEventListener('input', async () => {
+            const query = document.querySelector('#spirit-licence-search').value;
+            if (query.length < 2) {
+                document.querySelector('#spirit-licence-results-body').innerHTML = '';
+                return;
+            }
+            try {
+                const response = await fetch(`/search_forms?query=${encodeURIComponent(query)}&type=spirit_licence`);
+                const data = await response.json();
+                const tbody = document.querySelector('#spirit-licence-results-body');
+                tbody.innerHTML = '';
+                if (data.forms && data.forms.length) {
+                    data.forms.sort((a, b) => a.establishment_name.localeCompare(b.establishment_name));
+                    data.forms.forEach(form => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${form.id}</td>
+                            <td>${form.establishment_name}</td>
+                            <td>${form.created_at}</td>
+                            <td>${form.result}</td>
+                        `;
+                        row.addEventListener('click', () => {
+                            window.location.href = `/spirit_licence/inspection/${form.id}`;
+                        });
+                        tbody.appendChild(row);
+                    });
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="4">No results found</td></tr>';
+                }
+            } catch (error) {
+                console.error('Error searching spirit licence forms:', error);
+                document.querySelector('#spirit-licence-results-body').innerHTML = '<tr><td colspan="4">Error loading results</td></tr>';
+            }
+        });
+
+        document.querySelector('#swimming-pool-search').addEventListener('input', async () => {
+            const query = document.querySelector('#swimming-pool-search').value;
+            if (query.length < 2) {
+                document.querySelector('#swimming-pool-results-body').innerHTML = '';
+                return;
+            }
+            try {
+                const response = await fetch(`/search_forms?query=${encodeURIComponent(query)}&type=swimming_pool`);
+                const data = await response.json();
+                const tbody = document.querySelector('#swimming-pool-results-body');
+                tbody.innerHTML = '';
+                if (data.forms && data.forms.length) {
+                    data.forms.sort((a, b) => a.establishment_name.localeCompare(b.establishment_name));
+                    data.forms.forEach(form => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${form.id}</td>
+                            <td>${form.establishment_name}</td>
+                            <td>${form.created_at}</td>
+                            <td>${form.result}</td>
+                        `;
+                        row.addEventListener('click', () => {
+                            window.location.href = `/swimming_pool/inspection/${form.id}`;
+                        });
+                        tbody.appendChild(row);
+                    });
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="4">No results found</td></tr>';
+                }
+            } catch (error) {
+                console.error('Error searching swimming pool forms:', error);
+                document.querySelector('#swimming-pool-results-body').innerHTML = '<tr><td colspan="4">Error loading results</td></tr>';
+            }
+        });
+
+        loadStats();
+        loadForms('overview');
+    </script>
+</body>
+</html>

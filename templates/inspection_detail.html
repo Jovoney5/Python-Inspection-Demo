@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Inspection Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+        .form-container {
+            width: 100%;
+            max-width: 1200px;
+            text-align: center;
+        }
+        h1 {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 24px;
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.75);
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .form-section {
+            margin-bottom: 30px;
+            text-align: left;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .pair-table {
+            display: table;
+            border-collapse: collapse;
+            margin: 0 auto;
+            width: 100%;
+            max-width: 800px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+        .pair-table td {
+            padding: 10px 0;
+            vertical-align: top;
+            width: 33.33%;
+            padding-right: 10px;
+        }
+        .pair-table td:last-child {
+            padding-right: 0;
+        }
+        .score-box {
+            display: block;
+            width: 80px;
+            padding: 5px;
+            margin-top: 5px;
+        }
+        .barcode-container {
+            display: flex;
+            align-items: center;
+            margin-top: 5px;
+        }
+        .barcode {
+            width: 100px;
+            height: 30px;
+            background: repeating-linear-gradient(90deg, black, black 2px, white 2px, white 4px);
+            margin-right: 10px;
+        }
+        .barcode-line {
+            flex: 1;
+            height: 1px;
+            background: black;
+        }
+        .signature-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-top: 10px;
+        }
+        .comments-area {
+            flex: 2;
+            margin-right: 20px;
+        }
+        .signature-row label {
+            flex: 1;
+            margin-right: 10px;
+        }
+        .signature-row label:last-child {
+            margin-right: 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f0f0f0;
+        }
+        tr.important-weight {
+            background: rgba(0, 0, 0, 0.3);
+        }
+        .category-header {
+            font-weight: bold;
+            background-color: #e0e0e0;
+            padding: 5px 10px;
+            margin-top: 10px;
+        }
+        .action-buttons {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .action-buttons button {
+            padding: 10px 20px;
+            margin: 0 10px;
+            background: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .action-buttons button.email {
+            background: #28a745;
+        }
+        .action-buttons button.download {
+            background: #6c757d;
+        }
+        .back-button {
+            display: block;
+            width: 150px;
+            padding: 10px;
+            margin: 20px auto;
+            background: #dc3545;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const video = document.getElementById('background-video');
+
+            video.addEventListener('loadedmetadata', function() {
+                video.currentTime = 0;
+            });
+            video.addEventListener('timeupdate', function() {
+                if (video.currentTime >= 16) {
+                    video.currentTime = 0;
+                }
+            });
+
+            document.querySelectorAll('tr').forEach(row => {
+                const weightCell = row.querySelector('td:nth-child(3)');
+                if (weightCell) {
+                    const weight = parseInt(weightCell.textContent);
+                    if (weight >= 4) {
+                        row.classList.add('important-weight');
+                    }
+                }
+            });
+
+            document.querySelector('.action-buttons button.email').addEventListener('click', function() {
+                window.location.href = `mailto:?subject=Inspection Report&body=Inspection ID: ${inspection.id}
+                Establishment: ${inspection.establishment_name}
+                Date: ${inspection.inspection_date}`;
+            });
+
+            document.querySelector('.action-buttons button.download').addEventListener('click', function() {
+                const doc = new jspdf.jsPDF();
+                let y = 10;
+                doc.text(`Inspection Report - ID: ${inspection.id}`, 10, y);
+                y += 10;
+                doc.text(`Establishment: ${inspection.establishment_name}`, 10, y);
+                y += 10;
+                doc.text(`Date: ${inspection.inspection_date}`, 10, y);
+                doc.text(`Owner: ${inspection.owner}`, 10, y += 10);
+                doc.text(`Address: ${inspection.address}`, 10, y += 10);
+                doc.text(`Inspector: ${inspection.inspector_name}`, 10, y += 10);
+                doc.text(`Critical Score: ${inspection.critical_score}`, 10, y += 10);
+                doc.text(`Overall Score: ${inspection.overall_score}`, 10, y += 10);
+                doc.text(`Result: ${inspection.result}`, 10, y += 10);
+                doc.text(`Comments: ${inspection.comments}`, 10, y += 10);
+                doc.save(`inspection_${inspection.id}.pdf`);
+            });
+
+            document.querySelector('.action-buttons button').addEventListener('click', function() {
+                window.print();
+            });
+        });
+
+        const inspection = {
+            id: {{ inspection.id }},
+            establishment_name: "{{ inspection.establishment_name }}",
+            owner: "{{ inspection.owner }}",
+            address: "{{ inspection.address }}",
+            inspector_name: "{{ inspection.inspector_name }}",
+            inspection_date: "{{ inspection.inspection_date }}",
+            critical_score: {{ inspection.critical_score }},
+            overall_score: {{ inspection.overall_score }},
+            result: "{{ inspection.result }}",
+            comments: "{{ inspection.comments }}"
+        };
+    </script>
+</head>
+<body>
+    <video autoplay muted loop id="background-video">
+        <source src="{{ url_for('static', filename='flag_vid3.webm') }}" type="video/webm">
+        Your browser does not support the video tag.
+    </video>
+    <h1>Inspection Details</h1>
+    <div class="form-container">
+        <div class="form-section">
+            <h2>{% if inspection.form_type == 'Food Establishment' %}Establishment{% else %}Premises{% endif %} Details</h2>
+            <table class="pair-table">
+                <tr>
+                    <td><label>{% if inspection.form_type == 'Food Establishment' %}Name of Establishment{% else %}Name of Premises{% endif %}: {{ inspection.establishment_name }}</label></td>
+                    <td><label>{% if inspection.form_type == 'Food Establishment' %}Owner/Operator{% else %}Owner/Agent/Occupier{% endif %}: {{ inspection.owner }}</label></td>
+                    <td><label>Critical Score: {{ inspection.critical_score }}</label></td>
+                </tr>
+                <tr>
+                    <td><label>Address: {{ inspection.address }}</label></td>
+                    {% if inspection.form_type == 'Food Establishment' %}
+                    <td><label>License #: {{ inspection.license_no }}</label></td>
+                    {% else %}
+                    <td></td>
+                    {% endif %}
+                    <td><label>Overall Score: {{ inspection.overall_score }}</label></td>
+                </tr>
+                <tr>
+                    <td><label>Inspector Name: {{ inspection.inspector_name }}</label></td>
+                    <td><label>Inspector Code: {{ inspection.inspector_code }}</label></td>
+                    <td><label>Inspection Date: {{ inspection.inspection_date }}</label></td>
+                </tr>
+                <tr>
+                    <td><label>{% if inspection.form_type == 'Food Establishment' %}Inspection Time: {{ inspection.inspection_time }}{% endif %}</label></td>
+                    <td><label>Type of {% if inspection.form_type == 'Food Establishment' %}Establishment{% else %}Treatment Facility{% endif %}: {{ inspection.type_of_establishment }}</label></td>
+                    <td><label>{% if inspection.form_type == 'Food Establishment' %}No. of Employees: {{ inspection.no_of_employees }}{% endif %}</label></td>
+                </tr>
+                <tr>
+                    <td><label>Purpose of Visit: {{ inspection.purpose_of_visit }}</label></td>
+                    <td><label>Action: {{ inspection.action }}</label></td>
+                    <td><label>Result: {{ inspection.result }}</label></td>
+                </tr>
+                <tr>
+                    <td><label>Barcode:
+                        <div class="barcode-container">
+                            <div class="barcode"></div>
+                            <div class="barcode-line"></div>
+                        </div>
+                    </label></td>
+                    {% if inspection.form_type == 'Food Establishment' %}
+                    <td><label>Food Inspected (in kg): {{ inspection.food_inspected }}</label></td>
+                    <td><label>Food Condemned (in kg): {{ inspection.food_condemned }}</label></td>
+                    {% else %}
+                    <td></td>
+                    <td></td>
+                    {% endif %}
+                </tr>
+            </table>
+        </div>
+
+        <div class="form-section">
+            <h2>Inspection Checklist</h2>
+            <table>
+                <tr>
+                    <th>Item #</th>
+                    <th>Description</th>
+                    <th>Weight</th>
+                    <th>Score</th>
+                </tr>
+                {% if inspection.form_type == 'Food Establishment' %}
+                <tr class="category-header"><td colspan="4">FOOD PROTECTION (1-10)</td></tr>
+                {% for item in checklist if 1 <= item.id <= 10 %}
+                <tr class="{% if item.wt|float >= 4 %}important-weight{% endif %}">
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.desc }}</td>
+                    <td>{{ item.wt }}</td>
+                    <td>{{ inspection.scores[item.id] }}</td>
+                </tr>
+                {% endfor %}
+                <tr class="category-header"><td colspan="4">FOOD EQUIPMENT AND UTENSILS (11-23)</td></tr>
+                {% for item in checklist if 11 <= item.id <= 23 %}
+                <tr class="{% if item.wt|float >= 4 %}important-weight{% endif %}">
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.desc }}</td>
+                    <td>{{ item.wt }}</td>
+                    <td>{{ inspection.scores[item.id] }}</td>
+                </tr>
+                {% endfor %}
+                <tr class="category-header"><td colspan="4">TOILET AND HANDWASHING FACILITIES (24-25)</td></tr>
+                {% for item in checklist if 24 <= item.id <= 25 %}
+                <tr class="{% if item.wt|float >= 4 %}important-weight{% endif %}">
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.desc }}</td>
+                    <td>{{ item.wt }}</td>
+                    <td>{{ inspection.scores[item.id] }}</td>
+                </tr>
+                {% endfor %}
+                <tr class="category-header"><td colspan="4">SOLID WASTE MANAGEMENT (26-27)</td></tr>
+                {% for item in checklist if 26 <= item.id <= 27 %}
+                <tr class="{% if item.wt|float >= 4 %}important-weight{% endif %}">
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.desc }}</td>
+                    <td>{{ item.wt }}</td>
+                    <td>{{ inspection.scores[item.id] }}</td>
+                </tr>
+                {% endfor %}
+                <tr class="category-header"><td colspan="4">RODENTS, INSECT, ANIMAL CONTROL (28)</td></tr>
+                {% for item in checklist if item.id == 28 %}
+                <tr class="{% if item.wt|float >= 4 %}important-weight{% endif %}">
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.desc }}</td>
+                    <td>{{ item.wt }}</td>
+                    <td>{{ inspection.scores[item.id] }}</td>
+                </tr>
+                {% endfor %}
+                <tr class="category-header"><td colspan="4">PERSONNEL (29-35)</td></tr>
+                {% for item in checklist if 29 <= item.id <= 35 %}
+                <tr class="{% if item.wt|float >= 4 %}important-weight{% endif %}">
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.desc }}</td>
+                    <td>{{ item.wt }}</td>
+                    <td>{{ inspection.scores[item.id] }}</td>
+                </tr>
+                {% endfor %}
+                <tr class="category-header"><td colspan="4">WATER (36)</td></tr>
+                {% for item in checklist if item.id == 36 %}
+                <tr class="{% if item.wt|float >= 4 %}important-weight{% endif %}">
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.desc }}</td>
+                    <td>{{ item.wt }}</td>
+                    <td>{{ inspection.scores[item.id] }}</td>
+                </tr>
+                {% endfor %}
+                <tr class="category-header"><td colspan="4">SEWAGE (37)</td></tr>
+                {% for item in checklist if item.id == 37 %}
+                <tr class="{% if item.wt|float >= 4 %}important-weight{% endif %}">
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.desc }}</td>
+                    <td>{{ item.wt }}</td>
+                    <td>{{ inspection.scores[item.id] }}</td>
+                </tr>
+                {% endfor %}
+                <tr class="category-header"><td colspan="4">PLUMBING (38-39)</td></tr>
+                {% for item in checklist if 38 <= item.id <= 39 %}
+                <tr class="{% if item.wt|float >= 4 %}important-weight{% endif %}">
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.desc }}</td>
+                    <td>{{ item.wt }}</td>
+                    <td>{{ inspection.scores[item.id] }}</td>
+                </tr>
+                {% endfor %}
+                <tr class="category-header"><td colspan="4">FLOORS, WALLS AND CEILING (40-41)</td></tr>
+                {% for item in checklist if 40 <= item.id <= 41 %}
+                <tr class="{% if item.wt|float >= 4 %}important-weight{% endif %}">
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.desc }}</td>
+                    <td>{{ item.wt }}</td>
+                    <td>{{ inspection.scores[item.id] }}</td>
+                </tr>
+                {% endfor %}
+                <tr class="category-header"><td colspan="4">OTHER OPERATIONS (42-45)</td></tr>
+                {% for item in checklist if 42 <= item.id <= 45 %}
+                <tr class="{% if item.wt|float >= 4 %}important-weight{% endif %}">
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.desc }}</td>
+                    <td>{{ item.wt }}</td>
+                    <td>{{ inspection.scores[item.id] }}</td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <tr class="category-header"><td colspan="4">BUILDING (1-8)</td></tr>
+                {% for item in checklist if 1 <= item.id <= 8 %}
+                <tr class="{% if item.wt|float >= 4 %}important-weight{% endif %}">
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.desc }}</td>
+                    <td>{{ item.wt }}</td>
+                    <td>{{ inspection.scores[item.id] }}</td>
+                </tr>
+                {% endfor %}
+                <tr class="category-header"><td colspan="4">WATER SUPPLY (9-10)</td></tr>
+                {% for item in checklist if 9 <= item.id <= 10 %}
+                <tr class="{% if item.wt|float >= 4 %}important-weight{% endif %}">
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.desc }}</td>
+                    <td>{{ item.wt }}</td>
+                    <td>{{ inspection.scores[item.id] }}</td>
+                </tr>
+                {% endfor %}
+                <tr class="category-header"><td colspan="4">DRAINAGE (11-12)</td></tr>
+                {% for item in checklist if 11 <= item.id <= 12 %}
+                <tr class="{% if item.wt|float >= 4 %}important-weight{% endif %}">
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.desc }}</td>
+                    <td>{{ item.wt }}</td>
+                    <td>{{ inspection.scores[item.id] }}</td>
+                </tr>
+                {% endfor %}
+                <tr class="category-header"><td colspan="4">MOSQUITO CONTROL (13-16)</td></tr>
+                {% for item in checklist if 13 <= item.id <= 16 %}
+                <tr class="{% if item.wt|float >= 4 %}important-weight{% endif %}">
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.desc }}</td>
+                    <td>{{ item.wt }}</td>
+                    <td>{{ inspection.scores[item.id] }}</td>
+                </tr>
+                {% endfor %}
+                <tr class="category-header"><td colspan="4">OTHER VECTORS (17-18)</td></tr>
+                {% for item in checklist if 17 <= item.id <= 18 %}
+                <tr class="{% if item.wt|float >= 4 %}important-weight{% endif %}">
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.desc }}</td>
+                    <td>{{ item.wt }}</td>
+                    <td>{{ inspection.scores[item.id] }}</td>
+                </tr>
+                {% endfor %}
+                <tr class="category-header"><td colspan="4">SEWAGE/EXCRETA DISPOSAL (19-21)</td></tr>
+                {% for item in checklist if 19 <= item.id <= 21 %}
+                <tr class="{% if item.wt|float >= 4 %}important-weight{% endif %}">
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.desc }}</td>
+                    <td>{{ item.wt }}</td>
+                    <td>{{ inspection.scores[item.id] }}</td>
+                </tr>
+                {% endfor %}
+                <tr class="category-header"><td colspan="4">OTHER OPERATIONS (22)</td></tr>
+                {% for item in checklist if item.id == 22 %}
+                <tr class="{% if item.wt|float >= 4 %}important-weight{% endif %}">
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.desc }}</td>
+                    <td>{{ item.wt }}</td>
+                    <td>{{ inspection.scores[item.id] }}</td>
+                </tr>
+                {% endfor %}
+                {% endif %}
+            </table>
+        </div>
+
+        {% if inspection.form_type != 'Food Establishment' %}
+        <div class="form-section">
+            <h2>Solid Waste Management</h2>
+            <table>
+                <tr>
+                    <th>Description</th>
+                    <th>Weight</th>
+                    <th>Score</th>
+                </tr>
+                <tr class="category-header"><td colspan="3">SOLID WASTE MANAGEMENT</td></tr>
+                {% for item in checklist if 23 <= item.id <= 25 %}
+                <tr class="{% if item.wt|float >= 4 %}important-weight{% endif %}">
+                    <td>{{ item.desc }}</td>
+                    <td>{{ item.wt }}</td>
+                    <td>{{ inspection.scores[item.id] }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        {% endif %}
+
+        <div class="form-section">
+            <h2>Inspector's Comments</h2>
+            <div class="signature-row">
+                <div class="comments-area">
+                    <label>Comments: {{ inspection.comments }}</label>
+                </div>
+                <div>
+                    <label>Inspector's Signature: {{ inspection.inspector_signature }}</label>
+                    <label>Rec'd By: {{ inspection.recieved_by }}</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button>Print</button>
+            <button class="email">Email</button>
+            <button class="download">Download PDF</button>
+        </div>
+        <a href="/" class="back-button">Back to Dashboard</a>
+    </div>
+</body>
+</html>

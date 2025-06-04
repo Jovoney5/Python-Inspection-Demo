@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Burial Site Inspection Report</title>
+    <style>
+        body {
+            font-family: "Times New Roman", Times, serif;
+            margin: 50px;
+            font-size: 14px;
+            background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg==') repeat;
+        }
+        .form-container {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 40px;
+            width: 550px;
+            min-height: 700px;
+            margin: 0 auto;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            font-size: 18px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        p {
+            margin: 15px 0;
+            line-height: 1.6;
+        }
+        .bullet-list {
+            margin-left: 30px;
+            list-style-type: disc;
+            margin-bottom: 25px;
+        }
+        .bullet-list li {
+            margin-bottom: 15px;
+        }
+        .instructions {
+            margin-top: 30px;
+            font-style: italic;
+        }
+        .failure-notice {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        .signatures {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        textarea, input[type="text"], input[type="date"] {
+            width: 100%;
+            padding: 8px;
+            font-family: "Times New Roman", Times, serif;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: vertical;
+        }
+        .wide-textarea {
+            width: 100%;
+            min-height: 80px;
+            margin-bottom: 20px;
+        }
+        .buttons {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .btn {
+            padding: 10px 20px;
+            margin: 0 10px;
+            font-size: 14px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            background-color: #28a745;
+            color: white;
+        }
+        .btn:hover {
+            background-color: #218838;
+        }
+        #print-btn { background-color: #007bff; }
+        #print-btn:hover { background-color: #0056b3; }
+        #share-btn { background-color: #17a2b8; }
+        #share-btn:hover { background-color: #138496; }
+        #submit-btn { background-color: #ff9900; }
+        #submit-btn:hover { background-color: #e68a00; }
+        #back-btn { background-color: #6c757d; }
+        #back-btn:hover { background-color: #5a6268; }
+    </style>
+    <script>
+        function printForm() {
+            window.print();
+        }
+        function downloadForm() {
+            const formContent = document.querySelector('.form-container').innerHTML;
+            const style = `<style>${document.querySelector('style').innerHTML}</style>`;
+            const win = window.open('', '', 'height=600,width=800');
+            win.document.write('<html><head><title>Burial Site Inspection Report</title>');
+            win.document.write(style);
+            win.document.write('</head><body>');
+            win.document.write(formContent);
+            win.document.write('</body></html>');
+            win.document.close();
+            win.print();
+            setTimeout(() => {
+                const pdf = win.document.documentElement.outerHTML;
+                const blob = new Blob([pdf], { type: 'application/pdf' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = 'Burial_Site_Inspection_Report.pdf';
+                link.click();
+                win.close();
+            }, 1000);
+        }
+        function shareForm() {
+            const shareUrl = window.location.href;
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Burial Site Inspection Report',
+                    url: shareUrl
+                }).catch(console.error);
+            } else {
+                alert('Sharing not supported on this browser. Copy the URL: ' + shareUrl);
+            }
+        }
+    </script>
+</head>
+<body>
+    <form method="POST" action="{{ url_for('submit_burial') }}">
+        <div class="form-container">
+            <h1>Burial Site Inspection Report</h1>
+            <p>Date of Inspection: <input type="date" name="inspection_date" required></p>
+            <p>Name of Applicant: <input type="text" name="applicant_name" required></p>
+            <p>Name of Deceased: <input type="text" name="deceased_name" required></p>
+            <p>Location of Burial Spot: <input type="text" name="burial_location" required></p>
+            <p>Brief description of site (e.g. topography etc.):</p>
+            <textarea class="wide-textarea" name="site_description" required></textarea>
+            <p>Proximity to:</p>
+            <ul class="bullet-list">
+                <li>Water Source/or water ways (≥30m): <input type="text" name="proximity_water_source" placeholder="metres"></li>
+                <li>Perimeter Boundaries (≥3m): <input type="text" name="proximity_perimeter_boundaries" placeholder="metres"></li>
+                <li>Road or pathway (≥6m): <input type="text" name="proximity_road_pathway" placeholder="metres"></li>
+                <li>Trees (≥3m): <input type="text" name="proximity_trees" placeholder="metres"></li>
+                <li>Houses/Buildings (≥2m): <input type="text" name="proximity_houses_buildings" placeholder="metres"></li>
+            </ul>
+            <p>Proposed type of grave to be built: <input type="text" name="proposed_grave_type" required></p>
+            <p>General Remarks:</p>
+            <textarea class="wide-textarea" name="general_remarks"></textarea>
+            <p class="instructions">Please be guided by the following instructions:</p>
+            <ul class="bullet-list">
+                <li>No Sepulchre should be constructed,</li>
+                <li>The depth of the grave should be at least 42 inches or (1.1 meters) from the top of the coffin to the top of the grave,</li>
+                <li>Any change(s) to the recommended site should be communicated to the Public Health Inspector for approval before construction of grave,</li>
+                <li>Any other instructions given by the Public Health Inspector.</li>
+            </ul>
+            <p class="failure-notice">Failure to comply with the above or any other instructions given by the Public Health Inspector constitute a breach and is therefore liable for prosecution.</p>
+            <div class="signatures">
+                <p>Inspector's Signature: <input type="text" name="inspector_signature" required></p>
+                <p>Received by: <input type="text" name="received_by" required></p>
+            </div>
+            <div class="buttons">
+                <button id="submit-btn" class="btn" type="submit">Submit</button>
+            </div>
+            <div class="buttons">
+                <button id="print-btn" class="btn" type="button" onclick="printForm()">Print</button>
+                <button id="download-btn" class="btn" type="button" onclick="downloadForm()">Download</button>
+                <button id="share-btn" class="btn" type="button" onclick="shareForm()">Share</button>
+            </div>
+        </div>
+    </form>
+    {% if success %}
+        <div class="buttons" style="text-align: center; margin-top: 20px;">
+            <a href="{{ url_for('login') }}" id="back-btn" class="btn">Back to Dashboard</a>
+        </div>
+        <p style="text-align: center; color: green;">Submission successful!</p>
+    {% endif %}
+</body>
+</html>

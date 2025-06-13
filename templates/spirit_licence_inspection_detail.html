@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Spirit Licence Premises Inspection Details</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 50px;
+            font-size: 14px;
+            background: #f4f4f4;
+        }
+        .form-container {
+            background: white;
+            padding: 40px;
+            width: 600px;
+            margin: 0 auto;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            font-size: 18px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        p {
+            margin: 10px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background: #f4f4f4;
+        }
+        tr.critical {
+            background: #e6e6e6;
+        }
+        .header-row {
+            font-weight: bold;
+            background: #f0f0f0;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: vertical;
+            background: #f9f9f9;
+        }
+        .buttons {
+            margin-top: 20px;
+            text-align: center;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+        .btn {
+            padding: 10px 20px;
+            margin: 0 10px;
+            font-size: 14px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            color: white;
+        }
+        .btn:hover {
+            opacity: 0.9;
+        }
+        #download-btn { background-color: #ff9900; }
+        #download-btn:hover { background-color: #e68a00; }
+        #print-btn { background-color: #007bff; }
+        #print-btn:hover { background-color: #0069d9; }
+        #share-btn { background-color: #17a2b8; }
+        #share-btn:hover { background-color: #138496; }
+        #back-btn { background-color: #6c757d; }
+        #back-btn:hover { background-color: #5a6268; }
+    </style>
+</head>
+<body>
+    <div class="form-container" id="form-content">
+        <h1>Spirit Licence Premises Inspection Details</h1>
+        <table>
+            <tr>
+                <td style="width: 50%; vertical-align: top;">
+                    <table>
+                        <tr>
+                            <td>Name of Establishment:</td>
+                            <td><input type="text" value="{{ inspection.establishment_name }}" readonly></td>
+                        </tr>
+                        <tr>
+                            <td>Owner/Operator:</td>
+                            <td><input type="text" value="{{ inspection.owner }}" readonly></td>
+                        </tr>
+                        <tr>
+                            <td>Address of Establishment:</td>
+                            <td><input type="text" value="{{ inspection.address }}" readonly></td>
+                        </tr>
+                        <tr>
+                            <td>Purpose of Visit:</td>
+                            <td><input type="text" value="{{ inspection.purpose_of_visit }}" readonly></td>
+                        </tr>
+                    </table>
+                </td>
+                <td style="width: 50%; vertical-align: top;">
+                    <table>
+                        <tr>
+                            <td>Type of Establishment:</td>
+                            <td><input type="text" value="{{ inspection.type_of_establishment }}" readonly></td>
+                        </tr>
+                        <tr>
+                            <td>Inspector Name:</td>
+                            <td><input type="text" value="{{ inspection.inspector_name }}" readonly></td>
+                        </tr>
+                        <tr>
+                            <td>Inspection Date:</td>
+                            <td><input type="date" value="{{ inspection.inspection_date }}" readonly></td>
+                        </tr>
+                        <tr>
+                            <td>Critical Score:</td>
+                            <td><input type="text" value="{{ inspection.critical_score }}" readonly></td>
+                        </tr>
+                        <tr>
+                            <td>Overall Score:</td>
+                            <td><input type="text" value="{{ inspection.overall_score }}" readonly></td>
+                        </tr>
+                        <tr>
+                            <td>Status:</td>
+                            <td><input type="text" value="{{ inspection.status }}" readonly></td>
+                        </tr>
+                        <tr>
+                            <td>No. of Employees:</td>
+                            <td><input type="number" value="{{ inspection.no_of_employees }}" readonly></td>
+                        </tr>
+                        <tr>
+                            <td>No. with FHC:</td>
+                            <td><input type="number" value="{{ inspection.no_with_fhc }}" readonly></td>
+                        </tr>
+                        <tr>
+                            <td>No. W/O FHC:</td>
+                            <td><input type="number" value="{{ inspection.no_wo_fhc }}" readonly></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+        <h2>Inspection Checklist</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Wt.</th>
+                    <th>Score</th>
+                    <th>Inspector's Comments</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="header-row"><td colspan="4">Building</td></tr>
+                <tr>
+                    <td>Sound, clean and in good repair</td>
+                    <td>3</td>
+                    <td><input type="text" value="{{ inspection.scores.get('1', 0) }}" readonly></td>
+                    <td><input type="text" value="{{ inspection.comments.split('\n')[0].split(': ')[1] if inspection.comments and inspection.comments.split('\n')[0].startswith('1:') else '' }}" readonly></td>
+                </tr>
+                <tr>
+                    <td>No smoking sign displayed at entrance to premises</td>
+                    <td>3</td>
+                    <td><input type="text" value="{{ inspection.scores.get('2', 0) }}" readonly></td>
+                    <td><input type="text" value="{{ inspection.comments.split('\n')[1].split(': ')[1] if inspection.comments and len(inspection.comments.split('\n')) > 1 and inspection.comments.split('\n')[1].startswith('2:') else '' }}" readonly></td>
+                </tr>
+                <tr class="header-row"><td colspan="4">Walls</td></tr>
+                <tr>
+                    <td>Sound, clean and in good repair</td>
+                    <td>3</td>
+                    <td><input type="text" value="{{ inspection.scores.get('3', 0) }}" readonly></td>
+                    <td><input type="text" value="{{ inspection.comments.split('\n')[2].split(': ')[1] if inspection.comments and len(inspection.comments.split('\n')) > 2 and inspection.comments.split('\n')[2].startswith('3:') else '' }}" readonly></td>
+                </tr>
+                <tr class="header-row"><td colspan="4">Floors</td></tr>
+                <tr>
+                    <td>Constructed of impervious, non-slip material</td>
+                    <td>3</td>
+                    <td><input type="text" value="{{ inspection.scores.get('5', 0) }}" readonly></td>
+                    <td><input type="text" value="{{ inspection.comments.split('\n')[3].split(': ')[1] if inspection.comments and len(inspection.comments.split('\n')) > 3 and inspection.comments.split('\n')[3].startswith('5:') else '' }}" readonly></td>
+                </tr>
+                <tr>
+                    <td>Clean, drained and in good repair</td>
+                    <td>3</td>
+                    <td><input type="text" value="{{ inspection.scores.get('6', 0) }}" readonly></td>
+                    <td><input type="text" value="{{ inspection.comments.split('\n')[4].split(': ')[1] if inspection.comments and len(inspection.comments.split('\n')) > 4 and inspection.comments.split('\n')[4].startswith('6:') else '' }}" readonly></td>
+                </tr>
+                <tr class="header-row"><td colspan="4">Service Counter</td></tr>
+                <tr>
+                    <td>Constructed of impervious material</td>
+                    <td>3</td>
+                    <td><input type="text" value="{{ inspection.scores.get('8', 0) }}" readonly></td>
+                    <td><input type="text" value="{{ inspection.comments.split('\n')[5].split(': ')[1] if inspection.comments and len(inspection.comments.split('\n')) > 5 and inspection.comments.split('\n')[5].startswith('8:') else '' }}" readonly></td>
+                </tr>
+                <tr>
+                    <td>Designed, clean and in good repair</td>
+                    <td>3</td>
+                    <td><input type="text" value="{{ inspection.scores.get('9', 0) }}" readonly></td>
+                    <td><input type="text" value="{{ inspection.comments.split('\n')[6].split(': ')[1] if inspection.comments and len(inspection.comments.split('\n')) > 6 and inspection.comments.split('\n')[6].startswith('9:') else '' }}" readonly></td>
+                </tr>
+                <tr class="header-row"><td colspan="4">Lighting</td></tr>
+                <tr>
+                    <td>Lighting provided as required</td>
+                    <td>3</td>
+                    <td><input type="text" value="{{ inspection.scores.get('11', 0) }}" readonly></td>
+                    <td><input type="text" value="{{ inspection.comments.split('\n')[7].split(': ')[1] if inspection.comments and len(inspection.comments.split('\n')) > 7 and inspection.comments.split('\n')[7].startswith('11:') else '' }}" readonly></td>
+                </tr>
+                <tr class="header-row"><td colspan="4">Washing and Sanitization Facilities</td></tr>
+                <tr class="critical">
+                    <td>Fitted with at least double compartment sink</td>
+                    <td>5</td>
+                    <td><input type="text" value="{{ inspection.scores.get('13', 0) }}" readonly></td>
+                    <td><input type="text" value="{{ inspection.comments.split('\n')[8].split(': ')[1] if inspection.comments and len(inspection.comments.split('\n')) > 8 and inspection.comments.split('\n')[8].startswith('13:') else '' }}" readonly></td>
+                </tr>
+                <tr class="critical">
+                    <td>Soap and sanitizer provided</td>
+                    <td>5</td>
+                    <td><input type="text" value="{{ inspection.scores.get('14', 0) }}" readonly></td>
+                    <td><input type="text" value="{{ inspection.comments.split('\n')[9].split(': ')[1] if inspection.comments and len(inspection.comments.split('\n')) > 9 and inspection.comments.split('\n')[9].startswith('14:') else '' }}" readonly></td>
+                </tr>
+                <tr class="critical">
+                    <td>Equipped handwashing facility provided</td>
+                    <td>5</td>
+                    <td><input type="text" value="{{ inspection.scores.get('15', 0) }}" readonly></td>
+                    <td><input type="text" value="{{ inspection.comments.split('\n')[10].split(': ')[1] if inspection.comments and len(inspection.comments.split('\n')) > 10 and inspection.comments.split('\n')[10].startswith('15:') else '' }}" readonly></td>
+                </tr>
+                <tr class="header-row"><td colspan="4">Water Supply</td></tr>
+                <tr class="critical">
+                    <td>Potable</td>
+                    <td>5</td>
+                    <td><input type="text" value="{{ inspection.scores.get('17', 0) }}" readonly></td>
+                    <td><input type="text" value="{{ inspection.comments.split('\n')[11].split(': ')[1] if inspection.comments and len(inspection.comments.split('\n')) > 11 and inspection.comments.split('\n')[11].startswith('17:') else '' }}" readonly></td>
+                </tr>
+                <tr class="critical">
+                    <td>Piped</td>
+                    <td>5</td>
+                    <td><input type="text" value="{{ inspection.scores.get('18', 0) }}" readonly></td>
+                    <td><input type="text" value="{{ inspection.comments.split('\n')[12].split(': ')[1] if inspection.comments and len(inspection.comments.split('\n')) > 12 and inspection.comments.split('\n')[12].startswith('18:') else '' }}" readonly></td>
+                </tr>
+                <tr class="header-row"><td colspan="4">Storage Facilities</td></tr>
+                <tr class="critical">
+                    <td>Clean and adequate storage of glasses & utensils</td>
+                    <td>5</td>
+                    <td><input type="text" value="{{ inspection.scores.get('20', 0) }}" readonly></td>
+                    <td><input type="text" value="{{ inspection.comments.split('\n')[13].split(': ')[1] if inspection.comments and len(inspection.comments.split('\n')) > 13 and inspection.comments.split('\n')[13].startswith('20:') else '' }}" readonly></td>
+                </tr>
+                <tr class="critical">
+                    <td>Free of insects and other vermins</td>
+                    <td>5</td>
+                    <td><input type="text" value="{{ inspection.scores.get('21', 0) }}" readonly></td>
+                    <td><input type="text" value="{{ inspection.comments.split('\n')[14].split(': ')[1] if inspection.comments and len(inspection.comments.split('\n')) > 14 and inspection.comments.split('\n')[14].startswith('21:') else '' }}" readonly></td>
+                </tr>
+                <tr class="critical">
+                    <td>Being used for its intended purpose</td>
+                    <td>5</td>
+                    <td><input type="text" value="{{ inspection.scores.get('22', 0) }}" readonly></td>
+                    <td><input type="text" value="{{ inspection.comments.split('\n')[15].split(': ')[1] if inspection.comments and len(inspection.comments.split('\n')) > 15 and inspection.comments.split('\n')[15].startswith('22:') else '' }}" readonly></td>
+                </tr>
+                <tr class="header-row"><td colspan="4">Sanitary Facilities</td></tr>
+                <tr class="critical">
+                    <td>Toilet facility provided</td>
+                    <td>5</td>
+                    <td><input type="text" value="{{ inspection.scores.get('24', 0) }}" readonly></td>
+                    <td><input type="text" value="{{ inspection.comments.split('\n')[16].split(': ')[1] if inspection.comments and len(inspection.comments.split('\n')) > 16 and inspection.comments.split('\n')[16].startswith('24:') else '' }}" readonly></td>
+                </tr>
+                <tr class="critical">
+                    <td>Adequate, accessible with lavatory basin and soap</td>
+                    <td>5</td>
+                    <td><input type="text" value="{{ inspection.scores.get('25', 0) }}" readonly></td>
+                    <td><input type="text" value="{{ inspection.comments.split('\n')[17].split(': ')[1] if inspection.comments and len(inspection.comments.split('\n')) > 17 and inspection.comments.split('\n')[17].startswith('25:') else '' }}" readonly></td>
+                </tr>
+                <tr class="critical">
+                    <td>Satisfactory</td>
+                    <td>5</td>
+                    <td><input type="text" value="{{ inspection.scores.get('26', 0) }}" readonly></td>
+                    <td><input type="text" value="{{ inspection.comments.split('\n')[18].split(': ')[1] if inspection.comments and len(inspection.comments.split('\n')) > 18 and inspection.comments.split('\n')[18].startswith('26:') else '' }}" readonly></td>
+                </tr>
+                <tr>
+                    <td>Urinal(s) provided</td>
+                    <td>3</td>
+                    <td><input type="text" value="{{ inspection.scores.get('27', 0) }}" readonly></td>
+                    <td><input type="text" value="{{ inspection.comments.split('\n')[19].split(': ')[1] if inspection.comments and len(inspection.comments.split('\n')) > 19 and inspection.comments.split('\n')[19].startswith('27:') else '' }}" readonly></td>
+                </tr>
+                <tr>
+                    <td>Satisfactory</td>
+                    <td>3</td>
+                    <td><input type="text" value="{{ inspection.scores.get('28', 0) }}" readonly></td>
+                    <td><input type="text" value="{{ inspection.comments.split('\n')[20].split(': ')[1] if inspection.comments and len(inspection.comments.split('\n')) > 20 and inspection.comments.split('\n')[20].startswith('28:') else '' }}" readonly></td>
+                </tr>
+                <tr class="header-row"><td colspan="4">Solid Waste Management</td></tr>
+                <tr>
+                    <td>Covered, adequate, pest proof and clean receptacles</td>
+                    <td>4</td>
+                    <td><input type="text" value="{{ inspection.scores.get('30', 0) }}" readonly></td>
+                    <td><input type="text" value="{{ inspection.comments.split('\n')[21].split(': ')[1] if inspection.comments and len(inspection.comments.split('\n')) > 21 and inspection.comments.split('\n')[21].startswith('30:') else '' }}" readonly></td>
+                </tr>
+                <tr>
+                    <td>Provision made for satisfactory disposal of waste</td>
+                    <td>3</td>
+                    <td><input type="text" value="{{ inspection.scores.get('31', 0) }}" readonly></td>
+                    <td><input type="text" value="{{ inspection.comments.split('\n')[22].split(': ')[1] if inspection.comments and len(inspection.comments.split('\n')) > 22 and inspection.comments.split('\n')[22].startswith('31:') else '' }}" readonly></td>
+                </tr>
+                <tr>
+                    <td>Premises free of litter and unnecessary articles</td>
+                    <td>3</td>
+                    <td><input type="text" value="{{ inspection.scores.get('32', 0) }}" readonly></td>
+                    <td><input type="text" value="{{ inspection.comments.split('\n')[23].split(': ')[1] if inspection.comments and len(inspection.comments.split('\n')) > 23 and inspection.comments.split('\n')[23].startswith('32:') else '' }}" readonly></td>
+                </tr>
+                <tr class="header-row"><td colspan="4">Pest Control</td></tr>
+                <tr class="critical">
+                    <td>Premises free of rodents, insects and vermins</td>
+                    <td>5</td>
+                    <td><input type="text" value="{{ inspection.scores.get('34', 0) }}" readonly></td>
+                    <td><input type="text" value="{{ inspection.comments.split('\n')[24].split(': ')[1] if inspection.comments and len(inspection.comments.split('\n')) > 24 and inspection.comments.split('\n')[24].startswith('34:') else '' }}" readonly></td>
+                </tr>
+            </tbody>
+        </table>
+        <table>
+            <tr>
+                <td>Inspector's Signature:</td>
+                <td><input type="text" value="{{ inspection.inspector_signature }}" readonly></td>
+            </tr>
+            <tr>
+                <td>Rec'd By:</td>
+                <td><input type="text" value="{{ inspection.received_by }}" readonly></td>
+            </tr>
+        </table>
+        <div class="buttons">
+            <button id="download-btn" class="btn" type="button" onclick="downloadPDF()">Download</button>
+            <button id="share-btn" class="btn" type="button" onclick="shareViaEmail()">Share</button>
+            <button id="print-btn" class="btn" type="button" onclick="window.print()">Print</button>
+            <a href="{{ url_for('dashboard') }}" id="back-btn" class="btn">Back to Dashboard</a>
+        </div>
+    </div>
+    <script>
+        function downloadPDF() {
+            const element = document.getElementById('form-content');
+            html2pdf()
+                .set({
+                    margin: 10,
+                    filename: 'Spirit_Licence_Inspection_{{ inspection.id }}.pdf',
+                    html2canvas: { scale: 2 },
+                    jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
+                })
+                .from(element)
+                .save();
+        }
+
+        function shareViaEmail() {
+            const subject = encodeURIComponent('Spirit Licence Inspection Report');
+            const body = encodeURIComponent('Please find the inspection report at: ' + window.location.href);
+            window.location.href = `mailto:?subject=${subject}&body=${body}`;
+        }
+    </script>
+</body>
+</html>

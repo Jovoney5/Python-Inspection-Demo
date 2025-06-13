@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Swimming Pool Inspection Details - Jamaica</title>
+    <style>
+        body {
+            font-family: 'Verdana', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZmFkZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigxMzUsIDE4NSwgNzUpIiBzdG9wLW9wYWNpdHk9IjAuOCIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjUwJSIgc3RvcC1jb2xvcj0icmdiKDIzNSwgMjA1LCA1NSkiIHN0b3Atb3BhY2l0eT0iMC41Ii8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0icmdiKDEzNSwgMTg1LCA3NSkiIHN0b3Atb3BhY2l0eT0iMC44Ii8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogIDwvZGVmcz4KICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2ZhZGUpIi8+CiAgPHBhdGggZD0iTTAgMEw1MCA1MEwxMDAgMEwwIDBaIiBmaWxsPSIjMDA5YjNhIiBvcGFjaXR5PSIwLjEiLz4KICA8cGF0aCBkPSJNMCAxMDBMNTAgNTBMMTAwIDEwMEwxMDAgMTAwWk0wIDEwMFoiIGZpbGw9IiMwMDliM2EiIG9wYWNpdHk9IjAuMSIvPgogIDxwYXRoIGQ9Ik0wIDBMMTAwIDEwMEwwIDBaIiBmaWxsPSIjZmZkMjAwIiBvcGFjaXR5PSIwLjEiLz4KICA8cGF0aCBkPSJNMCAxMDBMMTAwIDBMMTAwIDEwMFowIDEwMFoiIGZpbGw9IiNmZmQyMDAiIG9wYWNpdHk9IjAuMSIvPgogIDx0ZXh0IHg9IjUwJSIgeT0iNTAlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSJyZ2IoMCwgMCwgMCkgMCIgZm9udC1zaXplPSIyMCIgZm9udC1mYW1pbHk9IlZlcmRhbmEsIHNhbnMtc2VyaWYiIG9wYWNpdHk9IjAuMSI+SkFNRUNBTiBIRUFMVEggREVQQVJUTUVOVDwvdGV4dD4KPC9zdmc+');
+            background-size: cover;
+            background-attachment: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            color: #333;
+        }
+        .form-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            border-left: 5px solid #009b3a;
+            border-right: 5px solid #ffd200;
+        }
+        .form-header {
+            text-align: center;
+            font-size: 26px;
+            font-weight: bold;
+            color: #009b3a;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 3px solid #ffd200;
+            padding-bottom: 5px;
+        }
+        .score-box {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: #009b3a;
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 2px solid #ffd200;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.9);
+            width: 150px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            vertical-align: top;
+        }
+        .category-header {
+            font-weight: bold;
+            font-size: 16px;
+            background: #ffd200;
+            color: #009b3a;
+            padding: 8px;
+            border-radius: 5px;
+            margin: 5px 0;
+            text-transform: uppercase;
+        }
+        .critical {
+            background-color: rgba(0, 155, 58, 0.2);
+            border-left: 3px solid #000;
+        }
+        .input-field {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+            background: #f5f5f5;
+        }
+        .checkbox-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            font-size: 14px;
+        }
+        .comments {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+            background: #f5f5f5;
+            min-height: 60px;
+        }
+        .buttons {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .btn {
+            padding: 10px 20px;
+            margin: 0 5px;
+            font-size: 14px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: #fff;
+            transition: background 0.3s;
+        }
+        .btn:hover {
+            opacity: 0.9;
+        }
+        #back-btn {
+            background: #6c757d;
+        }
+        #back-btn:hover {
+            background: #5a6268;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <div class="form-header">Swimming Pool Inspection Details</div>
+        <div class="score-box">Score: <span>{{ inspection.overall_score|default(0) }}%</span></div>
+        <table>
+            <tr>
+                <td>Operator</td>
+                <td><span class="input-field">{{ inspection.establishment_name|default('') }}</span></td>
+                <td>Date Inspection</td>
+                <td><span class="input-field">{{ inspection.inspection_date|default('') }}</span></td>
+                <td>Inspector's Id</td>
+                <td><span class="input-field">{{ inspection.inspector_name|default('') }}</span></td>
+            </tr>
+            <tr>
+                <td>Pool Class</td>
+                <td><span class="input-field">{{ inspection.type_of_establishment|default('') }}</span></td>
+                <td>Address</td>
+                <td colspan="3"><span class="input-field">{{ inspection.address|default('') }}</span></td>
+            </tr>
+            <tr>
+                <td>Physical Location</td>
+                <td colspan="5"><span class="input-field">{{ inspection.physical_location|default('') }}</span></td>
+            </tr>
+        </table>
+
+        <div class="category-header">1 - Documentation (15%)</div>
+        <table>
+            <tr class="critical">
+                <td>A</td>
+                <td>Written procedures for microbiological monitoring of pool water implemented</td>
+                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('1a')|float > 0 else 'No' }}</div></td>
+            </tr>
+            <tr>
+                <td>B</td>
+                <td>Microbiological results</td>
+                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('1b')|float > 0 else 'No' }}</div></td>
+            </tr>
+            <tr>
+                <td>C</td>
+                <td>Date of last testing within required frequency</td>
+                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('1c')|float > 0 else 'No' }}</div></td>
+            </tr>
+            <tr class="critical">
+                <td>D</td>
+                <td>Acceptable monitoring procedures</td>
+                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('1d')|float > 0 else 'No' }}</div></td>
+            </tr>
+            <tr class="critical">
+                <td>E</td>
+                <td>Daily log books and records up-to-date</td>
+                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('1e')|float > 0 else 'No' }}</div></td>
+            </tr>
+            <tr class="critical">
+                <td>F</td>
+                <td>Written emergency procedures established and implemented</td>
+                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('1f')|float > 0 else 'No' }}</div></td>
+            </tr>
+            <tr class="critical">
+                <td>G</td>
+                <td>Personal liability and accident insurance</td>
+                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('1g')|float > 0 else 'No' }}</div></td>
+            </tr>
+            <tr class="critical">
+                <td>H</td>
+                <td>Lifeguard/Lifesaver certification</td>
+                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('1h')|float > 0 else 'No' }}</div></td>
+            </tr>
+        </table>
+
+        <div class="category-header">2 - Physical condition of pool (10%)</div>
+        <table>
+            <tr>
+                <td>A</td>
+                <td>Defects in pool construction</td>
+                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('2a')|float > 0 else 'No' }}</div></td>
+            </tr>
+            <tr>
+                <td>B</td>
+                <td>Evidence of flaking paint and/or mould growth</td>
+                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('2b')|float > 0 else 'No' }}</div></td>
+            </tr>
+            <tr class="critical">
+                <td>C</td>
+                <td>All surfaces of the deck and pool free from</td>
+                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('2c')|float > 0 else 'No' }}</div></td>
+            </tr>
+            <tr>
+                <td>D</td>
+                <td>Exposed piping: - identified/colour coded</td>
+                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('2d')|float > 0 else 'No' }}</div></td>
+            </tr>
+            <tr>
+                <td>E</td>
+                <td>In good repair</td>
+                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('2e')|float > 0 else 'No' }}</div></td>
+            </tr>
+            <tr>
+                <td>F</td>
+                <td>Suction fittings/inlets: - in good repair</td>
+                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('2f')|float > 0 else 'No' }}</div></td>
+            </tr>
+            <tr class="critical">
+                <td>G</td>
+                <td>At least two suction orifices equipped with anti-</td>
+                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('2g')|float > 0 else 'No' }}</div></td>
+            </tr>
+            <tr>
+                <td>H</td>
+                <td>Perimeter drains free of debris</td>
+                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('2h')|float > 0 else 'No' }}</div></td>
+            </tr>
+            <tr>
+                <td>I</td>
+                <td>Pool walls and floor clean</td>
+                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('2i')|float > 0 else 'No' }}</div></td>
+            </tr>
+            <tr>
+                <td>J</td>
+                <td>Components of the re-circulating system maintained</td>
+                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('2j')|float > 0 else 'No' }}</div></td>
+            </tr>
+        </table>
+
+        <div class="category-header">3 - Pool chemistry (20%)</div>
+        <table>
+            <tr class="critical">
+                <td>A</td>
+                <td>Clarity</td>
+                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('3a')|float > 0 else 'No' }}</div></td>
+            </tr>
+            <tr class="critical">
+                <td>B</td>
+                <td>Chlorine residual > 0.5 mg/l. Level</td>
+                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('3b')|float > 0 else 'No' }}</div></td>
+            </tr>
+            <tr class="critical">
+                <td>C</td>
+                <td>pH value within range of 7.5 and 7.8</td>
+                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('3c')|float > 0 else 'No' }}</div></td>
+            </tr>
+            <tr>
+                <td>D</td>
+                <td>Well supplied and equipped</td>
+                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('3d')|float > 0 else 'No' }}</div></td>
+            </tr>
+        </table>
+
+        <div class="category-header">4 - Pool chemicals (10%)</div>
+        <table>
+            <tr class="critical">
+                <td>A</td>
+                <td>Pool chemicals - stored safely</td>
+                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('4a')|float > 0 else 'No' }}</div></td>
+            </tr>
+            <tr>
+                <td>B</td>
+                <td>Dispensed automatically or in a safe manner</td>
+                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('4b')|float > 0 else 'No' }}</div></td>
+            </tr>
+        </table>
+
+        <div class="category-header">5 - Safety (10%)</div>
+        <table>
+            <tr>
+                <td>A</td>
+                <td>Depth markings clearly visible</td>
+                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('5a')|float > 0 else 'No' }}</div></td>
+            </tr>
+            <tr>
+                <td>B</td>
+                <td>Working emergency phone</td>
+                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('5b')|float > 0 else 'No' }}</div></td>
+            </tr>
+        </table>
+
+        <div class="category-header">6 - Safety Aids (10%)</div>
+        <table>
+            <tr>
+                <td>A</td>
+                <td>Reaching poles with hook</td>
+                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('6a')|float > 0 else 'No' }}</div></td>
+            </tr>
+            <tr>
+                <td>B</td>
+                <td>Two throwing aids</td>
+                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('6b')|float > 0 else 'No' }}</div></td>
+            </tr>
+            <tr>
+                <td>C</td>
+                <td>Spine board with cervical collar</td>
+                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('6c')|float > 0 else 'No' }}</div></td>
+            </tr>
+            <tr>
+                <td>D</td>
+                <td>Well equipped first aid kit</td>
+                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('6d')|float > 0 else 'No' }}</div></td>
+            </tr>
+        </table>
+
+        <div class="category-header">7 - Signs and notices (5%)</div>
+        <table>
+            <tr>
+                <td>A</td>
+                <td>Caution notices: - pool depth indications</td>
+                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('7a')|float > 0 else 'No' }}</div></td>
+            </tr>
+            <tr>
+                <td>B</td>
+                <td>Public health notices</td>
+                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('7b')|float > 0 else 'No' }}</div></td>
+            </tr>
+            <tr>
+                <td>C</td>
+                <td>Emergency procedures</td>
+                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('7c')|float > 0 else 'No' }}</div></td>
+            </tr>
+            <tr>
+                <td>D</td>
+                <td>Maximum bathing load</td>
+                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('7d')|float > 0 else 'No' }}</div></td>
+            </tr>
+            <tr>
+                <td>E</td>
+                <td>Lifeguard on duty"/bathe at your own risk" signs</td>
+                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('7e')|float > 0 else 'No' }}</div></td>
+            </tr>
+        </table>
+
+        <div class="category-header">8 - Lifeguards/Lifesavers (10%)</div>
+        <table>
+            <tr>
+                <td>A</td>
+                <td>Licensed Lifeguards always on duty during pool opening hours [N/A]</td>
+                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('8a')|float > 0 else 'No' }}</div></td>
+            </tr>
+            <tr class="critical">
+                <td>B</td>
+                <td>If N/A are trained lifesavers readily available</td>
+                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('8b')|float > 0 else 'No' }}</div></td>
+            </tr>
+            <tr>
+                <td>C</td>
+                <td>Number of lifeguard/lifesavers</td>
+                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('8c')|float > 0 else 'No' }}</div></td>
+            </tr>
+        </table>
+
+        <div class="category-header">9 - Sanitary facilities (10%)</div>
+        <table>
+            <tr class="critical">
+                <td>A</td>
+                <td>Shower, toilet and dressing rooms: - clean and disinfected as required</td>
+                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('9a')|float > 0 else 'No' }}</div></td>
+            </tr>
+            <tr>
+                <td>B</td>
+                <td>Vented</td>
+                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('9b')|float > 0 else 'No' }}</div></td>
+            </tr>
+            <tr>
+                <td>C</td>
+                <td>Well supplied and equipped</td>
+                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('9c')|float > 0 else 'No' }}</div></td>
+            </tr>
+        </table>
+
+        <div class="form-header">Inspector's Comments</div>
+        <div class="comments">{{ inspection.comments|default('') }}</div>
+
+        <table>
+            <tr>
+                <td>Inspector's Signature</td>
+                <td><span class="input-field">{{ inspection.inspector_signature|default('') }}</span></td>
+                <td>Date</td>
+                <td><span class="input-field">{{ inspection.created_at|default('')|truncate(10, True, '') }}</span></td>
+            </tr>
+            <tr>
+                <td>Manager's Signature</td>
+                <td><span class="input-field">{{ inspection.received_by|default('') }}</span></td>
+                <td>Date</td>
+                <td><span class="input-field">{{ inspection.manager_date|default('') }}</span></td>
+            </tr>
+        </table>
+
+        <div class="buttons">
+            <a href="{{ url_for('dashboard') }}" id="back-btn" class="btn">Back to Dashboard</a>
+        </div>
+    </div>
+</body>
+</html>

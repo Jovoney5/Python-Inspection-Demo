@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Small Hotels Inspection Form - Jamaica</title>
+    <style>
+        body {
+            font-family: 'Verdana', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZmFkZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigxMzUsIDE4NSwgNzUpIiBzdG9wLW9wYWNpdHk9IjAuOCIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjUwJSIgc3RvcC1jb2xvcj0icmdiKDIzNSwgMjA1LCA1NSkiIHN0b3Atb3BhY2l0eT0iMC41Ii8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0icmdiKDEzNSwgMTg1LCA3NSkiIHN0b3Atb3BhY2l0eT0iMC44Ii8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogIDwvZGVmcz4KICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2ZhZGUpIi8+CiAgPHBhdGggZD0iTTAgMEw1MCA1MEwxMDAgMEwwIDBaIiBmaWxsPSIjMDA5YjNhIiBvcGFjaXR5PSIwLjEiLz4KICA8cGF0aCBkPSJNMCAxMDBMNTAgNTBMMTAwIDEwMEwxMDAgMTAwWk0wIDEwMFoiIGZpbGw9IiMwMDliM2EiIG9wYWNpdHk9IjAuMSIvPgogIDxwYXRoIGQ9Ik0wIDBMMTAwIDEwMEwwIDBaIiBmaWxsPSIjZmZkMjAwIiBvcGFjaXR5PSIwLjEiLz4KICA8cGF0aCBkPSJNMCAxMDBMMTAwIDBMMTAwIDEwMFowIDEwMFoiIGZpbGw9IiNmZmQyMDAiIG9wYWNpdHk9IjAuMSIvPgogIDx0ZXh0IHg9IjUwJSIgeT0iNTAlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSJyZ2IoMCwgMCwgMCkgMCIgZm9udC1zaXplPSIyMCIgZm9udC1mYW1pbHk9IlZlcmRhbmEsIHNhbnMtc2VyaWYiIG9wYWNpdHk9IjAuMSI+SkFNRUNBTiBIRUFMVEggREVQQVJUTUVOVDwvdGV4dD4KPC9zdmc+');
+            background-size: cover;
+            background-attachment: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            color: #333;
+        }
+        .form-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            border-left: 5px solid #009b3a;
+            border-right: 5px solid #ffd200;
+        }
+        .form-header {
+            text-align: center;
+            font-size: 26px;
+            font-weight: bold;
+            color: #009b3a;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 3px solid #ffd200;
+            padding-bottom: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            vertical-align: top;
+            border: 1px solid #ddd;
+        }
+        th {
+            background: #f5f5f5;
+            font-weight: bold;
+        }
+        .category-header {
+            font-weight: bold;
+            font-size: 16px;
+            background: #ffd200;
+            color: #009b3a;
+            padding: 8px;
+            border-radius: 5px;
+            margin: 5px 0;
+            text-transform: uppercase;
+        }
+        .critical {
+            background-color: rgba(0, 155, 58, 0.2);
+            border-left: 3px solid #000;
+        }
+        .input-field {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+            background: #f5f5f5;
+            transition: border-color 0.3s;
+        }
+        .input-field:focus {
+            border-color: #009b3a;
+            outline: none;
+            background: #fff;
+        }
+        .comments {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+            background: #f5f5f5;
+            resize: vertical;
+            height: 150px;
+        }
+        .comments:focus {
+            border-color: #000;
+            outline: none;
+            background: #fff;
+        }
+        .buttons {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .btn {
+            padding: 10px 20px;
+            margin: 0 5px;
+            font-size: 14px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            color: #fff;
+            transition: background 0.3s;
+        }
+        .btn:hover {
+            opacity: 0.8;
+        }
+        #submit-btn {
+            background: #009b3a;
+        }
+        #submit-btn:hover {
+            background: #007b2f;
+        }
+        #print-btn {
+            background: #ffd200;
+            color: #000;
+        }
+        #print-btn:hover {
+            background: #e6b800;
+        }
+        #save-btn {
+            background: #000;
+        }
+        #save-btn:hover {
+            background: #333;
+        }
+        #share-btn {
+            background: #17a2b8;
+        }
+        #share-btn:hover {
+            background: #138496;
+        }
+        #back-btn {
+            background: #6c757d;
+        }
+        #back-btn:hover {
+            background: #5a6268;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <div class="form-header">Small Hotels Inspection Form - Jamaica</div>
+        <form id="inspection-form" method="POST" action="{{ url_for('submit_small_hotels') }}">
+            <table>
+                <tr>
+                    <td>Hotel Name</td>
+                    <td><input type="text" class="input-field" name="establishment_name" value="{{ inspection.establishment_name if inspection else '' }}" required></td>
+                    <td>Date</td>
+                    <td><input type="date" class="input-field" name="inspection_date" value="{{ inspection.inspection_date if inspection else today }}"></td>
+                    <td>Inspector's ID</td>
+                    <td><input type="text" class="input-field" name="inspector_name" value="{{ inspection.inspector_name if inspection else '' }}" required></td>
+                </tr>
+                <tr>
+                    <td>Address</td>
+                    <td colspan="3"><input type="text" class="input-field" name="address" value="{{ inspection.address if inspection else '' }}" required></td>
+                    <td>Physical Location</td>
+                    <td><input type="text" class="input-field" name="physical_location" value="{{ inspection.physical_location if inspection else '' }}" required></td>
+                </tr>
+            </table>
+
+            <div class="category-header">1 - Documentation (8%)</div>
+            <table>
+                <tr>
+                    <th>Item</th>
+                    <th>Details</th>
+                    <th>Obser</th>
+                    <th>Error</th>
+                </tr>
+                <tr>
+                    <td>A</td>
+                    <td>Action plan for foodborne illness occurrence</td>
+                    <td><input type="text" class="input-field" name="obser_1a" value="{{ inspection.obser.get('1a', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_1a" value="{{ inspection.error.get('1a', '') if inspection else '' }}"></td>
+                </tr>
+                <tr>
+                    <td>B</td>
+                    <td>Food Handlers have valid food handlers permits</td>
+                    <td><input type="text" class="input-field" name="obser_1b" value="{{ inspection.obser.get('1b', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_1b" value="{{ inspection.error.get('1b', '') if inspection else '' }}"></td>
+                </tr>
+                <tr class="critical">
+                    <td>C</td>
+                    <td>Relevant policy in place to restrict activities of sick employees</td>
+                    <td><input type="text" class="input-field" name="obser_1c" value="{{ inspection.obser.get('1c', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_1c" value="{{ inspection.error.get('1c', '') if inspection else '' }}"></td>
+                </tr>
+                <tr>
+                    <td>D</td>
+                    <td>Establishments have a written policy for the proper disposal of waste</td>
+                    <td><input type="text" class="input-field" name="obser_1d" value="{{ inspection.obser.get('1d', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_1d" value="{{ inspection.error.get('1d', '') if inspection else '' }}"></td>
+                </tr>
+                <tr>
+                    <td>E</td>
+                    <td>Cleaning schedule for equipment utensil etc available</td>
+                    <td><input type="text" class="input-field" name="obser_1e" value="{{ inspection.obser.get('1e', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_1e" value="{{ inspection.error.get('1e', '') if inspection else '' }}"></td>
+                </tr>
+                <tr>
+                    <td>F</td>
+                    <td>Material safety data sheet available for record of hazardous chemicals used</td>
+                    <td><input type="text" class="input-field" name="obser_1f" value="{{ inspection.obser.get('1f', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_1f" value="{{ inspection.error.get('1f', '') if inspection else '' }}"></td>
+                </tr>
+                <tr>
+                    <td>G</td>
+                    <td>Record of hazardous chemicals used</td>
+                    <td><input type="text" class="input-field" name="obser_1g" value="{{ inspection.obser.get('1g', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_1g" value="{{ inspection.error.get('1g', '') if inspection else '' }}"></td>
+                </tr>
+                <tr>
+                    <td>H</td>
+                    <td>Food suppliers list available</td>
+                    <td><input type="text" class="input-field" name="obser_1h" value="{{ inspection.obser.get('1h', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_1h" value="{{ inspection.error.get('1h', '') if inspection else '' }}"></td>
+                </tr>
+            </table>
+
+            <div class="category-header">2 - Food Safety (5%)</div>
+            <table>
+                <tr>
+                    <th>Item</th>
+                    <th>Details</th>
+                    <th>Obser</th>
+                    <th>Error</th>
+                </tr>
+                <tr>
+                    <td>A</td>
+                    <td>Clean appropriate protective garments</td>
+                    <td><input type="text" class="input-field" name="obser_2a" value="{{ inspection.obser.get('2a', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_2a" value="{{ inspection.error.get('2a', '') if inspection else '' }}"></td>
+                </tr>
+                <tr>
+                    <td>B</td>
+                    <td>Hands free of jewellery</td>
+                    <td><input type="text" class="input-field" name="obser_2b" value="{{ inspection.obser.get('2b', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_2b" value="{{ inspection.error.get('2b', '') if inspection else '' }}"></td>
+                </tr>
+                <tr>
+                    <td>C</td>
+                    <td>Suitable hair restraints</td>
+                    <td><input type="text" class="input-field" name="obser_2c" value="{{ inspection.obser.get('2c', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_2c" value="{{ inspection.error.get('2c', '') if inspection else '' }}"></td>
+                </tr>
+                <tr>
+                    <td>D</td>
+                    <td>Nails clean, short and unpolished</td>
+                    <td><input type="text" class="input-field" name="obser_2d" value="{{ inspection.obser.get('2d', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_2d" value="{{ inspection.error.get('2d', '') if inspection else '' }}"></td>
+                </tr>
+                <tr>
+                    <td>E</td>
+                    <td>Hands washed as required</td>
+                    <td><input type="text" class="input-field" name="obser_2e" value="{{ inspection.obser.get('2e', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_2e" value="{{ inspection.error.get('2e', '') if inspection else '' }}"></td>
+                </tr>
+            </table>
+
+            <div class="category-header">3 - Food Storage (13%)</div>
+            <table>
+                <tr>
+                    <th>Item</th>
+                    <th>Details</th>
+                    <th>Obser</th>
+                    <th>Error</th>
+                </tr>
+                <tr class="critical">
+                    <td>A</td>
+                    <td>Approved source</td>
+                    <td><input type="text" class="input-field" name="obser_3a" value="{{ inspection.obser.get('3a', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_3a" value="{{ inspection.error.get('3a', '') if inspection else '' }}"></td>
+                </tr>
+                <tr class="critical">
+                    <td>B</td>
+                    <td>Correct stocking procedures practiced</td>
+                    <td><input type="text" class="input-field" name="obser_3b" value="{{ inspection.obser.get('3b', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_3b" value="{{ inspection.error.get('3b', '') if inspection else '' }}"></td>
+                </tr>
+                <tr class="critical">
+                    <td>C</td>
+                    <td>Food stored on pallets or shelves off the floor</td>
+                    <td><input type="text" class="input-field" name="obser_3c" value="{{ inspection.obser.get('3c', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_3c" value="{{ inspection.error.get('3c', '') if inspection else '' }}"></td>
+                </tr>
+                <tr class="critical">
+                    <td>D</td>
+                    <td>No cats, dogs or other animals present in the store</td>
+                    <td><input type="text" class="input-field" name="obser_3d" value="{{ inspection.obser.get('3d', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_3d" value="{{ inspection.error.get('3d', '') if inspection else '' }}"></td>
+                </tr>
+                <tr class="critical">
+                    <td>E</td>
+                    <td>Products free of infestation</td>
+                    <td><input type="text" class="input-field" name="obser_3e" value="{{ inspection.obser.get('3e', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_3e" value="{{ inspection.error.get('3e', '') if inspection else '' }}"></td>
+                </tr>
+                <tr class="critical">
+                    <td>F</td>
+                    <td>No pesticides or other hazardous chemicals in food stores</td>
+                    <td><input type="text" class="input-field" name="obser_3f" value="{{ inspection.obser.get('3f', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_3f" value="{{ inspection.error.get('3f', '') if inspection else '' }}"></td>
+                </tr>
+                <tr>
+                    <td>G</td>
+                    <td>Satisfactory condition of refrigeration units</td>
+                    <td><input type="text" class="input-field" name="obser_3g" value="{{ inspection.obser.get('3g', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_3g" value="{{ inspection.error.get('3g', '') if inspection else '' }}"></td>
+                </tr>
+                <tr class="critical">
+                    <td>H</td>
+                    <td>Refrigerated foods < 4°C</td>
+                    <td><input type="text" class="input-field" name="obser_3h" value="{{ inspection.obser.get('3h', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_3h" value="{{ inspection.error.get('3h', '') if inspection else '' }}"></td>
+                </tr>
+                <tr class="critical">
+                    <td>I</td>
+                    <td>Frozen foods -18°C</td>
+                    <td><input type="text" class="input-field" name="obser_3i" value="{{ inspection.obser.get('3i', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_3i" value="{{ inspection.error.get('3i', '') if inspection else '' }}"></td>
+                </tr>
+            </table>
+
+            <div class="category-header">4 - Food Holding and Preparation Practices (8%)</div>
+            <table>
+                <tr>
+                    <th>Item</th>
+                    <th>Details</th>
+                    <th>Obser</th>
+                    <th>Error</th>
+                </tr>
+                <tr>
+                    <td>A</td>
+                    <td>Foods thawed according to recommended procedures</td>
+                    <td><input type="text" class="input-field" name="obser_4a" value="{{ inspection.obser.get('4a', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_4a" value="{{ inspection.error.get('4a', '') if inspection else '' }}"></td>
+                </tr>
+                <tr class="critical">
+                    <td>B</td>
+                    <td>No evidence of cross-contamination during preparation</td>
+                    <td><input type="text" class="input-field" name="obser_4b" value="{{ inspection.obser.get('4b', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_4b" value="{{ inspection.error.get('4b', '') if inspection else '' }}"></td>
+                </tr>
+                <tr class="critical">
+                    <td>C</td>
+                    <td>No evidence of cross-contamination during holding in refrigerators/coolers</td>
+                    <td><input type="text" class="input-field" name="obser_4c" value="{{ inspection.obser.get('4c', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_4c" value="{{ inspection.error.get('4c', '') if inspection else '' }}"></td>
+                </tr>
+                <tr>
+                    <td>D</td>
+                    <td>Foods cooled according to recommended procedures</td>
+                    <td><input type="text" class="input-field" name="obser_4d" value="{{ inspection.obser.get('4d', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_4d" value="{{ inspection.error.get('4d', '') if inspection else '' }}"></td>
+                </tr>
+                <tr>
+                    <td>E</td>
+                    <td>Manual dishwashing wash, rinse, sanitize, rinse technique</td>
+                    <td><input type="text" class="input-field" name="obser_4e" value="{{ inspection.obser.get('4e', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_4e" value="{{ inspection.error.get('4e', '') if inspection else '' }}"></td>
+                </tr>
+                <tr>
+                    <td>F</td>
+                    <td>Food contact surfaces washed-rinsed-sanitized before & after each use</td>
+                    <td><input type="text" class="input-field" name="obser_4f" value="{{ inspection.obser.get('4f', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_4f" value="{{ inspection.error.get('4f', '') if inspection else '' }}"></td>
+                </tr>
+                <tr>
+                    <td>G</td>
+                    <td>Wiping cloths handled properly (sanitizing solution used)</td>
+                    <td><input type="text" class="input-field" name="obser_4g" value="{{ inspection.obser.get('4g', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_4g" value="{{ inspection.error.get('4g', '') if inspection else '' }}"></td>
+                </tr>
+            </table>
+
+            <div class="category-header">5 - Waste Management: Waste Contain (2.5%)</div>
+            <table>
+                <tr>
+                    <th>Item</th>
+                    <th>Details</th>
+                    <th>Obser</th>
+                    <th>Error</th>
+                </tr>
+                <tr>
+                    <td>A</td>
+                    <td>Appropriate design, convenient placement</td>
+                    <td><input type="text" class="input-field" name="obser_5a" value="{{ inspection.obser.get('5a', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_5a" value="{{ inspection.error.get('5a', '') if inspection else '' }}"></td>
+                </tr>
+                <tr>
+                    <td>B</td>
+                    <td>Kept covered when not in continuous use</td>
+                    <td><input type="text" class="input-field" name="obser_5b" value="{{ inspection.obser.get('5b', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_5b" value="{{ inspection.error.get('5b', '') if inspection else '' }}"></td>
+                </tr>
+                <tr>
+                    <td>C</td>
+                    <td>Emptied as often as necessary</td>
+                    <td><input type="text" class="input-field" name="obser_5c" value="{{ inspection.obser.get('5c', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_5c" value="{{ inspection.error.get('5c', '') if inspection else '' }}"></td>
+                </tr>
+            </table>
+
+            <div class="category-header">6 - Solid Waste Storage (4%)</div>
+            <table>
+                <tr>
+                    <th>Item</th>
+                    <th>Details</th>
+                    <th>Obser</th>
+                    <th>Error</th>
+                </tr>
+                <tr class="critical">
+                    <td>A</td>
+                    <td>Insect and vermin-proof containers provided where required</td>
+                    <td><input type="text" class="input-field" name="obser_6a" value="{{ inspection.obser.get('6a', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_6a" value="{{ inspection.error.get('6a', '') if inspection else '' }}"></td>
+                </tr>
+                <tr>
+                    <td>B</td>
+                    <td>The area around each waste container kept clean</td>
+                    <td><input type="text" class="input-field" name="obser_6b" value="{{ inspection.obser.get('6b', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_6b" value="{{ inspection.error.get('6b', '') if inspection else '' }}"></td>
+                </tr>
+                <tr>
+                    <td>C</td>
+                    <td>Effluent from waste bins disposed of in a sanitary manner</td>
+                    <td><input type="text" class="input-field" name="obser_6c" value="{{ inspection.obser.get('6c', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_6c" value="{{ inspection.error.get('6c', '') if inspection else '' }}"></td>
+                </tr>
+                <tr>
+                    <td>D</td>
+                    <td>Frequency of garbage removal adequate</td>
+                    <td><input type="text" class="input-field" name="obser_6d" value="{{ inspection.obser.get('6d', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_6d" value="{{ inspection.error.get('6d', '') if inspection else '' }}"></td>
+                </tr>
+            </table>
+
+            <div class="category-header">7 - Disposal of Solid Waste (2%)</div>
+            <table>
+                <tr>
+                    <th>Item</th>
+                    <th>Details</th>
+                    <th>Obser</th>
+                    <th>Error</th>
+                </tr>
+                <tr class="critical">
+                    <td>A</td>
+                    <td>Garbage, refuse properly disposed of, facilities maintained</td>
+                    <td><input type="text" class="input-field" name="obser_7a" value="{{ inspection.obser.get('7a', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_7a" value="{{ inspection.error.get('7a', '') if inspection else '' }}"></td>
+                </tr>
+            </table>
+
+            <div class="category-header">8 - Hazardous Materials Storage, Handling and Disposal (10%)</div>
+            <table>
+                <tr>
+                    <th>Item</th>
+                    <th>Details</th>
+                    <th>Obser</th>
+                    <th>Error</th>
+                </tr>
+                <tr class="critical">
+                    <td>A</td>
+                    <td>Hazardous materials stored in properly labelled containers</td>
+                    <td><input type="text" class="input-field" name="obser_8a" value="{{ inspection.obser.get('8a', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_8a" value="{{ inspection.error.get('8a', '') if inspection else '' }}"></td>
+                </tr>
+                <tr class="critical">
+                    <td>B</td>
+                    <td>Stored away from living quarters and food areas</td>
+                    <td><input type="text" class="input-field" name="obser_8b" value="{{ inspection.obser.get('8b', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_8b" value="{{ inspection.error.get('8b', '') if inspection else '' }}"></td>
+                </tr>
+            </table>
+
+            <div class="category-header">9 - Post-Preparation (9%)</div>
+            <table>
+                <tr>
+                    <th>Item</th>
+                    <th>Details</th>
+                    <th>Obser</th>
+                    <th>Error</th>
+                </tr>
+                <tr>
+                    <td>A</td>
+                    <td>Food protected during transportation</td>
+                    <td><input type="text" class="input-field" name="obser_9a" value="{{ inspection.obser.get('9a', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_9a" value="{{ inspection.error.get('9a', '') if inspection else '' }}"></td>
+                </tr>
+                <tr>
+                    <td>B</td>
+                    <td>Dishes identified and labelled</td>
+                    <td><input type="text" class="input-field" name="obser_9b" value="{{ inspection.obser.get('9b', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_9b" value="{{ inspection.error.get('9b', '') if inspection else '' }}"></td>
+                </tr>
+                <tr>
+                    <td>C</td>
+                    <td>Food covered or protected from contamination</td>
+                    <td><input type="text" class="input-field" name="obser_9c" value="{{ inspection.obser.get('9c', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_9c" value="{{ inspection.error.get('9c', '') if inspection else '' }}"></td>
+                </tr>
+                <tr>
+                    <td>D</td>
+                    <td>Sufficient, appropriate utensils on service line</td>
+                    <td><input type="text" class="input-field" name="obser_9d" value="{{ inspection.obser.get('9d', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_9d" value="{{ inspection.error.get('9d', '') if inspection else '' }}"></td>
+                </tr>
+                <tr class="critical">
+                    <td>E</td>
+                    <td>Hot holding temperatures > 63°C</td>
+                    <td><input type="text" class="input-field" name="obser_9e" value="{{ inspection.obser.get('9e', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_9e" value="{{ inspection.error.get('9e', '') if inspection else '' }}"></td>
+                </tr>
+                <tr class="critical">
+                    <td>F</td>
+                    <td>Cold holding temperatures ≤ 5°C</td>
+                    <td><input type="text" class="input-field" name="obser_9f" value="{{ inspection.obser.get('9f', '') if inspection else ''}}"></td>
+                    <td><input type="text" class="input-field" name="error_9f" value="{{ inspection.error.get('9f', '') if inspection else ''}}"></td>
+                </tr>
+            </table>
+
+            <div class="category-header">10 - Hand Washing Facilities (3%)</div>
+            <table>
+                <tr>
+                    <th>Item</th>
+                    <th>Details</th>
+                    <th>Obser</th>
+                    <th>Error</th>
+                </tr>
+                <tr>
+                <tr class="critical">
+                    <td>-</td>
+                    <td>Hand washing facility installed and maintained for every 40 square meters of floor space or in each principal area</td>
+                    <td><input type="text" class="input-field" name="obser_10a" value="{{ inspection.obser.get('10a', '') if inspection else ''}}"></td>
+                    <td><input type="text" class="error-field" name="error_10a" value="{{ inspection.error.get('10a', '') if inspection else ''}}"></td>
+                </tr>
+                <tr class="critical">
+                    <td>-</td>
+                    <td>Equipped with hot and cold water, soap a dispenser and hand drying facility</td>
+                    <td><input type="text" class="input-field" name="obser_10b" value="{{ inspection.obser.get('10b', '') if inspection else ''}}"></td>
+                    <td><input type="text" class="input-field" name="error_10b" value="{{ inspection.error.get('10b', '') if inspection else ''}}"></td>
+                </tr>
+            </table>
+
+            <div class="category-header">11 - Building (8.5%)</div>
+            <table>
+                <tr>
+                    <th>Item</th>
+                    <th>Details</th>
+                    <th>Obser</th>
+                    <th>Error</th>
+                </tr>
+                <tr>
+                    <td>A</td>
+                    <td>Provides adequate space</td>
+                    <td><input type="text" class="input-field" name="obser_11a" value="{{ inspection.obser.get('11a', '') if inspection else ''}}"></td>
+                    <td><input type="text" class="input-field" name="error_11a" value="{{ inspection.error.get('11a', '') if inspection else ''}}"></td>
+                </tr>
+                <tr class="critical">
+                    <td>B</td>
+                    <td>Food areas kept clean, free from vermin and unpleasant odours</td>
+                    <td><input type="text" class="input-field" name="obser_11b" value="{{ inspection.obser.get('11b', '') if inspection else ''}}"></td>
+                    <td><input type="text" class="input-field" name="error_11b" value="{{ inspection.error.get('11b', '') if inspection else ''}}"></td>
+                </tr>
+                <tr>
+                    <td>C</td>
+                    <td>Floor, walls and ceiling clean, in good repair</td>
+                    <td><input type="text" class="input-field" name="obser_11c" value="{{ inspection.obser.get('11c', '') if inspection else ''}}"></td>
+                    <td><input type="text" class="input-field" name="error_11c" value="{{ inspection.error.get('11c', '') if inspection else ''}}"></td>
+                </tr>
+                <tr>
+                    <td>D</td>
+                    <td>Mechanical ventilation operable where required</td>
+                    <td><input type="text" class="input-field" name="obser_11d" value="{{ inspection.obser.get('11d', '') if inspection else ''}}"></td>
+                    <td><input type="text" class="input-field" name="error_11d" value="{{ inspection.error.get('11d', '') if inspection else ''}}"></td>
+                </tr>
+                <tr>
+                    <td>E</td>
+                    <td>Lighting adequate for food preparation and cleaning</td>
+                    <td><input type="text" class="input-field" name="obser_11e" value="{{ inspection.obser.get('11e', '') if inspection else ''}}"></td>
+                    <td><input type="text" class="input-field" name="error_11e" value="{{ inspection.error.get('11e', '') if inspection else ''}}"></td>
+                </tr>
+                <tr>
+                    <td>F</td>
+                    <td>General housekeeping satisfactory</td>
+                    <td><input type="text" class="input-field" name="obser_11f" value="{{ inspection.obser.get('11f', '') if inspection else ''}}"></td>
+                    <td><input type="text" class="input-field" name="error_11f" value="{{ inspection.error.get('11f', '') if inspection else ''}}"></td>
+                </tr>
+                <tr>
+                    <td>G</td>
+                    <td>Animals, insect and pest excluded</td>
+                    <td><input type="text" class="input-field" name="obser_11g" value="{{ inspection.obser.get('11g', '') if inspection else ''}}"></td>
+                    <td><input type="text" class="input-field" name="error_11g" value="{{ inspection.error.get('11g', '') if inspection else ''}}"></td>
+                </tr>
+            </table>
+
+            <div class="category-header">12 - Food Contact Surfaces (3%)</div>
+            <table>
+                <tr>
+                    <th>Item</th>
+                    <th>Details</th>
+                    <th>Obser</th>
+                    <th>Error</th>
+                </tr>
+                <tr>
+                    <td>A</td>
+                    <td>Made from material which is non-absorbent and non-toxic</td>
+                    <td><input type="text" class="input-field" name="obser_12a" value="{{ inspection.obser.get('12a', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_12a" value="{{ inspection.error.get('12a', '') if inspection else '' }}"></td>
+                </tr>
+                <tr>
+                    <td>B</td>
+                    <td>Smooth, cleanable, corrosion resistant</td>
+                    <td><input type="text" class="input-field" name="obser_12b" value="{{ inspection.obser.get('12b', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_12b" value="{{ inspection.error.get('12b', '') if inspection else '' }}"></td>
+                </tr>
+                <tr>
+                    <td>C</td>
+                    <td>Proper storage and use of clean utensils</td>
+                    <td><input type="text" class="input-field" name="obser_12c" value="{{ inspection.obser.get('12c', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_12c" value="{{ inspection.error.get('12c', '') if inspection else '' }}"></td>
+                </tr>
+            </table>
+
+            <div class="category-header">13 - Food Flow (6%)</div>
+            <table>
+                <tr>
+                    <th>Item</th>
+                    <th>Details</th>
+                    <th>Obser</th>
+                    <th>Error</th>
+                </tr>
+                <tr class="critical">
+                    <td>A</td>
+                    <td>Employee traffic pattern avoids food cross-contamination</td>
+                    <td><input type="text" class="input-field" name="obser_13a" value="{{ inspection.obser.get('13a', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_13a" value="{{ inspection.error.get('13a', '') if inspection else '' }}"></td>
+                </tr>
+                <tr class="critical">
+                    <td>B</td>
+                    <td>Product flow not at risk for cross-contamination</td>
+                    <td><input type="text" class="input-field" name="obser_13b" value="{{ inspection.obser.get('13b', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_13b" value="{{ inspection.error.get('13b', '') if inspection else '' }}"></td>
+                </tr>
+                <tr class="critical">
+                    <td>C</td>
+                    <td>Living quarters, toilets, washrooms, locker separated from areas where food is handled</td>
+                    <td><input type="text" class="input-field" name="obser_13c" value="{{ inspection.obser.get('13c', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_13c" value="{{ inspection.error.get('13c', '') if inspection else '' }}"></td>
+                </tr>
+            </table>
+
+            <div class="category-header">14 - Equipment and Utensil Sanitization (9%)</div>
+            <table>
+                <tr>
+                    <th>Item</th>
+                    <th>Details</th>
+                    <th>Obser</th>
+                    <th>Error</th>
+                </tr>
+                <tr>
+                    <td>A</td>
+                    <td>Mechanical dishwashing wash-rinse water clean</td>
+                    <td><input type="text" class="input-field" name="obser_14a" value="{{ inspection.obser.get('14a', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_14a" value="{{ inspection.error.get('14a', '') if inspection else '' }}"></td>
+                </tr>
+                <tr>
+                    <td>B</td>
+                    <td>Proper water temperature</td>
+                    <td><input type="text" class="input-field" name="obser_14b" value="{{ inspection.obser.get('14b', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_14b" value="{{ inspection.error.get('14b', '') if inspection else '' }}"></td>
+                </tr>
+                <tr>
+                    <td>C</td>
+                    <td>Proper timing of cycles</td>
+                    <td><input type="text" class="input-field" name="obser_14c" value="{{ inspection.obser.get('14c', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_14c" value="{{ inspection.error.get('14c', '') if inspection else '' }}"></td>
+                </tr>
+                <tr>
+                    <td>D</td>
+                    <td>Sanitizer for low temperature</td>
+                    <td><input type="text" class="input-field" name="obser_14d" value="{{ inspection.obser.get('14d', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_14d" value="{{ inspection.error.get('14d', '') if inspection else '' }}"></td>
+                </tr>
+                <tr class="critical">
+                    <td>E</td>
+                    <td>Proper handling of hazardous materials</td>
+                    <td><input type="text" class="input-field" name="obser_14e" value="{{ inspection.obser.get('14e', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_14e" value="{{ inspection.error.get('14e', '') if inspection else '' }}"></td>
+                </tr>
+            </table>
+
+            <div class="category-header">15 - Sanitary Facilities (3%)</div>
+            <table>
+                <tr>
+                    <th>Item</th>
+                    <th>Details</th>
+                    <th>Obser</th>
+                    <th>Error</th>
+                </tr>
+                <tr class="critical">
+                    <td>A</td>
+                    <td>Approved Sewage Disposal System</td>
+                    <td><input type="text" class="input-field" name="obser_15a" value="{{ inspection.obser.get('15a', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_15a" value="{{ inspection.error.get('15a', '') if inspection else '' }}"></td>
+                </tr>
+                <tr class="critical">
+                    <td>B</td>
+                    <td>Sanitary maintenance of facilities and provision against the entrance of vermin, rodents, dust, and fumes</td>
+                    <td><input type="text" class="input-field" name="obser_15b" value="{{ inspection.obser.get('15b', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_15b" value="{{ inspection.error.get('15b', '') if inspection else '' }}"></td>
+                </tr>
+                <tr class="critical">
+                    <td>C</td>
+                    <td>Suitable pest control programme</td>
+                    <td><input type="text" class="input-field" name="obser_15c" value="{{ inspection.obser.get('15c', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_15c" value="{{ inspection.error.get('15c', '') if inspection else '' }}"></td>
+                </tr>
+            </table>
+
+            <div class="category-header">16 - Sanitary Engineering: Water Supply (3-4%)</div>
+            <table>
+                <tr>
+                    <th>Item</th>
+                    <th>Details</th>
+                    <th>Obser</th>
+                    <th>Error</th>
+                </tr>
+                <tr class="critical">
+                    <td>A</td>
+                    <td>Approved source(s), sufficient pressure and capacity</td>
+                    <td><input type="text" class="input-field" name="obser_16a" value="{{ inspection.obser.get('16a', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_16a" value="{{ inspection.error.get('16a', '') if inspection else '' }}"></td>
+                </tr>
+                <tr class="critical">
+                    <td>B</td>
+                    <td>Water quality satisfactory</td>
+                    <td><input type="text" class="input-field" name="obser_16b" value="{{ inspection.obser.get('16b', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_16b" value="{{ inspection.error.get('16b', '') if inspection else '' }}"></td>
+                </tr>
+            </table>
+
+            <div class="category-header">17 - Sanitary Engineering: Ice (1.5%)</div>
+            <table>
+                <tr>
+                    <th>Item</th>
+                    <th>Details</th>
+                    <th>Obser</th>
+                    <th>Error</th>
+                </tr>
+                <tr class="critical">
+                    <td>A</td>
+                    <td>Satisfactory Ice storage conditions</td>
+                    <td><input type="text" class="input-field" name="obser_17a" value="{{ inspection.obser.get('17a', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_17a" value="{{ inspection.error.get('17a', '') if inspection else '' }}"></td>
+                </tr>
+            </table>
+
+            <div class="category-header">18 - Sanitary Engineering: Grey Water Facilities (1%)</div>
+            <table>
+                <tr>
+                    <th>Item</th>
+                    <th>Details</th>
+                    <th>Obser</th>
+                    <th>Error</th>
+                </tr>
+                <tr class="critical">
+                    <td>A</td>
+                    <td>Traps and vent in good condition</td>
+                    <td><input type="text" class="input-field" name="obser_18a" value="{{ inspection.obser.get('18a', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_18a" value="{{ inspection.error.get('18a', '') if inspection else '' }}"></td>
+                </tr>
+                <tr class="critical">
+                    <td>B</td>
+                    <td>Floor drains clear and drain freely</td>
+                    <td><input type="text" class="input-field" name="obser_18b" value="{{ inspection.obser.get('18b', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_18b" value="{{ inspection.error.get('18b', '') if inspection else '' }}"></td>
+                </tr>
+            </table>
+
+            <div class="category-header">19 - Sanitary Engineering: Manholes (0.5%)</div>
+            <table>
+                <tr>
+                    <th>Item</th>
+                    <th>Details</th>
+                    <th>Obser</th>
+                    <th>Error</th>
+                </tr>
+                <tr class="critical">
+                    <td>A</td>
+                    <td>Properly constructed with vents and traps where necessary</td>
+                    <td><input type="text" class="input-field" name="obser_19a" value="{{ inspection.obser.get('19a', '') if inspection else '' }}"></td>
+                    <td><input type="text" class="input-field" name="error_19a" value="{{ inspection.error.get('19a', '') if inspection else '' }}"></td>
+                </tr>
+            </table>
+
+            <div class="form-header">Inspector's Comments</div>
+            <textarea class="comments" name="comments">{{ inspection.comments if inspection else '' }}</textarea>
+
+            <table>
+                <tr>
+                    <td>Inspector's Signature</td>
+                    <td><input type="text" class="input-field" name="inspector_signature" value="{{ inspection.inspector_signature if inspection else '' }}" required></td>
+                    <td>Date</td>
+                    <td><input type="date" class="input-field" name="inspector_date" value="{{ inspection.inspector_date if inspection else today }}" required></td>
+                </tr>
+                <tr>
+                    <td>Manager's Signature</td>
+                    <td><input type="text" class="input-field" name="manager_signature" value="{{ inspection.manager_signature if inspection else '' }}" required></td>
+                    <td>Date</td>
+                    <td><input type="date" class="input-field" name="manager_date" value="{{ inspection.manager_date if inspection else '' }}" required></td>
+                </tr>
+            </table>
+
+            <div class="buttons">
+                <button id="submit-btn" class="btn" type="submit">Submit</button>
+                <button id="print-btn" class="btn" type="button" onclick="window.print()">Print</button>
+                <button id="save-btn" class="btn" type="button" onclick="alert('Save functionality not implemented yet.')">Save</button>
+                <button id="share-btn" class="btn" type="button" onclick="alert('Share functionality not implemented yet.')">Share</button>
+                <a href="{{ url_for('dashboard') }}" id="back-btn" class="btn">Back to Dashboard</a>
+            </div>
+        </form>
+        {% if success %}
+            <p style="text-align: center; color: #009b3a; font-size: 16px; margin-top: 20px;">Submission successful!</p>
+            <div class="buttons">
+                <a href="{{ url_for('dashboard') }}" id="back-btn" class="btn">Back to Dashboard</a>
+            </div>
+        {% endif %}
+    </div>
+    <script>
+        document.getElementById('inspection-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            fetch('/submit_small_hotels', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    alert('Inspection submitted successfully!');
+                    window.location.href = '/dashboard';
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => alert('Error: ' + error));
+        });
+    </script>
+</body>
+</html>

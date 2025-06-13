@@ -2,34 +2,28 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Inspection Details</title>
+    <title>Food Establishment Inspection - Completed</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 20px;
-            background: rgba(255, 255, 255, 0.2);
+            height: 100vh;
+            overflow: auto;
+            background: rgba(255, 255, 255, 0.2) url('{{ url_for("static", filename="d.jpg") }}') no-repeat center center fixed;
+            background-size: cover;
             display: flex;
             justify-content: center;
             align-items: flex-start;
-        }
-        video {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: -1;
         }
         .form-container {
             width: 100%;
             max-width: 1200px;
             text-align: center;
         }
-        h1 {
+        h1, h2 {
             text-align: center;
-            margin: 20px 0;
+            margin: 20px;
             font-size: 24px;
             font-weight: bold;
             background: rgba(255, 255, 255, 0.75);
@@ -61,10 +55,14 @@
         .pair-table td:last-child {
             padding-right: 0;
         }
-        .score-box {
-            display: block;
-            width: 80px;
+        .form-value {
             padding: 5px;
+            background: #f9f9f9;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            display: block;
+            width: 90%;
+            box-sizing: border-box;
             margin-top: 5px;
         }
         .barcode-container {
@@ -93,18 +91,6 @@
             flex: 2;
             margin-right: 20px;
         }
-        .signature-row label {
-            flex: 1;
-            margin-right: 10px;
-        }
-        .signature-row label:last-child {
-            margin-right: 0;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
         table {
             width: 100%;
             border-collapse: collapse;
@@ -125,70 +111,42 @@
             font-weight: bold;
             background-color: #e0e0e0;
             padding: 5px 10px;
-            margin-top: 10px;
         }
-        .action-buttons {
+        .buttons {
             margin-top: 20px;
             text-align: center;
         }
-        .action-buttons button {
+        .buttons button {
             padding: 10px 20px;
             margin: 0 10px;
-            background: #007BFF;
-            color: white;
             border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
             cursor: pointer;
         }
-        .action-buttons button.email {
-            background: #28a745;
+        .buttons button:hover {
+            background-color: #0056b3;
         }
-        .action-buttons button.download {
-            background: #6c757d;
+        .score-message {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #dc3545;
         }
-        .back-button {
-            display: block;
-            width: 150px;
-            padding: 10px;
-            margin: 20px auto;
-            background: #dc3545;
-            color: white;
-            text-align: center;
-            text-decoration: none;
-            border-radius: 5px;
+        .score-message.pass {
+            color: #28a745;
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const video = document.getElementById('background-video');
-
-            video.addEventListener('loadedmetadata', function() {
-                video.currentTime = 0;
+            document.querySelector('.buttons button:nth-child(1)')?.addEventListener('click', () => window.print());
+            document.querySelector('.buttons button:nth-child(2)')?.addEventListener('click', () => {
+                window.location.href = `mailto:?subject=Inspection Report&body=Inspection ID: ${inspection.id}\nEstablishment: ${inspection.establishment_name}\nDate: ${inspection.inspection_date}`;
             });
-            video.addEventListener('timeupdate', function() {
-                if (video.currentTime >= 16) {
-                    video.currentTime = 0;
-                }
-            });
-
-            document.querySelectorAll('tr').forEach(row => {
-                const weightCell = row.querySelector('td:nth-child(3)');
-                if (weightCell) {
-                    const weight = parseInt(weightCell.textContent);
-                    if (weight >= 4) {
-                        row.classList.add('important-weight');
-                    }
-                }
-            });
-
-            document.querySelector('.action-buttons button.email').addEventListener('click', function() {
-                window.location.href = `mailto:?subject=Inspection Report&body=Inspection ID: ${inspection.id}
-                Establishment: ${inspection.establishment_name}
-                Date: ${inspection.inspection_date}`;
-            });
-
-            document.querySelector('.action-buttons button.download').addEventListener('click', function() {
-                const doc = new jspdf.jsPDF();
+            document.querySelector('.buttons button:nth-child(3)')?.addEventListener('click', () => {
+                const { jsPDF } = jspdf;
+                const doc = new jsPDF();
                 let y = 10;
                 doc.text(`Inspection Report - ID: ${inspection.id}`, 10, y);
                 y += 10;
@@ -204,9 +162,8 @@
                 doc.text(`Comments: ${inspection.comments}`, 10, y += 10);
                 doc.save(`inspection_${inspection.id}.pdf`);
             });
-
-            document.querySelector('.action-buttons button').addEventListener('click', function() {
-                window.print();
+            document.querySelector('.buttons button:nth-child(4)')?.addEventListener('click', () => {
+                window.location.href = '/dashboard';
             });
         });
 
@@ -217,287 +174,194 @@
             address: "{{ inspection.address }}",
             inspector_name: "{{ inspection.inspector_name }}",
             inspection_date: "{{ inspection.inspection_date }}",
+            inspection_time: "{{ inspection.inspection_time }}",
             critical_score: {{ inspection.critical_score }},
             overall_score: {{ inspection.overall_score }},
             result: "{{ inspection.result }}",
-            comments: "{{ inspection.comments }}"
+            comments: "{{ inspection.comments }}",
+            inspector_signature: "{{ inspection.inspector_signature }}",
+            received_by: "{{ inspection.received_by }}",
+            license_no: "{{ inspection.license_no }}",
+            type_of_establishment: "{{ inspection.type_of_establishment }}",
+            no_of_employees: "{{ inspection.no_of_employees }}",
+            purpose_of_visit: "{{ inspection.purpose_of_visit }}",
+            action: "{{ inspection.action }}",
+            food_inspected: "{{ inspection.food_inspected }}",
+            food_condemned: "{{ inspection.food_condemned }}",
+            inspector_code: "{{ inspection.inspector_code }}",
+            scores: {{ inspection.scores|tojson|safe }}
         };
     </script>
 </head>
 <body>
-    <video autoplay muted loop id="background-video">
-        <source src="{{ url_for('static', filename='flag_vid3.webm') }}" type="video/webm">
-        Your browser does not support the video tag.
-    </video>
-    <h1>Inspection Details</h1>
     <div class="form-container">
+        <h1>Food Establishment Inspection - Completed</h1>
         <div class="form-section">
-            <h2>{% if inspection.form_type == 'Food Establishment' %}Establishment{% else %}Premises{% endif %} Details</h2>
+            <h2>Establishment Details</h2>
             <table class="pair-table">
                 <tr>
-                    <td><label>{% if inspection.form_type == 'Food Establishment' %}Name of Establishment{% else %}Name of Premises{% endif %}: {{ inspection.establishment_name }}</label></td>
-                    <td><label>{% if inspection.form_type == 'Food Establishment' %}Owner/Operator{% else %}Owner/Agent/Occupier{% endif %}: {{ inspection.owner }}</label></td>
-                    <td><label>Critical Score: {{ inspection.critical_score }}</label></td>
+                    <td><label>Name of Establishment:</label><div class="form-value">{{ inspection.establishment_name }}</div></td>
+                    <td><label>Owner/Operator:</label><div class="form-value">{{ inspection.owner }}</div></td>
+                    <td><label>Critical Score:</label><div class="form-value">{{ inspection.critical_score }}</div></td>
                 </tr>
                 <tr>
-                    <td><label>Address: {{ inspection.address }}</label></td>
-                    {% if inspection.form_type == 'Food Establishment' %}
-                    <td><label>License #: {{ inspection.license_no }}</label></td>
-                    {% else %}
-                    <td></td>
-                    {% endif %}
-                    <td><label>Overall Score: {{ inspection.overall_score }}</label></td>
+                    <td><label>Address:</label><div class="form-value">{{ inspection.address }}</div></td>
+                    <td><label>License #:</label><div class="form-value">{{ inspection.license_no }}</div></td>
+                    <td><label>Overall Score:</label><div class="form-value">{{ inspection.overall_score }}</div></td>
                 </tr>
                 <tr>
-                    <td><label>Inspector Name: {{ inspection.inspector_name }}</label></td>
-                    <td><label>Inspector Code: {{ inspection.inspector_code }}</label></td>
-                    <td><label>Inspection Date: {{ inspection.inspection_date }}</label></td>
+                    <td><label>Inspector Name:</label><div class="form-value">{{ inspection.inspector_name }}</div></td>
+                    <td><label>Inspector Code:</label><div class="form-value">{{ inspection.inspector_code }}</div></td>
+                    <td><label>Inspection Date:</label><div class="form-value">{{ inspection.inspection_date }}</div></td>
                 </tr>
                 <tr>
-                    <td><label>{% if inspection.form_type == 'Food Establishment' %}Inspection Time: {{ inspection.inspection_time }}{% endif %}</label></td>
-                    <td><label>Type of {% if inspection.form_type == 'Food Establishment' %}Establishment{% else %}Treatment Facility{% endif %}: {{ inspection.type_of_establishment }}</label></td>
-                    <td><label>{% if inspection.form_type == 'Food Establishment' %}No. of Employees: {{ inspection.no_of_employees }}{% endif %}</label></td>
+                    <td><label>Inspection Time:</label><div class="form-value">{{ inspection.inspection_time }}</div></td>
+                    <td><label>Type of Establishment:</label><div class="form-value">{{ inspection.type_of_establishment }}</div></td>
+                    <td><label>No. of Employees:</label><div class="form-value">{{ inspection.no_of_employees }}</div></td>
                 </tr>
                 <tr>
-                    <td><label>Purpose of Visit: {{ inspection.purpose_of_visit }}</label></td>
-                    <td><label>Action: {{ inspection.action }}</label></td>
-                    <td><label>Result: {{ inspection.result }}</label></td>
+                    <td><label>Purpose of Visit:</label><div class="form-value">{{ inspection.purpose_of_visit }}</div></td>
+                    <td><label>Action:</label><div class="form-value">{{ inspection.action }}</div></td>
+                    <td><label>Result:</label><div class="form-value">{{ inspection.result }}</div></td>
                 </tr>
                 <tr>
-                    <td><label>Barcode:
-                        <div class="barcode-container">
-                            <div class="barcode"></div>
-                            <div class="barcode-line"></div>
-                        </div>
-                    </label></td>
-                    {% if inspection.form_type == 'Food Establishment' %}
-                    <td><label>Food Inspected (in kg): {{ inspection.food_inspected }}</label></td>
-                    <td><label>Food Condemned (in kg): {{ inspection.food_condemned }}</label></td>
-                    {% else %}
-                    <td></td>
-                    <td></td>
-                    {% endif %}
+                    <td><label>Barcode:</label><div class="barcode-container"><div class="barcode"></div><div class="barcode-line"></div></div></td>
+                    <td><label>Food Inspected (in kg):</label><div class="form-value">{{ inspection.food_inspected }}</div></td>
+                    <td><label>Food Condemned (in kg):</label><div class="form-value">{{ inspection.food_condemned }}</div></td>
                 </tr>
             </table>
+            <div class="score-message {{ 'pass' if inspection.critical_score >= 59 and inspection.overall_score >= 70 else '' }}">
+                {{ 'Pass: Critical Score = ' + inspection.critical_score|string + ', Total Score = ' + inspection.overall_score|string if inspection.critical_score >= 59 and inspection.overall_score >= 70 else 'Fail: Critical Score = ' + inspection.critical_score|string + ' (needs 59+), Total Score = ' + inspection.overall_score|string + ' (needs 70+)' }}
+            </div>
         </div>
-
         <div class="form-section">
             <h2>Inspection Checklist</h2>
             <table>
                 <tr>
                     <th>Item #</th>
-                    <th>Description</th>
+                    <th>Label</th>
                     <th>Weight</th>
                     <th>Score</th>
                 </tr>
-                {% if inspection.form_type == 'Food Establishment' %}
                 <tr class="category-header"><td colspan="4">FOOD PROTECTION (1-10)</td></tr>
                 {% for item in checklist if 1 <= item.id <= 10 %}
-                <tr class="{% if item.wt|float >= 4 %}important-weight{% endif %}">
+                <tr class="{% if item.wt|float in [4, 5] %}important-weight{% endif %}">
                     <td>{{ item.id }}</td>
                     <td>{{ item.desc }}</td>
                     <td>{{ item.wt }}</td>
-                    <td>{{ inspection.scores[item.id] }}</td>
+                    <td><div class="form-value">{{ inspection.scores[item.id]|default('0') }}</div></td>
                 </tr>
                 {% endfor %}
                 <tr class="category-header"><td colspan="4">FOOD EQUIPMENT AND UTENSILS (11-23)</td></tr>
                 {% for item in checklist if 11 <= item.id <= 23 %}
-                <tr class="{% if item.wt|float >= 4 %}important-weight{% endif %}">
+                <tr class="{% if item.wt|float in [4, 5] %}important-weight{% endif %}">
                     <td>{{ item.id }}</td>
                     <td>{{ item.desc }}</td>
                     <td>{{ item.wt }}</td>
-                    <td>{{ inspection.scores[item.id] }}</td>
+                    <td><div class="form-value">{{ inspection.scores[item.id]|default('0') }}</div></td>
                 </tr>
                 {% endfor %}
                 <tr class="category-header"><td colspan="4">TOILET AND HANDWASHING FACILITIES (24-25)</td></tr>
                 {% for item in checklist if 24 <= item.id <= 25 %}
-                <tr class="{% if item.wt|float >= 4 %}important-weight{% endif %}">
+                <tr class="{% if item.wt|float in [4, 5] %}important-weight{% endif %}">
                     <td>{{ item.id }}</td>
                     <td>{{ item.desc }}</td>
                     <td>{{ item.wt }}</td>
-                    <td>{{ inspection.scores[item.id] }}</td>
+                    <td><div class="form-value">{{ inspection.scores[item.id]|default('0') }}</div></td>
                 </tr>
                 {% endfor %}
                 <tr class="category-header"><td colspan="4">SOLID WASTE MANAGEMENT (26-27)</td></tr>
                 {% for item in checklist if 26 <= item.id <= 27 %}
-                <tr class="{% if item.wt|float >= 4 %}important-weight{% endif %}">
+                <tr class="{% if item.wt|float in [4, 5] %}important-weight{% endif %}">
                     <td>{{ item.id }}</td>
                     <td>{{ item.desc }}</td>
                     <td>{{ item.wt }}</td>
-                    <td>{{ inspection.scores[item.id] }}</td>
+                    <td><div class="form-value">{{ inspection.scores[item.id]|default('0') }}</div></td>
                 </tr>
                 {% endfor %}
                 <tr class="category-header"><td colspan="4">RODENTS, INSECT, ANIMAL CONTROL (28)</td></tr>
                 {% for item in checklist if item.id == 28 %}
-                <tr class="{% if item.wt|float >= 4 %}important-weight{% endif %}">
+                <tr class="{% if item.wt|float in [4, 5] %}important-weight{% endif %}">
                     <td>{{ item.id }}</td>
                     <td>{{ item.desc }}</td>
                     <td>{{ item.wt }}</td>
-                    <td>{{ inspection.scores[item.id] }}</td>
+                    <td><div class="form-value">{{ inspection.scores[item.id]|default('0') }}</div></td>
                 </tr>
                 {% endfor %}
                 <tr class="category-header"><td colspan="4">PERSONNEL (29-35)</td></tr>
                 {% for item in checklist if 29 <= item.id <= 35 %}
-                <tr class="{% if item.wt|float >= 4 %}important-weight{% endif %}">
+                <tr class="{% if item.wt|float in [4, 5] %}important-weight{% endif %}">
                     <td>{{ item.id }}</td>
                     <td>{{ item.desc }}</td>
                     <td>{{ item.wt }}</td>
-                    <td>{{ inspection.scores[item.id] }}</td>
+                    <td><div class="form-value">{{ inspection.scores[item.id]|default('0') }}</div></td>
                 </tr>
                 {% endfor %}
                 <tr class="category-header"><td colspan="4">WATER (36)</td></tr>
                 {% for item in checklist if item.id == 36 %}
-                <tr class="{% if item.wt|float >= 4 %}important-weight{% endif %}">
+                <tr class="{% if item.wt|float in [4, 5] %}important-weight{% endif %}">
                     <td>{{ item.id }}</td>
                     <td>{{ item.desc }}</td>
                     <td>{{ item.wt }}</td>
-                    <td>{{ inspection.scores[item.id] }}</td>
+                    <td><div class="form-value">{{ inspection.scores[item.id]|default('0') }}</div></td>
                 </tr>
                 {% endfor %}
                 <tr class="category-header"><td colspan="4">SEWAGE (37)</td></tr>
                 {% for item in checklist if item.id == 37 %}
-                <tr class="{% if item.wt|float >= 4 %}important-weight{% endif %}">
+                <tr class="{% if item.wt|float in [4, 5] %}important-weight{% endif %}">
                     <td>{{ item.id }}</td>
                     <td>{{ item.desc }}</td>
                     <td>{{ item.wt }}</td>
-                    <td>{{ inspection.scores[item.id] }}</td>
+                    <td><div class="form-value">{{ inspection.scores[item.id]|default('0') }}</div></td>
                 </tr>
                 {% endfor %}
                 <tr class="category-header"><td colspan="4">PLUMBING (38-39)</td></tr>
                 {% for item in checklist if 38 <= item.id <= 39 %}
-                <tr class="{% if item.wt|float >= 4 %}important-weight{% endif %}">
+                <tr class="{% if item.wt|float in [4, 5] %}important-weight{% endif %}">
                     <td>{{ item.id }}</td>
                     <td>{{ item.desc }}</td>
                     <td>{{ item.wt }}</td>
-                    <td>{{ inspection.scores[item.id] }}</td>
+                    <td><div class="form-value">{{ inspection.scores[item.id]|default('0') }}</div></td>
                 </tr>
                 {% endfor %}
                 <tr class="category-header"><td colspan="4">FLOORS, WALLS AND CEILING (40-41)</td></tr>
                 {% for item in checklist if 40 <= item.id <= 41 %}
-                <tr class="{% if item.wt|float >= 4 %}important-weight{% endif %}">
+                <tr class="{% if item.wt|float in [4, 5] %}important-weight{% endif %}">
                     <td>{{ item.id }}</td>
                     <td>{{ item.desc }}</td>
                     <td>{{ item.wt }}</td>
-                    <td>{{ inspection.scores[item.id] }}</td>
+                    <td><div class="form-value">{{ inspection.scores[item.id]|default('0') }}</div></td>
                 </tr>
                 {% endfor %}
                 <tr class="category-header"><td colspan="4">OTHER OPERATIONS (42-45)</td></tr>
                 {% for item in checklist if 42 <= item.id <= 45 %}
-                <tr class="{% if item.wt|float >= 4 %}important-weight{% endif %}">
+                <tr class="{% if item.wt|float in [4, 5] %}important-weight{% endif %}">
                     <td>{{ item.id }}</td>
                     <td>{{ item.desc }}</td>
                     <td>{{ item.wt }}</td>
-                    <td>{{ inspection.scores[item.id] }}</td>
-                </tr>
-                {% endfor %}
-                {% else %}
-                <tr class="category-header"><td colspan="4">BUILDING (1-8)</td></tr>
-                {% for item in checklist if 1 <= item.id <= 8 %}
-                <tr class="{% if item.wt|float >= 4 %}important-weight{% endif %}">
-                    <td>{{ item.id }}</td>
-                    <td>{{ item.desc }}</td>
-                    <td>{{ item.wt }}</td>
-                    <td>{{ inspection.scores[item.id] }}</td>
-                </tr>
-                {% endfor %}
-                <tr class="category-header"><td colspan="4">WATER SUPPLY (9-10)</td></tr>
-                {% for item in checklist if 9 <= item.id <= 10 %}
-                <tr class="{% if item.wt|float >= 4 %}important-weight{% endif %}">
-                    <td>{{ item.id }}</td>
-                    <td>{{ item.desc }}</td>
-                    <td>{{ item.wt }}</td>
-                    <td>{{ inspection.scores[item.id] }}</td>
-                </tr>
-                {% endfor %}
-                <tr class="category-header"><td colspan="4">DRAINAGE (11-12)</td></tr>
-                {% for item in checklist if 11 <= item.id <= 12 %}
-                <tr class="{% if item.wt|float >= 4 %}important-weight{% endif %}">
-                    <td>{{ item.id }}</td>
-                    <td>{{ item.desc }}</td>
-                    <td>{{ item.wt }}</td>
-                    <td>{{ inspection.scores[item.id] }}</td>
-                </tr>
-                {% endfor %}
-                <tr class="category-header"><td colspan="4">MOSQUITO CONTROL (13-16)</td></tr>
-                {% for item in checklist if 13 <= item.id <= 16 %}
-                <tr class="{% if item.wt|float >= 4 %}important-weight{% endif %}">
-                    <td>{{ item.id }}</td>
-                    <td>{{ item.desc }}</td>
-                    <td>{{ item.wt }}</td>
-                    <td>{{ inspection.scores[item.id] }}</td>
-                </tr>
-                {% endfor %}
-                <tr class="category-header"><td colspan="4">OTHER VECTORS (17-18)</td></tr>
-                {% for item in checklist if 17 <= item.id <= 18 %}
-                <tr class="{% if item.wt|float >= 4 %}important-weight{% endif %}">
-                    <td>{{ item.id }}</td>
-                    <td>{{ item.desc }}</td>
-                    <td>{{ item.wt }}</td>
-                    <td>{{ inspection.scores[item.id] }}</td>
-                </tr>
-                {% endfor %}
-                <tr class="category-header"><td colspan="4">SEWAGE/EXCRETA DISPOSAL (19-21)</td></tr>
-                {% for item in checklist if 19 <= item.id <= 21 %}
-                <tr class="{% if item.wt|float >= 4 %}important-weight{% endif %}">
-                    <td>{{ item.id }}</td>
-                    <td>{{ item.desc }}</td>
-                    <td>{{ item.wt }}</td>
-                    <td>{{ inspection.scores[item.id] }}</td>
-                </tr>
-                {% endfor %}
-                <tr class="category-header"><td colspan="4">OTHER OPERATIONS (22)</td></tr>
-                {% for item in checklist if item.id == 22 %}
-                <tr class="{% if item.wt|float >= 4 %}important-weight{% endif %}">
-                    <td>{{ item.id }}</td>
-                    <td>{{ item.desc }}</td>
-                    <td>{{ item.wt }}</td>
-                    <td>{{ inspection.scores[item.id] }}</td>
-                </tr>
-                {% endfor %}
-                {% endif %}
-            </table>
-        </div>
-
-        {% if inspection.form_type != 'Food Establishment' %}
-        <div class="form-section">
-            <h2>Solid Waste Management</h2>
-            <table>
-                <tr>
-                    <th>Description</th>
-                    <th>Weight</th>
-                    <th>Score</th>
-                </tr>
-                <tr class="category-header"><td colspan="3">SOLID WASTE MANAGEMENT</td></tr>
-                {% for item in checklist if 23 <= item.id <= 25 %}
-                <tr class="{% if item.wt|float >= 4 %}important-weight{% endif %}">
-                    <td>{{ item.desc }}</td>
-                    <td>{{ item.wt }}</td>
-                    <td>{{ inspection.scores[item.id] }}</td>
+                    <td><div class="form-value">{{ inspection.scores[item.id]|default('0') }}</div></td>
                 </tr>
                 {% endfor %}
             </table>
         </div>
-        {% endif %}
-
         <div class="form-section">
-            <h2>Inspector's Comments</h2>
+            <h2>Records:</h2>
             <div class="signature-row">
                 <div class="comments-area">
-                    <label>Comments: {{ inspection.comments }}</label>
+                    <label>Comments:</label><div class="form-value">{{ inspection.comments }}</div>
                 </div>
                 <div>
-                    <label>Inspector's Signature: {{ inspection.inspector_signature }}</label>
-                    <label>Rec'd By: {{ inspection.recieved_by }}</label>
+                    <label>Inspector's Signature:</label><div class="form-value">{{ inspection.inspector_signature }}</div>
+                    <label>Received By:</label><div class="form-value">{{ inspection.received_by }}</div>
                 </div>
             </div>
         </div>
-
-        <div class="action-buttons">
+        <div class="buttons">
             <button>Print</button>
-            <button class="email">Email</button>
-            <button class="download">Download PDF</button>
+            <button>Email</button>
+            <button>Download</button>
+            <button>Back to Dashboard</button>
         </div>
-        <a href="/" class="back-button">Back to Dashboard</a>
     </div>
 </body>
 </html>

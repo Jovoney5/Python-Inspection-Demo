@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Small Hotels Inspection Detail - Jamaica</title>
+    <style>
+        body {
+            font-family: 'Verdana', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZmFkZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigxMzUsIDE4NSwgNzUpIiBzdG9wLW9wYWNpdHk9IjAuOCIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjUwJSIgc3RvcC1jb2xvcj0icmdiKDIzNSwgMjA1LCA1NSkiIHN0b3Atb3BhY2l0eT0iMC41Ii8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0icmdiKDEzNSwgMTg1LCA3NSkiIHN0b3Atb3BhY2l0eT0iMC44Ii8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogIDwvZGVmcz4KICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2ZhZGUpIi8+CiAgPHBhdGggZD0iTTAgMEw1MCA1MEwxMDAgMEwwIDBaIiBmaWxsPSIjMDA5YjNhIiBvcGFjaXR5PSIwLjEiLz4KICA8cGF0aCBkPSJNMCAxMDBMNTAgNTBMMTAwIDEwMEwxMDAgMTAwWk0wIDEwMFoiIGZpbGw9IiMwMDliM2EiIG9wYWNpdHk9IjAuMSIvPgogIDxwYXRoIGQ9Ik0wIDBMMTAwIDEwMEwwIDBaIiBmaWxsPSIjZmZkMjAwIiBvcGFjaXR5PSIwLjEiLz4KICA8cGF0aCBkPSJNMCAxMDBMMTAwIDBMMTAwIDEwMFowIDEwMFoiIGZpbGw9IiNmZmQyMDAiIG9wYWNpdHk9IjAuMSIvPgogIDx0ZXh0IHg9IjUwJSIgeT0iNTAlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSJyZ2IoMCwgMCwgMCkgMCIgZm9udC1zaXplPSIyMCIgZm9udC1mYW1pbHk9IlZlcmRhbmEsIHNhbnMtc2VyaWYiIG9wYWNpdHk9IjAuMSI+SkFNRUNBTiBIRUFMVEggREVQQVJUTUVOVDwvdGV4dD4KPC9zdmc+');
+            background-size: cover;
+            background-attachment: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            color: #333;
+        }
+        .form-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            border-left: 5px solid #009b3a;
+            border-right: 5px solid #ffd200;
+        }
+        .form-header {
+            text-align: center;
+            font-size: 26px;
+            font-weight: bold;
+            color: #009b3a;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 3px solid #ffd200;
+            padding-bottom: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            vertical-align: top;
+            border: 1px solid #ddd;
+        }
+        th {
+            background: #f5f5f5;
+            font-weight: bold;
+        }
+        .category-header {
+            font-weight: bold;
+            font-size: 16px;
+            background: #ffd200;
+            color: #009b3a;
+            padding: 8px;
+            border-radius: 5px;
+            margin: 5px 0;
+            text-transform: uppercase;
+        }
+        .critical {
+            background-color: rgba(0, 155, 58, 0.2);
+            border-left: 3px solid #000;
+        }
+        .comments {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+            background: #f5f5f5;
+            min-height: 100px;
+        }
+        .buttons {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .btn {
+            padding: 10px 20px;
+            margin: 0 5px;
+            font-size: 14px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            color: #fff;
+            transition: background 0.3s;
+        }
+        .btn:hover {
+            opacity: 0.8;
+        }
+        #back-btn {
+            background: #6c757d;
+        }
+        #back-btn:hover {
+            background: #5a6268;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <div class="form-header">Small Hotels Inspection Detail - Jamaica</div>
+        <table>
+            <tr>
+                <td>Hotel Name</td>
+                <td>{{ inspection.establishment_name }}</td>
+                <td>Date</td>
+                <td>{{ inspection.inspection_date }}</td>
+                <td>Inspector's ID</td>
+                <td>{{ inspection.inspector_name }}</td>
+            </tr>
+            <tr>
+                <td>Address</td>
+                <td colspan="3">{{ inspection.address }}</td>
+                <td>Physical Location</td>
+                <td>{{ inspection.physical_location }}</td>
+            </tr>
+        </table>
+
+        <div class="category-header">1 - Documentation (8%)</div>
+        <table>
+            <tr>
+                <th>Item</th>
+                <th>Details</th>
+                <th>Obser</th>
+                <th>Error</th>
+            </tr>
+            <tr>
+                <td>A</td>
+                <td>{{ inspection.details.get('1a', '') }}</td>
+                <td>{{ inspection.obser.get('1a', '') }}</td>
+                <td>{{ inspection.error.get('1a', '') }}</td>
+            </tr>
+            <tr>
+                <td>B</td>
+                <td>{{ inspection.details.get('1b', '') }}</td>
+                <td>{{ inspection.obser.get('1b', '') }}</td>
+                <td>{{ inspection.error.get('1b', '') }}</td>
+            </tr>
+            <tr class="critical">
+                <td>C</td>
+                <td>{{ inspection.details.get('1c', '') }}</td>
+                <td>{{ inspection.obser.get('1c', '') }}</td>
+                <td>{{ inspection.error.get('1c', '') }}</td>
+            </tr>
+            <tr>
+                <td>D</td>
+                <td>{{ inspection.details.get('1d', '') }}</td>
+                <td>{{ inspection.obser.get('1d', '') }}</td>
+                <td>{{ inspection.error.get('1d', '') }}</td>
+            </tr>
+            <tr>
+                <td>E</td>
+                <td>{{ inspection.details.get('1e', '') }}</td>
+                <td>{{ inspection.obser.get('1e', '') }}</td>
+                <td>{{ inspection.error.get('1e', '') }}</td>
+            </tr>
+            <tr>
+                <td>F</td>
+                <td>{{ inspection.details.get('1f', '') }}</td>
+                <td>{{ inspection.obser.get('1f', '') }}</td>
+                <td>{{ inspection.error.get('1f', '') }}</td>
+            </tr>
+            <tr>
+                <td>G</td>
+                <td>{{ inspection.details.get('1g', '') }}</td>
+                <td>{{ inspection.obser.get('1g', '') }}</td>
+                <td>{{ inspection.error.get('1g', '') }}</td>
+            </tr>
+            <tr>
+                <td>H</td>
+                <td>{{ inspection.details.get('1h', '') }}</td>
+                <td>{{ inspection.obser.get('1h', '') }}</td>
+                <td>{{ inspection.error.get('1h', '') }}</td>
+            </tr>
+        </table>
+
+        <div class="category-header">2 - Food Safety (5%)</div>
+        <table>
+            <tr>
+                <th>Item</th>
+                <th>Details</th>
+                <th>Obser</th>
+                <th>Error</th>
+            </tr>
+            <tr>
+                <td>A</td>
+                <td>{{ inspection.details.get('2a', '') }}</td>
+                <td>{{ inspection.obser.get('2a', '') }}</td>
+                <td>{{ inspection.error.get('2a', '') }}</td>
+            </tr>
+            <tr>
+                <td>B</td>
+                <td>{{ inspection.details.get('2b', '') }}</td>
+                <td>{{ inspection.obser.get('2b', '') }}</td>
+                <td>{{ inspection.error.get('2b', '') }}</td>
+            </tr>
+            <tr>
+                <td>C</td>
+                <td>{{ inspection.details.get('2c', '') }}</td>
+                <td>{{ inspection.obser.get('2c', '') }}</td>
+                <td>{{ inspection.error.get('2c', '') }}</td>
+            </tr>
+            <tr>
+                <td>D</td>
+                <td>{{ inspection.details.get('2d', '') }}</td>
+                <td>{{ inspection.obser.get('2d', '') }}</td>
+                <td>{{ inspection.error.get('2d', '') }}</td>
+            </tr>
+            <tr>
+                <td>E</td>
+                <td>{{ inspection.details.get('2e', '') }}</td>
+                <td>{{ inspection.obser.get('2e', '') }}</td>
+                <td>{{ inspection.error.get('2e', '') }}</td>
+            </tr>
+        </table>
+
+        <div class="category-header">3 - Food Storage (13%)</div>
+        <table>
+            <tr>
+                <th>Item</th>
+                <th>Details</th>
+                <th>Obser</th>
+                <th>Error</th>
+            </tr>
+            <tr class="critical">
+                <td>A</td>
+                <td>{{ inspection.details.get('3a', '') }}</td>
+                <td>{{ inspection.obser.get('3a', '') }}</td>
+                <td>{{ inspection.error.get('3a', '') }}</td>
+            </tr>
+            <tr class="critical">
+                <td>B</td>
+                <td>{{ inspection.details.get('3b', '') }}</td>
+                <td>{{ inspection.obser.get('3b', '') }}</td>
+                <td>{{ inspection.error.get('3b', '') }}</td>
+            </tr>
+            <tr class="critical">
+                <td>C</td>
+                <td>{{ inspection.details.get('3c', '') }}</td>
+                <td>{{ inspection.obser.get('3c', '') }}</td>
+                <td>{{ inspection.error.get('3c', '') }}</td>
+            </tr>
+            <tr class="critical">
+                <td>D</td>
+                <td>{{ inspection.details.get('3d', '') }}</td>
+                <td>{{ inspection.obser.get('3d', '') }}</td>
+                <td>{{ inspection.error.get('3d', '') }}</td>
+            </tr>
+            <tr class="critical">
+                <td>E</td>
+                <td>{{ inspection.details.get('3e', '') }}</td>
+                <td>{{ inspection.obser.get('3e', '') }}</td>
+                <td>{{ inspection.error.get('3e', '') }}</td>
+            </tr>
+            <tr class="critical">
+                <td>F</td>
+                <td>{{ inspection.details.get('3f', '') }}</td>
+                <td>{{ inspection.obser.get('3f', '') }}</td>
+                <td>{{ inspection.error.get('3f', '') }}</td>
+            </tr>
+            <tr>
+                <td>G</td>
+                <td>{{ inspection.details.get('3g', '') }}</td>
+                <td>{{ inspection.obser.get('3g', '') }}</td>
+                <td>{{ inspection.error.get('3g', '') }}</td>
+            </tr>
+            <tr class="critical">
+                <td>H</td>
+                <td>{{ inspection.details.get('3h', '') }}</td>
+                <td>{{ inspection.obser.get('3h', '') }}</td>
+                <td>{{ inspection.error.get('3h', '') }}</td>
+            </tr>
+            <tr class="critical">
+                <td>I</td>
+                <td>{{ inspection.details.get('3i', '') }}</td>
+                <td>{{ inspection.obser.get('3i', '') }}</td>
+                <td>{{ inspection.error.get('3i', '') }}</td>
+            </tr>
+        </table>
+
+        <div class="category-header">4 - Food Holding and Preparation Practices (8%)</div>
+        <table>
+            <tr>
+                <th>Item</th>
+                <th>Details</th>
+                <th>Obser</th>
+                <th>Error</th>
+            </tr>
+            <tr>
+                <td>A</td>
+                <td>{{ inspection.details.get('4a', '') }}</td>
+                <td>{{ inspection.obser.get('4a', '') }}</td>
+                <td>{{ inspection.error.get('4a', '') }}</td>
+            </tr>
+            <tr class="critical">
+                <td>B</td>
+                <td>{{ inspection.details.get('4b', '') }}</td>
+                <td>{{ inspection.obser.get('4b', '') }}</td>
+                <td>{{ inspection.error.get('4b', '') }}</td>
+            </tr>
+            <tr class="critical">
+                <td>C</td>
+                <td>{{ inspection.details.get('4c', '') }}</td>
+                <td>{{ inspection.obser.get('4c', '') }}</td>
+                <td>{{ inspection.error.get('4c', '') }}</td>
+            </tr>
+            <tr>
+                <td>D</td>
+                <td>{{ inspection.details.get('4d', '') }}</td>
+                <td>{{ inspection.obser.get('4d', '') }}</td>
+                <td>{{ inspection.error.get('4d', '') }}</td>
+            </tr>
+            <tr>
+                <td>E</td>
+                <td>{{ inspection.details.get('4e', '') }}</td>
+                <td>{{ inspection.obser.get('4e', '') }}</td>
+                <td>{{ inspection.error.get('4e', '') }}</td>
+            </tr>
+            <tr>
+                <td>F</td>
+                <td>{{ inspection.details.get('4f', '') }}</td>
+                <td>{{ inspection.obser.get('4f', '') }}</td>
+                <td>{{ inspection.error.get('4f', '') }}</td>
+            </tr>
+            <tr>
+                <td>G</td>
+                <td>{{ inspection.details.get('4g', '') }}</td>
+                <td>{{ inspection.obser.get('4g', '') }}</td>
+                <td>{{ inspection.error.get('4g', '') }}</td>
+            </tr>
+        </table>
+
+        <div class="category-header">5 - Waste Management: Waste Contain (2.5%)</div>
+        <table>
+            <tr>
+                <th>Item</th>
+                <th>Details</th>
+                <th>Obser</th>
+                <th>Error</th>
+            </tr>
+            <tr>
+                <td>A</td>
+                <td>{{ inspection.details.get('5a', '') }}</td>
+                <td>{{ inspection.obser.get('5a', '') }}</td>
+                <td>{{ inspection.error.get('5a', '') }}</td>
+            </tr>
+            <tr>
+                <td>B</td>
+                <td>{{ inspection.details.get('5b', '') }}</td>
+                <td>{{ inspection.obser.get('5b', '') }}</td>
+                <td>{{ inspection.error.get('5b', '') }}</td>
+            </tr>
+            <tr>
+                <td>C</td>
+                <td>{{ inspection.details.get('5c', '') }}</td>
+                <td>{{ inspection.obser.get('5c', '') }}</td>
+                <td>{{ inspection.error.get('5c', '') }}</td>
+            </tr>
+        </table>
+
+        <div class="category-header">6 - Solid Waste Storage (4%)</div>
+        <table>
+            <tr>
+                <th>Item</th>
+                <th>Details</th>
+                <th>Obser</th>
+                <th>Error</th>
+            </tr>
+            <tr class="critical">
+                <td>A</td>
+                <td>{{ inspection.details.get('6a', '') }}</td>
+                <td>{{ inspection.obser.get('6a', '') }}</td>
+                <td>{{ inspection.error.get('6a', '') }}</td>
+            </tr>
+            <tr>
+                <td>B</td>
+                <td>{{ inspection.details.get('6b', '') }}</td>
+                <td>{{ inspection.obser.get('6b', '') }}</td>
+                <td>{{ inspection.error.get('6b', '') }}</td>
+            </tr>
+            <tr>
+                <td>C</td>
+                <td>{{ inspection.details.get('6c', '') }}</td>
+                <td>{{ inspection.obser.get('6c', '') }}</td>
+                <td>{{ inspection.error.get('6c', '') }}</td>
+            </tr>
+            <tr>
+                <td>D</td>
+                <td>{{ inspection.details.get('6d', '') }}</td>
+                <td>{{ inspection.obser.get('6d', '') }}</td>
+                <td>{{ inspection.error.get('6d', '') }}</td>
+            </tr>
+        </table>
+
+        <div class="category-header">7 - Disposal of Solid Waste (2%)</div>
+        <table>
+            <tr>
+                <th>Item</th>
+                <th>Details</th>
+                <th>Obser</th>
+                <th>Error</th>
+            </tr>
+            <tr class="critical">
+                <td>A</td>
+                <td>{{ inspection.details.get('7a', '') }}</td>
+                <td>{{ inspection.obser.get('7a', '') }}</td>
+                <td>{{ inspection.error.get('7a', '') }}</td>
+            </tr>
+        </table>
+
+        <div class="category-header">8 - Hazardous Materials Storage, Handling and Disposal (10%)</div>
+        <table>
+            <tr>
+                <th>Item</th>
+                <th>Details</th>
+                <th>Obser</th>
+                <th>Error</th>
+            </tr>
+            <tr class="critical">
+                <td>A</td>
+                <td>{{ inspection.details.get('8a', '') }}</td>
+                <td>{{ inspection.obser.get('8a', '') }}</td>
+                <td>{{ inspection.error.get('8a', '') }}</td>
+            </tr>
+            <tr class="critical">
+                <td>B</td>
+                <td>{{ inspection.details.get('8b', '') }}</td>
+                <td>{{ inspection.obser.get('8b', '') }}</td>
+                <td>{{ inspection.error.get('8b', '') }}</td>
+            </tr>
+        </table>
+
+        <div class="category-header">9 - Post-Preparation (9%)</div>
+        <table>
+            <tr>
+                <th>Item</th>
+                <th>Details</th>
+                <th>Obser</th>
+                <th>Error</th>
+            </tr>
+            <tr>
+                <td>A</td>
+                <td>{{ inspection.details.get('9a', '') }}</td>
+                <td>{{ inspection.obser.get('9a', '') }}</td>
+                <td>{{ inspection.error.get('9a', '') }}</td>
+            </tr>
+            <tr>
+                <td>B</td>
+                <td>{{ inspection.details.get('9b', '') }}</td>
+                <td>{{ inspection.obser.get('9b', '') }}</td>
+                <td>{{ inspection.error.get('9b', '') }}</td>
+            </tr>
+            <tr>
+                <td>C</td>
+                <td>{{ inspection.details.get('9c', '') }}</td>
+                <td>{{ inspection.obser.get('9c', '') }}</td>
+                <td>{{ inspection.error.get('9c', '') }}</td>
+            </tr>
+            <tr>
+                <td>D</td>
+                <td>{{ inspection.details.get('9d', '') }}</td>
+                <td>{{ inspection.obser.get('9d', '') }}</td>
+                <td>{{ inspection.error.get('9d', '') }}</td>
+            </tr>
+            <tr class="critical">
+                <td>E</td>
+                <td>{{ inspection.details.get('9e', '') }}</td>
+                <td>{{ inspection.obser.get('9e', '') }}</td>
+                <td>{{ inspection.error.get('9e', '') }}</td>
+            </tr>
+            <tr class="critical">
+                <td>F</td>
+                <td>{{ inspection.details.get('9f', '') }}</td>
+                <td>{{ inspection.obser.get('9f', '') }}</td>
+                <td>{{ inspection.error.get('9f', '') }}</td>
+            </tr>
+        </table>
+
+        <div class="category-header">10 - Hand Washing Facilities (3%)</div>
+        <table>
+            <tr>
+                <th>Item</th>
+                <th>Details</th>
+                <th>Obser</th>
+                <th>Error</th>
+            </tr>
+            <tr class="critical">
+                <td>-</td>
+                <td>{{ inspection.details.get('10a', '') }}</td>
+                <td>{{ inspection.obser.get('10a', '') }}</td>
+                <td>{{ inspection.error.get('10a', '') }}</td>
+            </tr>
+            <tr class="critical">
+                <td>-</td>
+                <td>{{ inspection.details.get('10b', '') }}</td>
+                <td>{{ inspection.obser.get('10b', '') }}</td>
+                <td>{{ inspection.error.get('10b', '') }}</td>
+            </tr>
+        </table>
+
+        <div class="category-header">11 - Building (8.5%)</div>
+        <table>
+            <tr>
+                <th>Item</th>
+                <th>Details</th>
+                <th>Obser</th>
+                <th>Error</th>
+            </tr>
+            <tr>
+                <td>A</td>
+                <td>{{ inspection.details.get('11a', '') }}</td>
+                <td>{{ inspection.obser.get('11a', '') }}</td>
+                <td>{{ inspection.error.get('11a', '') }}</td>
+            </tr>
+            <tr class="critical">
+                <td>B</td>
+                <td>{{ inspection.details.get('11b', '') }}</td>
+                <td>{{ inspection.obser.get('11b', '') }}</td>
+                <td>{{ inspection.error.get('11b', '') }}</td>
+            </tr>
+            <tr>
+                <td>C</td>
+                <td>{{ inspection.details.get('11c', '') }}</td>
+                <td>{{ inspection.obser.get('11c', '') }}</td>
+                <td>{{ inspection.error.get('11c', '') }}</td>
+            </tr>
+            <tr>
+                <td>D</td>
+                <td>{{ inspection.details.get('11d', '') }}</td>
+                <td>{{ inspection.obser.get('11d', '') }}</td>
+                <td>{{ inspection.error.get('11d', '') }}</td>
+            </tr>
+            <tr>
+                <td>E</td>
+                <td>{{ inspection.details.get('11e', '') }}</td>
+                <td>{{ inspection.obser.get('11e', '') }}</td>
+                <td>{{ inspection.error.get('11e', '') }}</td>
+            </tr>
+            <tr>
+                <td>F</td>
+                <td>{{ inspection.details.get('11f', '') }}</td>
+                <td>{{ inspection.obser.get('11f', '') }}</td>
+                <td>{{ inspection.error.get('11f', '') }}</td>
+            </tr>
+            <tr>
+                <td>G</td>
+                <td>{{ inspection.details.get('11g', '') }}</td>
+                <td>{{ inspection.obser.get('11g', '') }}</td>
+                <td>{{ inspection.error.get('11g', '') }}</td>
+            </tr>
+        </table>
+
+        <div class="category-header">12 - Food Contact Surfaces (3%)</div>
+        <table>
+            <tr>
+                <th>Item</th>
+                <th>Details</th>
+                <th>Obser</th>
+                <th>Error</th>
+            </tr>
+            <tr>
+                <td>A</td>
+                <td>{{ inspection.details.get('12a', '') }}</td>
+                <td>{{ inspection.obser.get('12a', '') }}</td>
+                <td>{{ inspection.error.get('12a', '') }}</td>
+            </tr>
+            <tr>
+                <td>B</td>
+                <td>{{ inspection.details.get('12b', '') }}</td>
+                <td>{{ inspection.obser.get('12b', '') }}</td>
+                <td>{{ inspection.error.get('12b', '') }}</td>
+            </tr>
+            <tr>
+                <td>C</td>
+                <td>{{ inspection.details.get('12c', '') }}</td>
+                <td>{{ inspection.obser.get('12c', '') }}</td>
+                <td>{{ inspection.error.get('12c', '') }}</td>
+            </tr>
+        </table>
+
+        <div class="category-header">13 - Food Flow (6%)</div>
+        <table>
+            <tr>
+                <th>Item</th>
+                <th>Details</th>
+                <th>Obser</th>
+                <th>Error</th>
+            </tr>
+            <tr class="critical">
+                <td>A</td>
+                <td>{{ inspection.details.get('13a', '') }}</td>
+                <td>{{ inspection.obser.get('13a', '') }}</td>
+                <td>{{ inspection.error.get('13a', '') }}</td>
+            </tr>
+            <tr class="critical">
+                <td>B</td>
+                <td>{{ inspection.details.get('13b', '') }}</td>
+                <td>{{ inspection.obser.get('13b', '') }}</td>
+                <td>{{ inspection.error.get('13b', '') }}</td>
+            </tr>
+            <tr class="critical">
+                <td>C</td>
+                <td>{{ inspection.details.get('13c', '') }}</td>
+                <td>{{ inspection.obser.get('13c', '') }}</td>
+                <td>{{ inspection.error.get('13c', '') }}</td>
+            </tr>
+        </table>
+
+        <div class="category-header">14 - Equipment and Utensil Sanitization (9%)</div>
+        <table>
+            <tr>
+                <th>Item</th>
+                <th>Details</th>
+                <th>Obser</th>
+                <th>Error</th>
+            </tr>
+            <tr>
+                <td>A</td>
+                <td>{{ inspection.details.get('14a', '') }}</td>
+                <td>{{ inspection.obser.get('14a', '') }}</td>
+                <td>{{ inspection.error.get('14a', '') }}</td>
+            </tr>
+            <tr>
+                <td>B</td>
+                <td>{{ inspection.details.get('14b', '') }}</td>
+                <td>{{ inspection.obser.get('14b', '') }}</td>
+                <td>{{ inspection.error.get('14b', '') }}</td>
+            </tr>
+            <tr>
+                <td>C</td>
+                <td>{{ inspection.details.get('14c', '') }}</td>
+                <td>{{ inspection.obser.get('14c', '') }}</td>
+                <td>{{ inspection.error.get('14c', '') }}</td>
+            </tr>
+            <tr>
+                <td>D</td>
+                <td>{{ inspection.details.get('14d', '') }}</td>
+                <td>{{ inspection.obser.get('14d', '') }}</td>
+                <td>{{ inspection.error.get('14d', '') }}</td>
+            </tr>
+            <tr class="critical">
+                <td>E</td>
+                <td>{{ inspection.details.get('14e', '') }}</td>
+                <td>{{ inspection.obser.get('14e', '') }}</td>
+                <td>{{ inspection.error.get('14e', '') }}</td>
+            </tr>
+        </table>
+
+        <div class="category-header">15 - Sanitary Facilities (3%)</div>
+        <table>
+            <tr>
+                <th>Item</th>
+                <th>Details</th>
+                <th>Obser</th>
+                <th>Error</th>
+            </tr>
+            <tr class="critical">
+                <td>A</td>
+                <td>{{ inspection.details.get('15a', '') }}</td>
+                <td>{{ inspection.obser.get('15a', '') }}</td>
+                <td>{{ inspection.error.get('15a', '') }}</td>
+            </tr>
+            <tr class="critical">
+                <td>B</td>
+                <td>{{ inspection.details.get('15b', '') }}</td>
+                <td>{{ inspection.obser.get('15b', '') }}</td>
+                <td>{{ inspection.error.get('15b', '') }}</td>
+            </tr>
+            <tr class="critical">
+                <td>C</td>
+                <td>{{ inspection.details.get('15c', '') }}</td>
+                <td>{{ inspection.obser.get('15c', '') }}</td>
+                <td>{{ inspection.error.get('15c', '') }}</td>
+            </tr>
+        </table>
+
+        <div class="category-header">16 - Sanitary Engineering: Water Supply (3-4%)</div>
+        <table>
+            <tr>
+                <th>Item</th>
+                <th>Details</th>
+                <th>Obser</th>
+                <th>Error</th>
+            </tr>
+            <tr class="critical">
+                <td>A</td>
+                <td>{{ inspection.details.get('16a', '') }}</td>
+                <td>{{ inspection.obser.get('16a', '') }}</td>
+                <td>{{ inspection.error.get('16a', '') }}</td>
+            </tr>
+            <tr class="critical">
+                <td>B</td>
+                <td>{{ inspection.details.get('16b', '') }}</td>
+                <td>{{ inspection.obser.get('16b', '') }}</td>
+                <td>{{ inspection.error.get('16b', '') }}</td>
+            </tr>
+        </table>
+
+        <div class="category-header">17 - Sanitary Engineering: Ice (1.5%)</div>
+        <table>
+            <tr>
+                <th>Item</th>
+                <th>Details</th>
+                <th>Obser</th>
+                <th>Error</th>
+            </tr>
+            <tr class="critical">
+                <td>A</td>
+                <td>{{ inspection.details.get('17a', '') }}</td>
+                <td>{{ inspection.obser.get('17a', '') }}</td>
+                <td>{{ inspection.error.get('17a', '') }}</td>
+            </tr>
+        </table>
+
+        <div class="category-header">18 - Sanitary Engineering: Grey Water Facilities (1%)</div>
+        <table>
+            <tr>
+                <th>Item</th>
+                <th>Details</th>
+                <th>Obser</th>
+                <th>Error</th>
+            </tr>
+            <tr class="critical">
+                <td>A</td>
+                <td>{{ inspection.details.get('18a', '') }}</td>
+                <td>{{ inspection.obser.get('18a', '') }}</td>
+                <td>{{ inspection.error.get('18a', '') }}</td>
+            </tr>
+            <tr class="critical">
+                <td>B</td>
+                <td>{{ inspection.details.get('18b', '') }}</td>
+                <td>{{ inspection.obser.get('18b', '') }}</td>
+                <td>{{ inspection.error.get('18b', '') }}</td>
+            </tr>
+        </table>
+
+        <div class="category-header">19 - Sanitary Engineering: Manholes (0.5%)</div>
+        <table>
+            <tr>
+                <th>Item</th>
+                <th>Details</th>
+                <th>Obser</th>
+                <th>Error</th>
+            </tr>
+            <tr class="critical">
+                <td>A</td>
+                <td>{{ inspection.details.get('19a', '') }}</td>
+                <td>{{ inspection.obser.get('19a', '') }}</td>
+                <td>{{ inspection.error.get('19a', '') }}</td>
+            </tr>
+        </table>
+
+        <div class="form-header">Inspector's Comments</div>
+        <div class="comments">{{ inspection.comments }}</div>
+
+        <table>
+            <tr>
+                <td>Inspector's Signature</td>
+                <td>{{ inspection.inspector_signature }}</td>
+                <td>Date</td>
+                <td>{{ inspection.inspector_date }}</td>
+            </tr>
+            <tr>
+                <td>Manager's Signature</td>
+                <td>{{ inspection.manager_signature }}</td>
+                <td>Date</td>
+                <td>{{ inspection.manager_date }}</td>
+            </tr>
+        </table>
+
+        <div class="buttons">
+            <a href="{{ url_for('dashboard') }}" id="back-btn" class="btn">Back to Dashboard</a>
+        </div>
+    </div>
+</body>
+</html>

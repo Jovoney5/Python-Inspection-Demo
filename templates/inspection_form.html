@@ -10,41 +10,36 @@
             padding: 20px;
             height: 100vh;
             overflow: auto;
-            background: rgba(255, 255, 255, 0.2);
+            background: url('{{ url_for("static", filename="d.jpg") }}') no-repeat center fixed;
+            background-size: cover;
             display: flex;
             justify-content: center;
             align-items: flex-start;
-        }
-        video {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: -1;
+            color: #333;
         }
         .form-container {
             width: 100%;
             max-width: 1200px;
             text-align: center;
+            background: none;
         }
-        h1 {
+        h1, h2 {
             text-align: center;
-            margin: 20px 0;
+            margin: 20px;
             font-size: 24px;
             font-weight: bold;
-            background: rgba(255, 255, 255, 0.75);
+            background: rgba(255, 255, 255, 0.8);
             padding: 10px;
             border-radius: 5px;
+            color: #333;
         }
         .form-section {
             margin-bottom: 30px;
             text-align: left;
             padding: 20px;
-            background: rgba(255, 255, 255, 0.6);
+            background: rgba(255, 255, 255, 0.8);
             border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
         .pair-table {
             display: table;
@@ -52,7 +47,8 @@
             margin: 0 auto;
             width: 100%;
             max-width: 800px;
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.4);
+            color: #fff;
         }
         .pair-table td {
             padding: 10px 0;
@@ -68,6 +64,9 @@
             width: 80px;
             padding: 5px;
             margin-top: 5px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid #ccc;
+            border-radius: 3px;
         }
         .barcode-container {
             display: flex;
@@ -95,29 +94,27 @@
             flex: 2;
             margin-right: 20px;
         }
-        .signature-row label {
-            flex: 1;
-            margin-right: 10px;
-        }
-        .signature-row label:last-child {
-            margin-right: 0;
-        }
         label {
             display: block;
             margin-bottom: 5px;
             font-weight: bold;
+            color: #333;
         }
         input, select, textarea {
             margin-top: 5px;
-            padding: 5px;
+            padding: 8px;
             width: 100%;
             max-width: 90%;
             box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
         }
         input[name="inspector_code"] {
-            max-width: 80px;
+            max-width: 100px;
             maxlength: 6;
-            pattern="\d{6}";
+            pattern="[0-9]{6}";
             title="6 digits only";
             oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,6)";
         }
@@ -125,6 +122,7 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
+            background: rgba(255, 255, 255, 0.85);
         }
         th, td {
             border: 1px solid #ccc;
@@ -132,20 +130,25 @@
             text-align: left;
         }
         th {
-            background-color: #f0f0f0;
+            background: rgba(240, 240, 240, 0.9);
+            color: #333;
         }
         tr.important-weight {
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.4);
+            color: #fff;
         }
         .category-header {
             font-weight: bold;
-            background-color: #e0e0e0;
+            background: rgba(224, 224, 224, 0.9);
             padding: 5px 10px;
-            margin-top: 10px;
+            color: #333;
         }
         .past-inspections, .search-section {
             margin-top: 30px;
             text-align: center;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 5px;
         }
         .success {
             display: none;
@@ -153,10 +156,11 @@
             width: 100px;
             height: 100px;
             margin: 20px auto;
-            background-color: #28a745;
+            background: #28a745;
             border-radius: 50%;
             text-align: center;
             line-height: 100px;
+            animation: fadeIn 1s;
         }
         .success::before {
             content: '✔';
@@ -166,45 +170,74 @@
         .success.show {
             display: block;
         }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal.show {
+            display: flex;
+        }
+        .modal-content {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            max-width: 400px;
+            width: 90%;
+        }
+        .modal-content .submission-complete {
+            font-size: 24px;
+            color: #28a745;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .modal-content .back-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #dc3545;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
         .hidden {
             display: none;
         }
-        .action-buttons {
-            margin-top: 20px;
-            text-align: center;
-        }
-        .action-buttons button {
-            padding: 10px 20px;
-            margin: 0 10px;
-            background: #007BFF;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        .action-buttons button.email {
-            background: #28a745;
-        }
         .form-buttons {
             text-align: center;
-            margin-top: 10px;
+            margin-top: 20px;
         }
         .form-buttons button {
             padding: 10px 20px;
             margin: 0 10px;
             border-radius: 5px;
             cursor: pointer;
+            border: none;
+            color: white;
+            font-weight: bold;
         }
         .submit-button {
             background: #28a745;
-            color: white;
-            border: none;
+        }
+        .submit-button:hover {
+            background: #218838;
         }
         .cancel-button {
             background: #dc3545;
-            color: white;
-            border: none;
         }
-        .finish-button {
+        .cancel-button:hover {
+            background: #c82333;
+        }
+        .back-button {
             display: block;
             width: 150px;
             padding: 10px;
@@ -215,13 +248,17 @@
             text-decoration: none;
             border-radius: 5px;
         }
+        .back-button:hover {
+            background: #c82333;
+        }
         .search-results table, .past-inspections table {
             margin: 20px auto;
             width: 80%;
             cursor: pointer;
+            background: rgba(255, 255, 255, 0.85);
         }
         .search-results tr:hover, .past-inspections tr:hover {
-            background-color: #f0f0f0;
+            background: rgba(240, 240, 240, 0.9);
         }
         .score-message {
             margin-top: 10px;
@@ -231,33 +268,14 @@
         .score-message.pass {
             color: #28a745;
         }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const video = document.getElementById('background-video');
-
-            video.addEventListener('loadedmetadata', function() {
-                video.currentTime = 0;
-            });
-            video.addEventListener('timeupdate', function() {
-                if (video.currentTime >= 16) {
-                    video.currentTime = 0;
-                }
-            });
-
-            {% if success %}
-                document.querySelector('.success').classList.add('show');
-            {% endif %}
-
-            document.querySelectorAll('tr').forEach(row => {
-                const weightCell = row.querySelector('td:nth-child(3)');
-                if (weightCell) {
-                    const weight = parseInt(weightCell.textContent);
-                    if (weight === 4 || weight === 5) {
-                        row.classList.add('important-weight');
-                    }
-                }
-            });
+            if (!document.getElementById('inspectionForm')) return;
 
             function calculateScores() {
                 let criticalScore = 0;
@@ -270,35 +288,56 @@
                         const score = parseInt(scoreSelect.value);
                         const points = score > 0 ? weight : 0;
                         totalScore += points;
-                        if (weight >= 4) {
-                            criticalScore += points;
-                        }
+                        if (weight >= 4) criticalScore += points;
                     }
                 });
-
                 document.querySelector('input[name="critical_score"]').value = criticalScore;
                 document.querySelector('input[name="overall_score"]').value = totalScore;
-
                 const messageDiv = document.getElementById('scoreMessage');
                 const pass = criticalScore >= 59 && totalScore >= 70;
                 messageDiv.textContent = pass ?
                     `Pass: Critical Score = ${criticalScore}, Total Score = ${totalScore}` :
                     `Fail: Critical Score = ${criticalScore} (needs 59+), Total Score = ${totalScore} (needs 70+)`;
                 messageDiv.className = `score-message ${pass ? 'pass' : ''}`;
-
-                const resultSelect = document.querySelector('select[name="result"]');
-                resultSelect.value = pass ? 'Satisfactory' : 'Unsatisfactory';
+                document.querySelector('select[name="result"]').value = pass ? 'Satisfactory' : 'Unsatisfactory';
             }
 
             document.querySelectorAll('select[name^="score_"]').forEach(select => {
                 select.addEventListener('change', calculateScores);
             });
+            if (document.querySelector('select[name^="score_"]')) calculateScores();
 
-            if (document.querySelector('select[name^="score_"]')) {
-                calculateScores();
-            }
+            const form = document.getElementById('inspectionForm');
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+                const actionUrl = '{{ url_for("submit_form", form_type="inspection") | safe }}';
+                fetch(actionUrl, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok ' + response.statusText);
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        const modal = document.querySelector('.modal');
+                        const success = document.querySelector('.success');
+                        const message = document.querySelector('.submission-complete');
+                        message.textContent = 'Saved Successfully';
+                        modal.classList.add('show');
+                        success.classList.add('show');
+                        form.reset();
+                        calculateScores();
+                    } else {
+                        alert('Error: ' + data.error);
+                    }
+                })
+                .catch(error => alert('An error occurred: ' + error.message));
+            });
 
-            document.getElementById('searchBtn').addEventListener('click', function() {
+            document.getElementById('searchBtn')?.addEventListener('click', function() {
                 const searchTerm = document.getElementById('searchInput').value;
                 fetch(`/search?term=${encodeURIComponent(searchTerm)}`)
                     .then(response => response.json())
@@ -324,42 +363,10 @@
     </script>
 </head>
 <body>
-    <video autoplay muted loop id="background-video">
-        <source src="{{ url_for('static', filename='flag_vid3.webm') }}" type="video/webm">
-        Your browser does not support the video tag.
-    </video>
-    {% if not show_form %}
-        <h1>Westmoreland Health Department</h1>
-        <div class="search-section">
-            <h2>Search Completed Inspections</h2>
-            <input type="text" id="searchInput" placeholder="Search by establishment, license #, or owner">
-            <button id="searchBtn">Search</button>
-            <div id="searchResults" class="search-results"></div>
-        </div>
-
-        <div class="form-section past-inspections">
-            <h2>Past Inspections</h2>
-            <table>
-                <tr>
-                    <th>ID</th>
-                    <th>Establishment</th>
-                    <th>Date</th>
-                    <th>Result</th>
-                </tr>
-                {% for inspection in inspections %}
-                <tr>
-                    <td>{{ inspection[0] }}</td>
-                    <td>{{ inspection[1] }}</td>
-                    <td>{{ inspection[6] }}</td>
-                    <td>{{ inspection[11] }}</td>
-                </tr>
-                {% endfor %}
-            </table>
-        </div>
-    {% else %}
-        <h1>Food Establishment Inspection Form</h1>
-        <div class="form-container">
-            <form method="POST" action="/submit" class="{% if not show_form %}hidden{% endif %}">
+    <div class="form-container">
+        {% if show_form %}
+            <h1>Food Establishment Inspection Form</h1>
+            <form id="inspectionForm" method="POST" action="{{ url_for('submit_form', form_type='inspection') }}">
                 <div class="form-section">
                     <h2>Establishment Details</h2>
                     <table class="pair-table">
@@ -375,12 +382,12 @@
                         </tr>
                         <tr>
                             <td><label>Inspector Name: <input type="text" name="inspector_name" required></label></td>
-                            <td><label>Inspector Code: <input type="text" name="inspector_code" pattern="\d{6}" title="6 digits only" maxlength="6" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,6)"></label></td>
-                            <td><label>Inspection Date: <input type="date" name="inspection_date" required></label></td>
+                            <td><label>Inspector Code: <input type="text" name="inspector_code" pattern="[0-9]{6}" title="6 digits only" maxlength="6" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,6)"></label></td>
+                            <td><label>Inspection Date: <input type="date" name="inspection_date" value="{{ '2025-06-12' }}" required></label></td>
                         </tr>
                         <tr>
-                            <td><label>Inspection Time: <input type="time" name="inspection_time" required></label></td>
-                            <td><label>Type of Establishment: <input type="text" name="type_of_establishment"></label></td>
+                            <td><label>Inspection Time: <input type="time" name="inspection_time" value="{{ '09:56' }}" required></label></td>
+                            <td><label>Type of Establishment: <input type="text" name="type_of_establishment" value="Food Establishment"></label></td>
                             <td><label>No. of Employees: <input type="number" name="no_of_employees"></label></td>
                         </tr>
                         <tr>
@@ -426,13 +433,13 @@
                     <table>
                         <tr>
                             <th>Item #</th>
-                            <th>Description</th>
+                            <th>Label</th>
                             <th>Weight</th>
                             <th>Score</th>
                         </tr>
                         <tr class="category-header"><td colspan="4">FOOD PROTECTION (1-10)</td></tr>
                         {% for item in checklist if 1 <= item.id <= 10 %}
-                        <tr class="{% if item.wt|float == 4 or item.wt|float == 5 %}important-weight{% endif %}">
+                        <tr class="{% if item.wt|float in [4, 5] %}important-weight{% endif %}">
                             <td>{{ item.id }}</td>
                             <td>{{ item.desc }}</td>
                             <td>{{ item.wt }}</td>
@@ -446,7 +453,7 @@
                         {% endfor %}
                         <tr class="category-header"><td colspan="4">FOOD EQUIPMENT AND UTENSILS (11-23)</td></tr>
                         {% for item in checklist if 11 <= item.id <= 23 %}
-                        <tr class="{% if item.wt|float == 4 or item.wt|float == 5 %}important-weight{% endif %}">
+                        <tr class="{% if item.wt|float in [4, 5] %}important-weight{% endif %}">
                             <td>{{ item.id }}</td>
                             <td>{{ item.desc }}</td>
                             <td>{{ item.wt }}</td>
@@ -460,7 +467,7 @@
                         {% endfor %}
                         <tr class="category-header"><td colspan="4">TOILET AND HANDWASHING FACILITIES (24-25)</td></tr>
                         {% for item in checklist if 24 <= item.id <= 25 %}
-                        <tr class="{% if item.wt|float == 4 or item.wt|float == 5 %}important-weight{% endif %}">
+                        <tr class="{% if item.wt|float in [4, 5] %}important-weight{% endif %}">
                             <td>{{ item.id }}</td>
                             <td>{{ item.desc }}</td>
                             <td>{{ item.wt }}</td>
@@ -474,7 +481,7 @@
                         {% endfor %}
                         <tr class="category-header"><td colspan="4">SOLID WASTE MANAGEMENT (26-27)</td></tr>
                         {% for item in checklist if 26 <= item.id <= 27 %}
-                        <tr class="{% if item.wt|float == 4 or item.wt|float == 5 %}important-weight{% endif %}">
+                        <tr class="{% if item.wt|float in [4, 5] %}important-weight{% endif %}">
                             <td>{{ item.id }}</td>
                             <td>{{ item.desc }}</td>
                             <td>{{ item.wt }}</td>
@@ -488,7 +495,7 @@
                         {% endfor %}
                         <tr class="category-header"><td colspan="4">RODENTS, INSECT, ANIMAL CONTROL (28)</td></tr>
                         {% for item in checklist if item.id == 28 %}
-                        <tr class="{% if item.wt|float == 4 or item.wt|float == 5 %}important-weight{% endif %}">
+                        <tr class="{% if item.wt|float in [4, 5] %}important-weight{% endif %}">
                             <td>{{ item.id }}</td>
                             <td>{{ item.desc }}</td>
                             <td>{{ item.wt }}</td>
@@ -502,7 +509,7 @@
                         {% endfor %}
                         <tr class="category-header"><td colspan="4">PERSONNEL (29-35)</td></tr>
                         {% for item in checklist if 29 <= item.id <= 35 %}
-                        <tr class="{% if item.wt|float == 4 or item.wt|float == 5 %}important-weight{% endif %}">
+                        <tr class="{% if item.wt|float in [4, 5] %}important-weight{% endif %}">
                             <td>{{ item.id }}</td>
                             <td>{{ item.desc }}</td>
                             <td>{{ item.wt }}</td>
@@ -516,7 +523,7 @@
                         {% endfor %}
                         <tr class="category-header"><td colspan="4">WATER (36)</td></tr>
                         {% for item in checklist if item.id == 36 %}
-                        <tr class="{% if item.wt|float == 4 or item.wt|float == 5 %}important-weight{% endif %}">
+                        <tr class="{% if item.wt|float in [4, 5] %}important-weight{% endif %}">
                             <td>{{ item.id }}</td>
                             <td>{{ item.desc }}</td>
                             <td>{{ item.wt }}</td>
@@ -530,117 +537,117 @@
                         {% endfor %}
                         <tr class="category-header"><td colspan="4">SEWAGE (37)</td></tr>
                         {% for item in checklist if item.id == 37 %}
-                        <tr class="{% if item.wt|float == 4 or item.wt|float == 5 %}important-weight{% endif %}">
+                        <tr class="{% if item.wt|float in [4, 5] %}important-weight{% endif %}">
                             <td>{{ item.id }}</td>
                             <td>{{ item.desc }}</td>
                             <td>{{ item.wt }}</td>
-                            <td>
-                                <select name="score_{{ item.id }}">
-                                    <option value="0" selected>0</option>
-                                    <option value="{{ item.wt }}">{{ item.wt }}</option>
-                                </select>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                        <tr class="category-header"><td colspan="4">PLUMBING (38-39)</td></tr>
-                        {% for item in checklist if 38 <= item.id <= 39 %}
-                        <tr class="{% if item.wt|float == 4 or item.wt|float == 5 %}important-weight{% endif %}">
-                            <td>{{ item.id }}</td>
-                            <td>{{ item.desc }}</td>
-                            <td>{{ item.wt }}</td>
-                            <td>
-                                <select name="score_{{ item.id }}">
-                                    <option value="0" selected>0</option>
-                                    <option value="{{ item.wt }}">{{ item.wt }}</option>
-                                </select>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                        <tr class="category-header"><td colspan="4">FLOORS, WALLS AND CEILING (40-41)</td></tr>
-                        {% for item in checklist if 40 <= item.id <= 41 %}
-                        <tr class="{% if item.wt|float == 4 or item.wt|float == 5 %}important-weight{% endif %}">
-                            <td>{{ item.id }}</td>
-                            <td>{{ item.desc }}</td>
-                            <td>{{ item.wt }}</td>
-                            <td>
-                                <select name="score_{{ item.id }}">
-                                    <option value="0" selected>0</option>
-                                    <option value="{{ item.wt }}">{{ item.wt }}</option>
-                                </select>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                        <tr class="category-header"><td colspan="4">OTHER OPERATIONS (42-45)</td></tr>
-                        {% for item in checklist if 42 <= item.id <= 45 %}
-                        <tr class="{% if item.wt|float == 4 or item.wt|float == 5 %}important-weight{% endif %}">
-                            <td>{{ item.id }}</td>
-                            <td>{{ item.desc }}</td>
-                            <td>{{ item.wt }}</td>
-                            <td>
-                                <select name="score_{{ item.id }}">
-                                    <option value="0" selected>0</option>
-                                    <option value="{{ item.wt }}">{{ item.wt }}</option>
-                                </select>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </table>
-                </div>
+            <td>
+                <select name="score_{{ item.id }}">
+                    <option value="0" selected>0</option>
+                    <option value="{{ item.wt }}">{{ item.wt }}</option>
+                </select>
+            </td>
+        </tr>
+        {% endfor %}
+        <tr class="category-header"><td colspan="4">PLUMBING (38-39)</td></tr>
+        {% for item in checklist if 38 <= item.id <= 39 %}
+        <tr class="{% if item.wt|float in [4, 5] %}important-weight{% endif %}">
+            <td>{{ item.id }}</td>
+            <td>{{ item.desc }}</td>
+            <td>{{ item.wt }}</td>
+            <td>
+                <select name="score_{{ item.id }}">
+                    <option value="0" selected>0</option>
+                    <option value="{{ item.wt }}">{{ item.wt }}</option>
+                </select>
+            </td>
+        </tr>
+        {% endfor %}
+        <tr class="category-header"><td colspan="4">FLOORS, WALLS AND CEILING (40-41)</td></tr>
+        {% for item in checklist if 40 <= item.id <= 41 %}
+        <tr class="{% if item.wt|float in [4, 5] %}important-weight{% endif %}">
+            <td>{{ item.id }}</td>
+            <td>{{ item.desc }}</td>
+            <td>{{ item.wt }}</td>
+            <td>
+                <select name="score_{{ item.id }}">
+                    <option value="0" selected>0</option>
+                    <option value="{{ item.wt }}">{{ item.wt }}</option>
+                </select>
+            </td>
+        </tr>
+        {% endfor %}
+        <tr class="category-header"><td colspan="4">OTHER OPERATIONS (42-45)</td></tr>
+        {% for item in checklist if 42 <= item.id <= 45 %}
+        <tr class="{% if item.wt|float in [4, 5] %}important-weight{% endif %}">
+            <td>{{ item.id }}</td>
+            <td>{{ item.desc }}</td>
+            <td>{{ item.wt }}</td>
+            <td>
+                <select name="score_{{ item.id }}">
+                    <option value="0" selected>0</option>
+                    <option value="{{ item.wt }}">{{ item.wt }}</option>
+                </select>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
 
-                <div class="form-section">
-                    <h2>Inspector's Comments</h2>
-                    <div class="signature-row">
-                        <div class="comments-area">
-                            <textarea name="comments" rows="5" cols="30"></textarea>
-                        </div>
-                        <div>
-                            <label>Inspector's Signature: <input type="text" name="inspector_signature" required></label>
-                            <label>Rec'd By: <input type="text" name="recieved_by" required></label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-buttons">
-                    <button type="submit" class="submit-button">Submit Inspection</button>
-                    <button type="button" class="cancel-button" onclick="window.location.href='/'">Cancel Form</button>
-                </div>
-            </form>
-            {% if success %}
-                <div class="success"></div>
-                <div class="action-buttons">
-                    <button>Print</button>
-                    <button class="email">Email</button>
-                </div>
-                <a href="/" class="finish-button">Finish</a>
-            {% endif %}
-
-            <div class="search-section">
-                <h2>Search Completed Inspections</h2>
-                <input type="text" id="searchInput" placeholder="Search by establishment, license #, or owner">
-                <button id="searchBtn">Search</button>
-                <div id="searchResults" class="search-results"></div>
-            </div>
-
-            <div class="form-section past-inspections">
-                <h2>Past Inspections</h2>
-                <table>
-                    <tr>
-                        <th>ID</th>
-                        <th>Establishment</th>
-                        <th>Date</th>
-                        <th>Result</th>
-                    </tr>
-                    {% for inspection in inspections %}
-                    <tr>
-                        <td>{{ inspection[0] }}</td>
-                        <td>{{ inspection[1] }}</td>
-                        <td>{{ inspection[6] }}</td>
-                        <td>{{ inspection[11] }}</td>
-                    </tr>
-                    {% endfor %}
-                </table>
-            </div>
+<div class="form-section">
+    <h2>Inspector's Comments</h2>
+    <div class="signature-row">
+        <div class="comments-area">
+            <label>Comments: <textarea name="comments" rows="5" cols="30"></textarea></label>
         </div>
-    {% endif %}
+        <div>
+            <label>Inspector's Signature: <input type="text" name="inspector_signature" required></label>
+            <label>Received By: <input type="text" name="received_by" required></label>
+        </div>
+    </div>
+</div>
+
+<div class="form-buttons">
+    <button type="submit" class="submit-button">Submit Inspection</button>
+    <button type="button" class="cancel-button" onclick="window.location.href='/'">Cancel Form</button>
+</div>
+</form>
+<div class="modal">
+    <div class="modal-content">
+        <div class="success"></div>
+        <div class="submission-complete"></div>
+        <a href="{{ url_for('dashboard') }}" class="back-button">Back to Dashboard</a>
+    </div>
+</div>
+{% else %}
+<h1>Westmoreland Health Department</h1>
+<div class="search-section">
+    <h2>Search Completed Inspections</h2>
+    <input type="text" id="searchInput" placeholder="Search by establishment, license #, or owner">
+    <button id="searchBtn">Search</button>
+    <div id="searchResults" class="search-results"></div>
+</div>
+
+<div class="form-section past-inspections">
+    <h2>Past Inspections</h2>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Establishment</th>
+            <th>Date</th>
+            <th>Result</th>
+        </tr>
+        {% for inspection in inspections %}
+        <tr>
+            <td>{{ inspection[0] }}</td>
+            <td>{{ inspection[1] }}</td>
+            <td>{{ inspection[3] }}</td>
+            <td>{{ inspection[6] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endif %}
+</div>
 </body>
 </html>

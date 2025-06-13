@@ -10,19 +10,11 @@
             padding: 20px;
             height: 100vh;
             overflow: auto;
-            background: rgba(255, 255, 255, 0.2);
+            background: url('{{ url_for("static", filename="d.jpg") }}') no-repeat center center fixed;
+            background-size: cover;
             display: flex;
             justify-content: center;
             align-items: flex-start;
-        }
-        video {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: -1;
         }
         .form-container {
             width: 100%;
@@ -157,6 +149,7 @@
             border-radius: 50%;
             text-align: center;
             line-height: 100px;
+            animation: fadeIn 1s;
         }
         .success::before {
             content: '✔';
@@ -204,7 +197,7 @@
             color: white;
             border: none;
         }
-        .finish-button {
+        .back-button {
             display: block;
             width: 150px;
             padding: 10px;
@@ -231,20 +224,20 @@
         .score-message.pass {
             color: #28a745;
         }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .submission-complete {
+            text-align: center;
+            margin: 20px auto;
+            font-size: 24px;
+            color: #28a745;
+            font-weight: bold;
+        }
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const video = document.getElementById('background-video');
-
-            video.addEventListener('loadedmetadata', function() {
-                video.currentTime = 0;
-            });
-            video.addEventListener('timeupdate', function() {
-                if (video.currentTime >= 16) {
-                    video.currentTime = 0;
-                }
-            });
-
             {% if success %}
                 document.querySelector('.success').classList.add('show');
             {% endif %}
@@ -300,66 +293,37 @@
 
             document.getElementById('searchBtn').addEventListener('click', function() {
                 const searchTerm = document.getElementById('searchInput').value;
-                fetch(`/search?term=${encodeURIComponent(searchTerm)}`)
+                fetch(`/search_residential?term=${encodeURIComponent(searchTerm)}`)
                     .then(response => response.json())
                     .then(data => {
                         const resultsDiv = document.getElementById('searchResults');
-                        resultsDiv.innerHTML = '<h2>Completed Inspections</h2><table><tr><th>ID</th><th>Establishment</th><th>License #</th><th>Owner/Operator</th><th>Date</th></tr>';
+                        resultsDiv.innerHTML = '<h2>Completed Inspections</h2><table><tr><th>ID</th><th>Premises Name</th><th>Owner</th><th>Date</th><th>Result</th></tr>';
                         data.suggestions.forEach(suggestion => {
-                            const [establishment] = suggestion.text.split(' (');
                             const id = suggestion.id;
-                            resultsDiv.innerHTML += `<tr onclick="window.location.href='/inspection/${id}'"><td>${id}</td><td>${establishment}</td><td>${suggestion.text.match(/License: (\w+)/)?.[1] || ''}</td><td>${suggestion.text.match(/Owner: ([\w\s]+)/)?.[1] || ''}</td><td>${new Date().toLocaleDateString()}</td></tr>`;
+                            resultsDiv.innerHTML += `<tr onclick="window.location.href='/residential/inspection/${id}'"><td>${id}</td><td>${suggestion.premises_name || 'N/A'}</td><td>${suggestion.owner || 'N/A'}</td><td>${suggestion.created_at || new Date().toLocaleDateString()}</td><td>${suggestion.result || 'N/A'}</td></tr>`;
                         });
                         resultsDiv.innerHTML += '</table>';
+                    })
+                    .catch(error => {
+                        console.error('Error searching residential inspections:', error);
+                        document.getElementById('searchResults').innerHTML = '<p>Error loading results</p>';
                     });
             });
 
             document.querySelectorAll('.past-inspections tr').forEach(row => {
                 row.addEventListener('click', function() {
                     const id = this.cells[0].textContent;
-                    window.location.href = `/inspection/${id}`;
+                    window.location.href = `/residential/inspection/${id}`;
                 });
             });
         });
     </script>
 </head>
 <body>
-    <video autoplay muted loop id="background-video">
-        <source src="{{ url_for('static', filename='flag_vid3.webm') }}" type="video/webm">
-        Your browser does not support the video tag.
-    </video>
-    {% if not show_form %}
-        <h1>Westmoreland Health Department</h1>
-        <div class="search-section">
-            <h2>Search Completed Inspections</h2>
-            <input type="text" id="searchInput" placeholder="Search by establishment, license #, or owner">
-            <button id="searchBtn">Search</button>
-            <div id="searchResults" class="search-results"></div>
-        </div>
-
-        <div class="form-section past-inspections">
-            <h2>Past Inspections</h2>
-            <table>
-                <tr>
-                    <th>ID</th>
-                    <th>Establishment</th>
-                    <th>Date</th>
-                    <th>Result</th>
-                </tr>
-                {% for inspection in inspections %}
-                <tr>
-                    <td>{{ inspection[0] }}</td>
-                    <td>{{ inspection[1] }}</td>
-                    <td>{{ inspection[6] }}</td>
-                    <td>{{ inspection[11] }}</td>
-                </tr>
-                {% endfor %}
-            </table>
-        </div>
-    {% else %}
-        <h1>Residential & Non-Residential Inspection Form</h1>
-        <div class="form-container">
-            <form method="POST" action="/submit_residential" class="{% if not show_form %}hidden{% endif %}">
+    <div class="form-container">
+        {% if show_form %}
+            <h1>Residential & Non-Residential Inspection Form</h1>
+            <form method="POST" action="/submit_residential">
                 <div class="form-section">
                     <h2>Premises Details</h2>
                     <table class="pair-table">
@@ -462,8 +426,8 @@
                             <td>{{ item.desc }}</td>
                             <td>{{ item.wt }}</td>
                             <td>
-                                <select name="score_{{ item.id }}">
-                                    <option value="0" selected>0</option>
+                                <select name="score_{{ item.id }}" required>
+                                    <option value="0">0</option>
                                     <option value="{{ item.wt }}">{{ item.wt }}</option>
                                 </select>
                             </td>
@@ -476,8 +440,8 @@
                             <td>{{ item.desc }}</td>
                             <td>{{ item.wt }}</td>
                             <td>
-                                <select name="score_{{ item.id }}">
-                                    <option value="0" selected>0</option>
+                                <select name="score_{{ item.id }}" required>
+                                    <option value="0">0</option>
                                     <option value="{{ item.wt }}">{{ item.wt }}</option>
                                 </select>
                             </td>
@@ -490,8 +454,8 @@
                             <td>{{ item.desc }}</td>
                             <td>{{ item.wt }}</td>
                             <td>
-                                <select name="score_{{ item.id }}">
-                                    <option value="0" selected>0</option>
+                                <select name="score_{{ item.id }}" required>
+                                    <option value="0">0</option>
                                     <option value="{{ item.wt }}">{{ item.wt }}</option>
                                 </select>
                             </td>
@@ -504,8 +468,8 @@
                             <td>{{ item.desc }}</td>
                             <td>{{ item.wt }}</td>
                             <td>
-                                <select name="score_{{ item.id }}">
-                                    <option value="0" selected>0</option>
+                                <select name="score_{{ item.id }}" required>
+                                    <option value="0">0</option>
                                     <option value="{{ item.wt }}">{{ item.wt }}</option>
                                 </select>
                             </td>
@@ -518,8 +482,8 @@
                             <td>{{ item.desc }}</td>
                             <td>{{ item.wt }}</td>
                             <td>
-                                <select name="score_{{ item.id }}">
-                                    <option value="0" selected>0</option>
+                                <select name="score_{{ item.id }}" required>
+                                    <option value="0">0</option>
                                     <option value="{{ item.wt }}">{{ item.wt }}</option>
                                 </select>
                             </td>
@@ -532,8 +496,8 @@
                             <td>{{ item.desc }}</td>
                             <td>{{ item.wt }}</td>
                             <td>
-                                <select name="score_{{ item.id }}">
-                                    <option value="0" selected>0</option>
+                                <select name="score_{{ item.id }}" required>
+                                    <option value="0">0</option>
                                     <option value="{{ item.wt }}">{{ item.wt }}</option>
                                 </select>
                             </td>
@@ -546,8 +510,8 @@
                             <td>{{ item.desc }}</td>
                             <td>{{ item.wt }}</td>
                             <td>
-                                <select name="score_{{ item.id }}">
-                                    <option value="0" selected>0</option>
+                                <select name="score_{{ item.id }}" required>
+                                    <option value="0">0</option>
                                     <option value="{{ item.wt }}">{{ item.wt }}</option>
                                 </select>
                             </td>
@@ -570,8 +534,8 @@
                             <td>{{ item.desc }}</td>
                             <td>{{ item.wt }}</td>
                             <td>
-                                <select name="score_{{ item.id }}">
-                                    <option value="0" selected>0</option>
+                                <select name="score_{{ item.id }}" required>
+                                    <option value="0">0</option>
                                     <option value="{{ item.wt }}">{{ item.wt }}</option>
                                 </select>
                             </td>
@@ -588,7 +552,7 @@
                         </div>
                         <div>
                             <label>Inspector's Signature: <input type="text" name="inspector_signature" required></label>
-                            <label>Rec'd By: <input type="text" name="recieved_by" required></label>
+                            <label>Rec'd By: <input type="text" name="received_by" required></label>
                         </div>
                     </div>
                 </div>
@@ -600,16 +564,14 @@
             </form>
             {% if success %}
                 <div class="success"></div>
-                <div class="action-buttons">
-                    <button>Print</button>
-                    <button class="email">Email</button>
-                </div>
-                <a href="/" class="finish-button">Finish</a>
+                <div class="submission-complete">Submission complete</div>
+                <a href="/" class="back-button">Back to Dashboard</a>
             {% endif %}
-
+        {% else %}
+            <h1>Westmoreland Health Department</h1>
             <div class="search-section">
                 <h2>Search Completed Inspections</h2>
-                <input type="text" id="searchInput" placeholder="Search by establishment, license #, or owner">
+                <input type="text" id="searchInput" placeholder="Search by premises name, owner, or date">
                 <button id="searchBtn">Search</button>
                 <div id="searchResults" class="search-results"></div>
             </div>
@@ -619,7 +581,7 @@
                 <table>
                     <tr>
                         <th>ID</th>
-                        <th>Premises</th>
+                        <th>Premises Name</th>
                         <th>Date</th>
                         <th>Result</th>
                     </tr>
@@ -627,13 +589,19 @@
                     <tr>
                         <td>{{ inspection[0] }}</td>
                         <td>{{ inspection[1] }}</td>
-                        <td>{{ inspection[6] }}</td>
-                        <td>{{ inspection[11] }}</td>
+                        <td>{{ inspection[5] }}</td>
+                        <td>{{ inspection[9] }}</td>
                     </tr>
                     {% endfor %}
                 </table>
             </div>
+        {% endif %}
+        <div class="search-section">
+            <h2>Search Completed Inspections</h2>
+            <input type="text" id="searchInput" placeholder="Search by premises name, owner, or date">
+            <button id="searchBtn">Search</button>
+            <div id="searchResults" class="search-results"></div>
         </div>
-    {% endif %}
+    </div>
 </body>
 </html>

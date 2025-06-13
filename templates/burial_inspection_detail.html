@@ -65,6 +65,8 @@
         .btn:hover {
             background-color: #0056b3;
         }
+        #edit-btn { background-color: #28a745; }
+        #edit-btn:hover { background-color: #218838; }
     </style>
 </head>
 <body>
@@ -101,6 +103,7 @@
         </div>
         <p><strong>Created At:</strong> {{ inspection.created_at }}</p>
         <div class="buttons">
+            <a href="{{ url_for('new_burial_form', id=inspection.id) }}" id="edit-btn" class="btn">Edit</a>
             <a href="{{ url_for('login') }}" class="btn">Back to Dashboard</a>
         </div>
     </div>

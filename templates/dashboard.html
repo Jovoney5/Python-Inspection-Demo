@@ -7,13 +7,34 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background: url('{{ url_for("static", filename="a.jpg") }}') no-repeat center center fixed;
+            background: url('{{ url_for("static", filename="d.jpg") }}') no-repeat center center fixed;
             background-size: cover;
         }
         .container {
             width: 90%;
             margin: 0 auto;
             padding: 20px;
+            position: relative;
+        }
+        .logout-form {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+        }
+        .logout-button {
+            padding: 8px 16px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        .logout-button:hover {
+            background: #c82333;
         }
         h1 {
             text-align: center;
@@ -128,7 +149,6 @@
             margin: 0;
             color: #007bff;
         }
-        /* Modal styles */
         .modal {
             display: none;
             position: fixed;
@@ -168,10 +188,169 @@
             border-radius: 5px;
             cursor: pointer;
         }
+        .chat-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        .chat-icon {
+            background-color: #00ffff;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+        .chat-window {
+            display: none;
+            width: 280px;
+            height: 400px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+            flex-direction: column;
+        }
+        .chat-window.open {
+            display: flex;
+        }
+        .chat-header {
+            background: #00b7b7;
+            color: white;
+            padding: 10px;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .chat-body {
+            flex: 1;
+            padding: 10px;
+            overflow-y: auto;
+            background: #f9f9f9;
+            display: flex;
+            flex-direction: column;
+        }
+        .chat-footer {
+            padding: 10px;
+            border-top: 1px solid #ddd;
+            display: flex;
+            gap: 5px;
+        }
+        .chat-tab-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            padding: 5px 0;
+            order: 2;
+        }
+        .chat-tab {
+            background: #00b7b7;
+            color: white;
+            padding: 8px 25px 8px 15px;
+            border-radius: 5px 5px 0 0;
+            cursor: pointer;
+            margin-right: 5px;
+            display: inline-flex;
+            align-items: center;
+            position: relative;
+            font-size: 14px;
+        }
+        .chat-tab.active {
+            background: #008080;
+        }
+        .chat-tab-close {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 12px;
+            cursor: pointer;
+            padding: 2px;
+        }
+        .chat-tab-close:hover {
+            color: #ff5555;
+        }
+        .chat-message {
+            margin: 5px;
+            padding: 8px;
+            border-radius: 5px;
+        }
+        .chat-message.sent {
+            background: #00ffff;
+            margin-left: 20%;
+            text-align: right;
+        }
+        .chat-message.received {
+            background: #e0e0e0;
+            margin-right: 20%;
+        }
+        .contact-list {
+            display: none;
+            position: absolute;
+            bottom: 60px;
+            right: 0;
+            width: 200px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            padding: 10px;
+            z-index: 1001;
+        }
+        .contact-list.open {
+            display: block;
+        }
+        .contact-item {
+            padding: 8px;
+            cursor: pointer;
+            border-radius: 5px;
+            position: relative;
+        }
+        .contact-item:hover {
+            background: #f0f0f0;
+        }
+        .contact-item.selected {
+            background: #00b7b7;
+            color: white;
+        }
+        .unread-badge {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: red;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        .chat-input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .add-contact {
+            cursor: pointer;
+            font-size: 18px;
+            padding: 0 5px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
+        <form class="logout-form" method="POST" action="/logout">
+            <button type="submit" class="logout-button">Logout</button>
+        </form>
         <h1>Inspector Dashboard</h1>
         <div class="form-select">
             <select id="form-type">
@@ -344,12 +523,22 @@
                             <th>Status</th>
                         </tr>
                     </thead>
-                    <tbody id="small-hotels-results-body"></tbody>
+                    <tbody id="small-hotels-results-body">
+                        {% for inspection in inspections %}
+                            {% if inspection.type == 'small_hotels' %}
+                                <tr>
+                                    <td>{{ inspection.id }}</td>
+                                    <td><a href="{{ url_for('view_small_hotels', inspection_id=inspection.id) }}">{{ inspection.establishment_name }}</a></td>
+                                    <td>{{ inspection.created_at }}</td>
+                                    <td>{{ inspection.result }}</td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
                 </table>
             </div>
         </div>
     </div>
-    <!-- Modal for viewing inspection details -->
     <div class="modal" id="inspectionModal">
         <div class="modal-content">
             <h3>Inspection Details</h3>
@@ -357,6 +546,31 @@
             <button onclick="document.getElementById('inspectionModal').style.display='none'">Close</button>
         </div>
     </div>
+    <div class="chat-container">
+        <div class="chat-icon" onclick="toggleChat()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+        </div>
+        <div class="chat-window" id="chatWindow">
+            <div class="chat-header">
+                <span>Messages</span>
+                <span class="add-contact" onclick="toggleContactList(true)">+</span>
+            </div>
+            <div class="chat-body" id="chatBody">
+                <div class="message-area" id="messageArea"></div>
+                <div class="chat-tab-container"></div>
+            </div>
+            <div class="chat-footer">
+                <input type="text" class="chat-input" id="chatInput" placeholder="Type a message...">
+                <button onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+        <div class="contact-list" id="contactList"></div>
+    </div>
+    <footer>
+        <a href="https://www.wrha.gov.jm/parishes/westmoreland/" target="_blank" style="color: #007bff;">Connect on WRHA</a>
+    </footer>
     <script>
         document.querySelector('#form-type').addEventListener('change', function() {
             if (this.value) {
@@ -384,7 +598,6 @@
                 const response = await fetch('/stats');
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const data = await response.json();
-                console.log('Stats data:', data);
                 const totalCount = (data.food || 0) + (data.residential || 0) + (data.burial || 0) +
                                   (data.spirit_licence || 0) + (data.swimming_pool || 0) + (data.small_hotels || 0);
                 document.querySelector('#total-inspections').textContent = totalCount || 0;
@@ -408,7 +621,6 @@
 
         async function loadForms(tab) {
             let tbody;
-            console.log(`Loading forms for tab: ${tab}`);
             switch (tab) {
                 case 'food':
                     tbody = document.querySelector('#food-results-body');
@@ -435,7 +647,6 @@
             try {
                 const response = await fetch(`/search_forms?query=&type=${tab}`);
                 const data = await response.json();
-                console.log(`LoadForms Data for ${tab}:`, data);
                 tbody.innerHTML = '';
                 if (data.forms && data.forms.length) {
                     data.forms.sort((a, b) => {
@@ -454,7 +665,6 @@
                                 <td>${form.status || 'N/A'}</td>
                             `;
                             row.addEventListener('click', () => {
-                                console.log(`Redirecting to /burial/inspection/${form.id}`);
                                 window.location.href = `/burial/inspection/${form.id}`;
                             });
                         } else if (tab === 'residential') {
@@ -466,7 +676,6 @@
                                 <td>${form.result || 'N/A'}</td>
                             `;
                             row.addEventListener('click', () => {
-                                console.log(`Redirecting to /residential/inspection/${form.id}`);
                                 window.location.href = `/residential/inspection/${form.id}`;
                             });
                         } else if (tab === 'swimming_pool') {
@@ -477,8 +686,27 @@
                                 <td>${form.result || 'N/A'}</td>
                             `;
                             row.addEventListener('click', () => {
-                                console.log(`Redirecting to /swimming_pool/inspection/${form.id}`);
                                 window.location.href = `/swimming_pool/inspection/${form.id}`;
+                            });
+                        } else if (tab === 'spirit_licence') {
+                            row.innerHTML = `
+                                <td>${form.id}</td>
+                                <td>${form.establishment_name || 'N/A'}</td>
+                                <td>${form.created_at || 'N/A'}</td>
+                                <td>${form.result || 'N/A'}</td>
+                            `;
+                            row.addEventListener('click', () => {
+                                window.location.href = `/spirit_licence/inspection/${form.id}`;
+                            });
+                        } else if (tab === 'small_hotels') {
+                            row.innerHTML = `
+                                <td>${form.id}</td>
+                                <td>${form.establishment_name || 'N/A'}</td>
+                                <td>${form.created_at || 'N/A'}</td>
+                                <td>${form.result || 'N/A'}</td>
+                            `;
+                            row.addEventListener('click', () => {
+                                window.location.href = `/view_small_hotels/${form.id}`;
                             });
                         } else {
                             row.innerHTML = `
@@ -488,7 +716,6 @@
                                 <td>${form.result || 'N/A'}</td>
                             `;
                             row.addEventListener('click', () => {
-                                console.log(`Redirecting to /inspection/${form.id}`);
                                 window.location.href = `/inspection/${form.id}`;
                             });
                         }
@@ -504,7 +731,6 @@
         }
 
         function showInspectionDetails(form, id) {
-            console.log('showInspectionDetails called with form:', form);
             const modal = document.getElementById('inspectionModal');
             const detailsDiv = document.getElementById('inspectionDetails');
             detailsDiv.innerHTML = `
@@ -551,7 +777,6 @@
             try {
                 const response = await fetch(`/search_forms?query=${encodeURIComponent(query)}&type=food`);
                 const data = await response.json();
-                console.log('Search Data for food:', data);
                 tbody.innerHTML = '';
                 if (data.forms && data.forms.length) {
                     data.forms.sort((a, b) => a.establishment_name.localeCompare(b.establishment_name));
@@ -564,7 +789,6 @@
                             <td>${form.result || 'N/A'}</td>
                         `;
                         row.addEventListener('click', () => {
-                            console.log(`Redirecting to /inspection/${form.id}`);
                             window.location.href = `/inspection/${form.id}`;
                         });
                         tbody.appendChild(row);
@@ -587,7 +811,6 @@
             try {
                 const response = await fetch(`/search_forms?query=${encodeURIComponent(query)}&type=residential`);
                 const data = await response.json();
-                console.log('Residential Search Data:', data);
                 const tbody = document.querySelector('#residential-results-body');
                 tbody.innerHTML = '';
                 if (data.forms && data.forms.length) {
@@ -602,7 +825,6 @@
                             <td>${form.result || 'N/A'}</td>
                         `;
                         row.addEventListener('click', () => {
-                            console.log(`Redirecting to /residential/inspection/${form.id}`);
                             window.location.href = `/residential/inspection/${form.id}`;
                         });
                         tbody.appendChild(row);
@@ -625,7 +847,6 @@
             try {
                 const response = await fetch(`/search_forms?query=${encodeURIComponent(query)}&type=burial`);
                 const data = await response.json();
-                console.log('Burial Search Data:', data);
                 const tbody = document.querySelector('#burial-results-body');
                 tbody.innerHTML = '';
                 if (data.forms && data.forms.length) {
@@ -640,7 +861,6 @@
                             <td>${form.status || 'N/A'}</td>
                         `;
                         row.addEventListener('click', () => {
-                            console.log(`Redirecting to /burial/inspection/${form.id}`);
                             window.location.href = `/burial/inspection/${form.id}`;
                         });
                         tbody.appendChild(row);
@@ -663,7 +883,6 @@
             try {
                 const response = await fetch(`/search_forms?query=${encodeURIComponent(query)}&type=spirit_licence`);
                 const data = await response.json();
-                console.log('Spirit Licence Search Data:', data);
                 const tbody = document.querySelector('#spirit-licence-results-body');
                 tbody.innerHTML = '';
                 if (data.forms && data.forms.length) {
@@ -677,7 +896,6 @@
                             <td>${form.result || 'N/A'}</td>
                         `;
                         row.addEventListener('click', () => {
-                            console.log(`Redirecting to /spirit_licence/inspection/${form.id}`);
                             window.location.href = `/spirit_licence/inspection/${form.id}`;
                         });
                         tbody.appendChild(row);
@@ -700,7 +918,6 @@
             try {
                 const response = await fetch(`/search_forms?query=${encodeURIComponent(query)}&type=swimming_pool`);
                 const data = await response.json();
-                console.log('Swimming Pool Search Data:', data);
                 const tbody = document.querySelector('#swimming-pool-results-body');
                 tbody.innerHTML = '';
                 if (data.forms && data.forms.length) {
@@ -714,7 +931,6 @@
                             <td>${form.result || 'N/A'}</td>
                         `;
                         row.addEventListener('click', () => {
-                            console.log(`Redirecting to /swimming_pool/inspection/${form.id}`);
                             window.location.href = `/swimming_pool/inspection/${form.id}`;
                         });
                         tbody.appendChild(row);
@@ -737,7 +953,6 @@
             try {
                 const response = await fetch(`/search_forms?query=${encodeURIComponent(query)}&type=small_hotels`);
                 const data = await response.json();
-                console.log('Small Hotels Search Data:', data);
                 const tbody = document.querySelector('#small-hotels-results-body');
                 tbody.innerHTML = '';
                 if (data.forms && data.forms.length) {
@@ -751,8 +966,7 @@
                             <td>${form.result || 'N/A'}</td>
                         `;
                         row.addEventListener('click', () => {
-                            console.log(`Redirecting to /inspection/${form.id}`);
-                            window.location.href = `/inspection/${form.id}`;
+                            window.location.href = `/view_small_hotels/${form.id}`;
                         });
                         tbody.appendChild(row);
                     });
@@ -765,8 +979,194 @@
             }
         });
 
-        loadStats();
-        loadForms('overview');
+        let activeChats = {};
+        let currentContactId = null;
+        let pollingInterval = null;
+
+        function toggleChat() {
+            const chatWindow = document.getElementById('chatWindow');
+            const container = document.querySelector('.container');
+            if (chatWindow.classList.contains('open')) {
+                chatWindow.classList.remove('open');
+                toggleContactList(false);
+                stopPolling();
+            } else {
+                chatWindow.classList.add('open');
+                container.style.display = 'block'; // Ensure dashboard remains visible
+                loadContacts();
+                startPolling();
+            }
+        }
+
+        function toggleContactList(show) {
+            const contactList = document.getElementById('contactList');
+            contactList.classList.toggle('open', show);
+            if (show) {
+                loadContacts();
+            }
+        }
+
+        async function loadContacts() {
+            try {
+                const response = await fetch('/api/contacts');
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const contacts = await response.json();
+                const contactList = document.getElementById('contactList');
+                contactList.innerHTML = '';
+                if (contacts.length === 0) {
+                    contactList.innerHTML = '<div class="contact-item">No contacts available</div>';
+                    return;
+                }
+                contacts.forEach(contact => {
+                    const div = document.createElement('div');
+                    div.className = `contact-item ${currentContactId === contact.id ? 'selected' : ''}`;
+                    div.dataset.contactId = contact.id;
+                    div.textContent = contact.username;
+                    if (contact.unread_count > 0) {
+                        const badge = document.createElement('span');
+                        badge.className = 'unread-badge';
+                        badge.textContent = contact.unread_count;
+                        div.appendChild(badge);
+                    }
+                    div.onclick = () => openChat(contact.id, contact.username);
+                    contactList.appendChild(div);
+                });
+            } catch (error) {
+                console.error('Error loading contacts:', error);
+                const contactList = document.getElementById('contactList');
+                contactList.innerHTML = '<div class="contact-item">Error loading contacts</div>';
+            }
+        }
+
+        function openChat(contactId, username) {
+            if (!activeChats[contactId]) {
+                activeChats[contactId] = { username, messages: [] };
+            }
+            currentContactId = contactId;
+            switchChat(contactId);
+            toggleContactList(false);
+            document.getElementById('chatInput').focus();
+        }
+
+        function updateChatTabs() {
+            const tabContainer = document.querySelector('.chat-tab-container');
+            tabContainer.innerHTML = '';
+            Object.keys(activeChats).forEach(contactId => {
+                const tab = document.createElement('div');
+                tab.className = `chat-tab ${currentContactId === contactId ? 'active' : ''}`;
+                tab.textContent = activeChats[contactId].username;
+                tab.onclick = () => switchChat(contactId);
+                const close = document.createElement('span');
+                close.className = 'chat-tab-close';
+                close.textContent = '×';
+                close.onclick = (e) => {
+                    e.stopPropagation();
+                    closeChat(contactId);
+                };
+                tab.appendChild(close);
+                tabContainer.appendChild(tab);
+            });
+        }
+
+        async function switchChat(contactId) {
+            currentContactId = contactId;
+            await loadMessages(contactId);
+            updateChatTabs();
+            const messageArea = document.getElementById('messageArea');
+            messageArea.scrollTop = messageArea.scrollHeight;
+        }
+
+        async function loadMessages(contactId) {
+            try {
+                const response = await fetch(`/api/messages/${contactId}`);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const messages = await response.json();
+                const messageArea = document.getElementById('messageArea');
+                messageArea.innerHTML = '';
+                messages.forEach(msg => {
+                    const div = document.createElement('div');
+                    div.className = `chat-message ${msg.is_sent ? 'sent' : 'received'}`;
+                    div.innerHTML = `${msg.content} <br><small>${new Date(msg.timestamp).toLocaleString()}</small>`;
+                    messageArea.appendChild(div);
+                });
+                activeChats[contactId].messages = messages;
+                messageArea.scrollTop = messageArea.scrollHeight;
+            } catch (error) {
+                console.error('Error loading messages:', error);
+            }
+        }
+
+        async function sendMessage() {
+            if (!currentContactId) {
+                alert('Please select a contact to send a message.');
+                return;
+            }
+            const input = document.getElementById('chatInput');
+            const content = input.value.trim();
+            if (!content) return;
+            try {
+                const response = await fetch('/api/messages', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ receiver_id: currentContactId, content })
+                });
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const msg = await response.json();
+                const messageArea = document.getElementById('messageArea');
+                const div = document.createElement('div');
+                div.className = 'chat-message sent';
+                div.innerHTML = `${content} <br><small>${new Date(msg.timestamp).toLocaleString()}</small>`;
+                messageArea.appendChild(div);
+                messageArea.scrollTop = messageArea.scrollHeight;
+                input.value = '';
+                activeChats[currentContactId].messages.push({
+                    id: msg.id,
+                    sender_id: msg.sender_id,
+                    receiver_id: msg.receiver_id,
+                    content: msg.content,
+                    timestamp: msg.timestamp,
+                    is_sent: true
+                });
+                await loadContacts();
+            } catch (error) {
+                console.error('Error sending message:', error);
+                alert('Failed to send message. Please try again.');
+            }
+        }
+
+        function closeChat(contactId) {
+            delete activeChats[contactId];
+            if (currentContactId === contactId) {
+                currentContactId = null;
+                document.getElementById('messageArea').innerHTML = '';
+            }
+            updateChatTabs();
+        }
+
+        function startPolling() {
+            if (pollingInterval) return;
+            pollingInterval = setInterval(async () => {
+                if (currentContactId) {
+                    await loadMessages(currentContactId);
+                }
+                await loadContacts();
+            }, 3000);
+        }
+
+        function stopPolling() {
+            if (pollingInterval) {
+                clearInterval(pollingInterval);
+                pollingInterval = null;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadStats();
+            loadForms('overview');
+            document.getElementById('chatInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') sendMessage();
+            });
+        });
     </script>
 </body>
 </html>

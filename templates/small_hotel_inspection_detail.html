@@ -1,18 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Small Hotels Inspection Detail - Jamaica</title>
+    <title>Small Hotels Inspection Details - Jamaica</title>
     <style>
         body {
             font-family: 'Verdana', sans-serif;
             margin: 0;
             padding: 20px;
-            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZmFkZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigxMzUsIDE4NSwgNzUpIiBzdG9wLW9wYWNpdHk9IjAuOCIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjUwJSIgc3RvcC1jb2xvcj0icmdiKDIzNSwgMjA1LCA1NSkiIHN0b3Atb3BhY2l0eT0iMC41Ii8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0icmdiKDEzNSwgMTg1LCA3NSkiIHN0b3Atb3BhY2l0eT0iMC44Ii8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogIDwvZGVmcz4KICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2ZhZGUpIi8+CiAgPHBhdGggZD0iTTAgMEw1MCA1MEwxMDAgMEwwIDBaIiBmaWxsPSIjMDA5YjNhIiBvcGFjaXR5PSIwLjEiLz4KICA8cGF0aCBkPSJNMCAxMDBMNTAgNTBMMTAwIDEwMEwxMDAgMTAwWk0wIDEwMFoiIGZpbGw9IiMwMDliM2EiIG9wYWNpdHk9IjAuMSIvPgogIDxwYXRoIGQ9Ik0wIDBMMTAwIDEwMEwwIDBaIiBmaWxsPSIjZmZkMjAwIiBvcGFjaXR5PSIwLjEiLz4KICA8cGF0aCBkPSJNMCAxMDBMMTAwIDBMMTAwIDEwMFowIDEwMFoiIGZpbGw9IiNmZmQyMDAiIG9wYWNpdHk9IjAuMSIvPgogIDx0ZXh0IHg9IjUwJSIgeT0iNTAlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSJyZ2IoMCwgMCwgMCkgMCIgZm9udC1zaXplPSIyMCIgZm9udC1mYW1pbHk9IlZlcmRhbmEsIHNhbnMtc2VyaWYiIG9wYWNpdHk9IjAuMSI+SkFNRUNBTiBIRUFMVEggREVQQVJUTUVOVDwvdGV4dD4KPC9zdmc+');
+            background: url('/static/d.jpg');
             background-size: cover;
             background-attachment: fixed;
-            height: 100vh;
+            height: 100%;
+            min-height: 100%;
             overflow-y: auto;
-            color: #333;
+            color: #000;
         }
         .form-container {
             max-width: 900px;
@@ -20,8 +21,8 @@
             background: rgba(255, 255, 255, 0.98);
             border-radius: 10px;
             padding: 20px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            border-left: 5px solid #009b3a;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            border-left: 5px solid #000;
             border-right: 5px solid #ffd200;
         }
         .form-header {
@@ -50,72 +51,114 @@
             background: #f5f5f5;
             font-weight: bold;
         }
+        th:nth-child(1), td:nth-child(1) { width: 10%; } /* Item */
+        th:nth-child(2), td:nth-child(2) { width: 50%; } /* Details */
+        th:nth-child(3), td:nth-child(3) { width: 20%; } /* Obser */
+        th:nth-child(4), td:nth-child(4) { width: 20%; } /* Error */
         .category-header {
             font-weight: bold;
             font-size: 16px;
             background: #ffd200;
-            color: #009b3a;
+            color: #000;
             padding: 8px;
-            border-radius: 5px;
             margin: 5px 0;
+            border-radius: 5px;
             text-transform: uppercase;
         }
         .critical {
-            background-color: rgba(0, 155, 58, 0.2);
+            background-color: rgba(0,0,255,0.2);
             border-left: 3px solid #000;
+        }
+        .data-field {
+            font-size: 14px;
+            display: block;
+            padding: 8px;
         }
         .comments {
             width: 100%;
             padding: 10px;
-            border: 1px solid #ccc;
+            border: 1px solid #ddd;
             border-radius: 5px;
-            font-size: 14px;
+            font-size: 16px;
             background: #f5f5f5;
-            min-height: 100px;
+            min-height: 150px;
+            white-space: pre-wrap;
         }
         .buttons {
             margin-top: 20px;
             text-align: center;
         }
         .btn {
-            padding: 10px 20px;
+            padding: 12px 24px;
             margin: 0 5px;
-            font-size: 14px;
+            font-size: 16px;
+            font-weight: bold;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            margin-top: 10px;
             color: #fff;
             transition: background 0.3s;
+            display: inline-block;
         }
         .btn:hover {
             opacity: 0.8;
         }
+        #print-btn {
+            background: #ffd200;
+            color: #000;
+        }
+        #print-btn:hover {
+            background: #e6b800;
+        }
+        #download-btn {
+            background: #17a2b8;
+        }
+        #download-btn:hover {
+            background: #138496;
+        }
+        #share-btn {
+            background: #007bff;
+        }
+        #share-btn:hover {
+            background: #0056b3;
+        }
         #back-btn {
-            background: #6c757d;
+            background: #5a6268;
         }
         #back-btn:hover {
-            background: #5a6268;
+            background: #4b5156;
+        }
+        .score {
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            color: #009b3a;
+            margin: 20px 0;
+            padding: 10px;
+            border: 2px solid #ffd200;
+            border-radius: 5px;
+            background: #f5f5f5;
         }
     </style>
 </head>
 <body>
     <div class="form-container">
-        <div class="form-header">Small Hotels Inspection Detail - Jamaica</div>
+        <div class="form-header">Small Hotels Inspection Details - Jamaica</div>
+        <div class="score">Inspection Score: {{ score }}%</div>
         <table>
             <tr>
                 <td>Hotel Name</td>
-                <td>{{ inspection.establishment_name }}</td>
+                <td><span class="data-field">{{ inspection.establishment_name }}</span></td>
                 <td>Date</td>
-                <td>{{ inspection.inspection_date }}</td>
+                <td><span class="data-field">{{ inspection.inspection_date }}</span></td>
                 <td>Inspector's ID</td>
-                <td>{{ inspection.inspector_name }}</td>
+                <td><span class="data-field">{{ inspection.inspector_name }}</span></td>
             </tr>
             <tr>
                 <td>Address</td>
-                <td colspan="3">{{ inspection.address }}</td>
+                <td colspan="3"><span class="data-field">{{ inspection.address }}</span></td>
                 <td>Physical Location</td>
-                <td>{{ inspection.physical_location }}</td>
+                <td><span class="data-field">{{ inspection.physical_location }}</span></td>
             </tr>
         </table>
 
@@ -129,55 +172,55 @@
             </tr>
             <tr>
                 <td>A</td>
-                <td>{{ inspection.details.get('1a', '') }}</td>
-                <td>{{ inspection.obser.get('1a', '') }}</td>
-                <td>{{ inspection.error.get('1a', '') }}</td>
+                <td>Action plan for foodborne illness occurrence</td>
+                <td><span class="data-field">{{ inspection.obser.get('1a', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('1a', '') }}</span></td>
             </tr>
             <tr>
                 <td>B</td>
-                <td>{{ inspection.details.get('1b', '') }}</td>
-                <td>{{ inspection.obser.get('1b', '') }}</td>
-                <td>{{ inspection.error.get('1b', '') }}</td>
+                <td>Food Handlers have valid food handlers permits</td>
+                <td><span class="data-field">{{ inspection.obser.get('1b', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('1b', '') }}</span></td>
             </tr>
             <tr class="critical">
                 <td>C</td>
-                <td>{{ inspection.details.get('1c', '') }}</td>
-                <td>{{ inspection.obser.get('1c', '') }}</td>
-                <td>{{ inspection.error.get('1c', '') }}</td>
+                <td>Relevant policy in place to restrict activities of sick employees</td>
+                <td><span class="data-field">{{ inspection.obser.get('1c', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('1c', '') }}</span></td>
             </tr>
             <tr>
                 <td>D</td>
-                <td>{{ inspection.details.get('1d', '') }}</td>
-                <td>{{ inspection.obser.get('1d', '') }}</td>
-                <td>{{ inspection.error.get('1d', '') }}</td>
+                <td>Establishments have a written policy for the proper disposal of waste</td>
+                <td><span class="data-field">{{ inspection.obser.get('1d', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('1d', '') }}</span></td>
             </tr>
             <tr>
                 <td>E</td>
-                <td>{{ inspection.details.get('1e', '') }}</td>
-                <td>{{ inspection.obser.get('1e', '') }}</td>
-                <td>{{ inspection.error.get('1e', '') }}</td>
+                <td>Cleaning schedule for equipment utensil etc available</td>
+                <td><span class="data-field">{{ inspection.obser.get('1e', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('1e', '') }}</span></td>
             </tr>
             <tr>
                 <td>F</td>
-                <td>{{ inspection.details.get('1f', '') }}</td>
-                <td>{{ inspection.obser.get('1f', '') }}</td>
-                <td>{{ inspection.error.get('1f', '') }}</td>
+                <td>Material safety data sheet available for record of hazardous chemicals used</td>
+                <td><span class="data-field">{{ inspection.obser.get('1f', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('1f', '') }}</span></td>
             </tr>
             <tr>
                 <td>G</td>
-                <td>{{ inspection.details.get('1g', '') }}</td>
-                <td>{{ inspection.obser.get('1g', '') }}</td>
-                <td>{{ inspection.error.get('1g', '') }}</td>
+                <td>Record of hazardous chemicals used</td>
+                <td><span class="data-field">{{ inspection.obser.get('1g', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('1g', '') }}</span></td>
             </tr>
             <tr>
                 <td>H</td>
-                <td>{{ inspection.details.get('1h', '') }}</td>
-                <td>{{ inspection.obser.get('1h', '') }}</td>
-                <td>{{ inspection.error.get('1h', '') }}</td>
+                <td>Food suppliers list available</td>
+                <td><span class="data-field">{{ inspection.obser.get('1h', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('1h', '') }}</span></td>
             </tr>
         </table>
 
-        <div class="category-header">2 - Food Safety (5%)</div>
+        <div class="category-header">2 - Food Safety Inspection (5%)</div>
         <table>
             <tr>
                 <th>Item</th>
@@ -187,33 +230,33 @@
             </tr>
             <tr>
                 <td>A</td>
-                <td>{{ inspection.details.get('2a', '') }}</td>
-                <td>{{ inspection.obser.get('2a', '') }}</td>
-                <td>{{ inspection.error.get('2a', '') }}</td>
+                <td>Clean appropriate protective garments</td>
+                <td><span class="data-field">{{ inspection.obser.get('2a', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('2a', '') }}</span></td>
             </tr>
             <tr>
                 <td>B</td>
-                <td>{{ inspection.details.get('2b', '') }}</td>
-                <td>{{ inspection.obser.get('2b', '') }}</td>
-                <td>{{ inspection.error.get('2b', '') }}</td>
+                <td>Hands free of jewellery</td>
+                <td><span class="data-field">{{ inspection.obser.get('2b', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('2b', '') }}</span></td>
             </tr>
             <tr>
                 <td>C</td>
-                <td>{{ inspection.details.get('2c', '') }}</td>
-                <td>{{ inspection.obser.get('2c', '') }}</td>
-                <td>{{ inspection.error.get('2c', '') }}</td>
+                <td>Suitable hair restraints</td>
+                <td><span class="data-field">{{ inspection.obser.get('2c', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('2c', '') }}</span></td>
             </tr>
             <tr>
                 <td>D</td>
-                <td>{{ inspection.details.get('2d', '') }}</td>
-                <td>{{ inspection.obser.get('2d', '') }}</td>
-                <td>{{ inspection.error.get('2d', '') }}</td>
+                <td>Nails clean, short and unpolished</td>
+                <td><span class="data-field">{{ inspection.obser.get('2d', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('2d', '') }}</span></td>
             </tr>
             <tr>
                 <td>E</td>
-                <td>{{ inspection.details.get('2e', '') }}</td>
-                <td>{{ inspection.obser.get('2e', '') }}</td>
-                <td>{{ inspection.error.get('2e', '') }}</td>
+                <td>Hands washed as required</td>
+                <td><span class="data-field">{{ inspection.obser.get('2e', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('2e', '') }}</span></td>
             </tr>
         </table>
 
@@ -227,57 +270,57 @@
             </tr>
             <tr class="critical">
                 <td>A</td>
-                <td>{{ inspection.details.get('3a', '') }}</td>
-                <td>{{ inspection.obser.get('3a', '') }}</td>
-                <td>{{ inspection.error.get('3a', '') }}</td>
+                <td>Approved source</td>
+                <td><span class="data-field">{{ inspection.obser.get('3a', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('3a', '') }}</span></td>
             </tr>
             <tr class="critical">
                 <td>B</td>
-                <td>{{ inspection.details.get('3b', '') }}</td>
-                <td>{{ inspection.obser.get('3b', '') }}</td>
-                <td>{{ inspection.error.get('3b', '') }}</td>
+                <td>Correct stocking procedures practiced</td>
+                <td><span class="data-field">{{ inspection.obser.get('3b', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('3b', '') }}</span></td>
             </tr>
             <tr class="critical">
                 <td>C</td>
-                <td>{{ inspection.details.get('3c', '') }}</td>
-                <td>{{ inspection.obser.get('3c', '') }}</td>
-                <td>{{ inspection.error.get('3c', '') }}</td>
+                <td>Food stored on pallets or shelves off the floor</td>
+                <td><span class="data-field">{{ inspection.obser.get('3c', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('3c', '') }}</span></td>
             </tr>
             <tr class="critical">
                 <td>D</td>
-                <td>{{ inspection.details.get('3d', '') }}</td>
-                <td>{{ inspection.obser.get('3d', '') }}</td>
-                <td>{{ inspection.error.get('3d', '') }}</td>
+                <td>No cats, rodents or other animals present in the store</td>
+                <td><span class="data-field">{{ inspection.obser.get('3d', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('3d', '') }}</span></td>
             </tr>
             <tr class="critical">
                 <td>E</td>
-                <td>{{ inspection.details.get('3e', '') }}</td>
-                <td>{{ inspection.obser.get('3e', '') }}</td>
-                <td>{{ inspection.error.get('3e', '') }}</td>
+                <td>Products free of infestation</td>
+                <td><span class="data-field">{{ inspection.obser.get('3e', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('3e', '') }}</span></td>
             </tr>
             <tr class="critical">
                 <td>F</td>
-                <td>{{ inspection.details.get('3f', '') }}</td>
-                <td>{{ inspection.obser.get('3f', '') }}</td>
-                <td>{{ inspection.error.get('3f', '') }}</td>
+                <td>No pesticides or other hazardous chemicals in food stores</td>
+                <td><span class="data-field">{{ inspection.obser.get('3f', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('3f', '') }}</span></td>
             </tr>
             <tr>
                 <td>G</td>
-                <td>{{ inspection.details.get('3g', '') }}</td>
-                <td>{{ inspection.obser.get('3g', '') }}</td>
-                <td>{{ inspection.error.get('3g', '') }}</td>
+                <td>Satisfactory condition of refrigeration units</td>
+                <td><span class="data-field">{{ inspection.obser.get('3g', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('3g', '') }}</span></td>
             </tr>
             <tr class="critical">
                 <td>H</td>
-                <td>{{ inspection.details.get('3h', '') }}</td>
-                <td>{{ inspection.obser.get('3h', '') }}</td>
-                <td>{{ inspection.error.get('3h', '') }}</td>
+                <td>Refrigerated foods < 4°C</td>
+                <td><span class="data-field">{{ inspection.obser.get('3h', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('3h', '') }}</span></td>
             </tr>
             <tr class="critical">
                 <td>I</td>
-                <td>{{ inspection.details.get('3i', '') }}</td>
-                <td>{{ inspection.obser.get('3i', '') }}</td>
-                <td>{{ inspection.error.get('3i', '') }}</td>
+                <td>Frozen foods -18°C</td>
+                <td><span class="data-field">{{ inspection.obser.get('3i', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('3i', '') }}</span></td>
             </tr>
         </table>
 
@@ -291,45 +334,45 @@
             </tr>
             <tr>
                 <td>A</td>
-                <td>{{ inspection.details.get('4a', '') }}</td>
-                <td>{{ inspection.obser.get('4a', '') }}</td>
-                <td>{{ inspection.error.get('4a', '') }}</td>
+                <td>Foods thawed according to recommended procedures</td>
+                <td><span class="data-field">{{ inspection.obser.get('4a', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('4a', '') }}</span></td>
             </tr>
             <tr class="critical">
                 <td>B</td>
-                <td>{{ inspection.details.get('4b', '') }}</td>
-                <td>{{ inspection.obser.get('4b', '') }}</td>
-                <td>{{ inspection.error.get('4b', '') }}</td>
+                <td>No evidence of cross-contamination during preparation</td>
+                <td><span class="data-field">{{ inspection.obser.get('4b', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('4b', '') }}</span></td>
             </tr>
             <tr class="critical">
                 <td>C</td>
-                <td>{{ inspection.details.get('4c', '') }}</td>
-                <td>{{ inspection.obser.get('4c', '') }}</td>
-                <td>{{ inspection.error.get('4c', '') }}</td>
+                <td>No evidence of cross-contamination during holding in refrigerators/coolers</td>
+                <td><span class="data-field">{{ inspection.obser.get('4c', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('4c', '') }}</span></td>
             </tr>
             <tr>
                 <td>D</td>
-                <td>{{ inspection.details.get('4d', '') }}</td>
-                <td>{{ inspection.obser.get('4d', '') }}</td>
-                <td>{{ inspection.error.get('4d', '') }}</td>
+                <td>Foods cooled according to recommended procedures</td>
+                <td><span class="data-field">{{ inspection.obser.get('4d', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('4d', '') }}</span></td>
             </tr>
             <tr>
                 <td>E</td>
-                <td>{{ inspection.details.get('4e', '') }}</td>
-                <td>{{ inspection.obser.get('4e', '') }}</td>
-                <td>{{ inspection.error.get('4e', '') }}</td>
+                <td>Manual dishwashing wash, rinse, sanitize, rinse technique</td>
+                <td><span class="data-field">{{ inspection.obser.get('4e', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('4e', '') }}</span></td>
             </tr>
             <tr>
                 <td>F</td>
-                <td>{{ inspection.details.get('4f', '') }}</td>
-                <td>{{ inspection.obser.get('4f', '') }}</td>
-                <td>{{ inspection.error.get('4f', '') }}</td>
+                <td>Food contact surfaces washed-rinsed-sanitized before & after each use</td>
+                <td><span class="data-field">{{ inspection.obser.get('4f', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('4f', '') }}</span></td>
             </tr>
             <tr>
                 <td>G</td>
-                <td>{{ inspection.details.get('4g', '') }}</td>
-                <td>{{ inspection.obser.get('4g', '') }}</td>
-                <td>{{ inspection.error.get('4g', '') }}</td>
+                <td>Wiping cloths handled properly (sanitizing solution used)</td>
+                <td><span class="data-field">{{ inspection.obser.get('4g', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('4g', '') }}</span></td>
             </tr>
         </table>
 
@@ -343,21 +386,21 @@
             </tr>
             <tr>
                 <td>A</td>
-                <td>{{ inspection.details.get('5a', '') }}</td>
-                <td>{{ inspection.obser.get('5a', '') }}</td>
-                <td>{{ inspection.error.get('5a', '') }}</td>
+                <td>Appropriate design, convenient placement</td>
+                <td><span class="data-field">{{ inspection.obser.get('5a', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('5a', '') }}</span></td>
             </tr>
             <tr>
                 <td>B</td>
-                <td>{{ inspection.details.get('5b', '') }}</td>
-                <td>{{ inspection.obser.get('5b', '') }}</td>
-                <td>{{ inspection.error.get('5b', '') }}</td>
+                <td>Kept covered when not in continuous use</td>
+                <td><span class="data-field">{{ inspection.obser.get('5b', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('5b', '') }}</span></td>
             </tr>
             <tr>
                 <td>C</td>
-                <td>{{ inspection.details.get('5c', '') }}</td>
-                <td>{{ inspection.obser.get('5c', '') }}</td>
-                <td>{{ inspection.error.get('5c', '') }}</td>
+                <td>Emptied as often as necessary</td>
+                <td><span class="data-field">{{ inspection.obser.get('5c', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('5c', '') }}</span></td>
             </tr>
         </table>
 
@@ -371,27 +414,27 @@
             </tr>
             <tr class="critical">
                 <td>A</td>
-                <td>{{ inspection.details.get('6a', '') }}</td>
-                <td>{{ inspection.obser.get('6a', '') }}</td>
-                <td>{{ inspection.error.get('6a', '') }}</td>
+                <td>Insect and vermin-proof containers provided where required</td>
+                <td><span class="data-field">{{ inspection.obser.get('6a', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('6a', '') }}</span></td>
             </tr>
             <tr>
                 <td>B</td>
-                <td>{{ inspection.details.get('6b', '') }}</td>
-                <td>{{ inspection.obser.get('6b', '') }}</td>
-                <td>{{ inspection.error.get('6b', '') }}</td>
+                <td>The area around each waste container kept clean</td>
+                <td><span class="data-field">{{ inspection.obser.get('6b', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('6b', '') }}</span></td>
             </tr>
             <tr>
                 <td>C</td>
-                <td>{{ inspection.details.get('6c', '') }}</td>
-                <td>{{ inspection.obser.get('6c', '') }}</td>
-                <td>{{ inspection.error.get('6c', '') }}</td>
+                <td>Effluent from waste bins disposed of in a sanitary manner</td>
+                <td><span class="data-field">{{ inspection.obser.get('6c', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('6c', '') }}</span></td>
             </tr>
             <tr>
                 <td>D</td>
-                <td>{{ inspection.details.get('6d', '') }}</td>
-                <td>{{ inspection.obser.get('6d', '') }}</td>
-                <td>{{ inspection.error.get('6d', '') }}</td>
+                <td>Frequency of garbage removal adequate</td>
+                <td><span class="data-field">{{ inspection.obser.get('6d', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('6d', '') }}</span></td>
             </tr>
         </table>
 
@@ -405,9 +448,9 @@
             </tr>
             <tr class="critical">
                 <td>A</td>
-                <td>{{ inspection.details.get('7a', '') }}</td>
-                <td>{{ inspection.obser.get('7a', '') }}</td>
-                <td>{{ inspection.error.get('7a', '') }}</td>
+                <td>Garbage, refuse properly disposed of, facilities maintained</td>
+                <td><span class="data-field">{{ inspection.obser.get('7a', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('7a', '') }}</span></td>
             </tr>
         </table>
 
@@ -421,15 +464,15 @@
             </tr>
             <tr class="critical">
                 <td>A</td>
-                <td>{{ inspection.details.get('8a', '') }}</td>
-                <td>{{ inspection.obser.get('8a', '') }}</td>
-                <td>{{ inspection.error.get('8a', '') }}</td>
+                <td>Hazardous materials stored in properly labelled containers</td>
+                <td><span class="data-field">{{ inspection.obser.get('8a', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('8a', '') }}</span></td>
             </tr>
             <tr class="critical">
                 <td>B</td>
-                <td>{{ inspection.details.get('8b', '') }}</td>
-                <td>{{ inspection.obser.get('8b', '') }}</td>
-                <td>{{ inspection.error.get('8b', '') }}</td>
+                <td>Stored away from living quarters and food areas</td>
+                <td><span class="data-field">{{ inspection.obser.get('8b', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('8b', '') }}</span></td>
             </tr>
         </table>
 
@@ -443,39 +486,39 @@
             </tr>
             <tr>
                 <td>A</td>
-                <td>{{ inspection.details.get('9a', '') }}</td>
-                <td>{{ inspection.obser.get('9a', '') }}</td>
-                <td>{{ inspection.error.get('9a', '') }}</td>
+                <td>Food protected during transportation</td>
+                <td><span class="data-field">{{ inspection.obser.get('9a', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('9a', '') }}</span></td>
             </tr>
             <tr>
                 <td>B</td>
-                <td>{{ inspection.details.get('9b', '') }}</td>
-                <td>{{ inspection.obser.get('9b', '') }}</td>
-                <td>{{ inspection.error.get('9b', '') }}</td>
+                <td>Dishes identified and labelled</td>
+                <td><span class="data-field">{{ inspection.obser.get('9b', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('9b', '') }}</span></td>
             </tr>
             <tr>
                 <td>C</td>
-                <td>{{ inspection.details.get('9c', '') }}</td>
-                <td>{{ inspection.obser.get('9c', '') }}</td>
-                <td>{{ inspection.error.get('9c', '') }}</td>
+                <td>Food covered or protected from contamination</td>
+                <td><span class="data-field">{{ inspection.obser.get('9c', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('9c', '') }}</span></td>
             </tr>
             <tr>
                 <td>D</td>
-                <td>{{ inspection.details.get('9d', '') }}</td>
-                <td>{{ inspection.obser.get('9d', '') }}</td>
-                <td>{{ inspection.error.get('9d', '') }}</td>
+                <td>Sufficient, appropriate utensils on service line</td>
+                <td><span class="data-field">{{ inspection.obser.get('9d', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('9d', '') }}</span></td>
             </tr>
             <tr class="critical">
                 <td>E</td>
-                <td>{{ inspection.details.get('9e', '') }}</td>
-                <td>{{ inspection.obser.get('9e', '') }}</td>
-                <td>{{ inspection.error.get('9e', '') }}</td>
+                <td>Hot holding temperatures > 63°C</td>
+                <td><span class="data-field">{{ inspection.obser.get('9e', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('9e', '') }}</span></td>
             </tr>
             <tr class="critical">
                 <td>F</td>
-                <td>{{ inspection.details.get('9f', '') }}</td>
-                <td>{{ inspection.obser.get('9f', '') }}</td>
-                <td>{{ inspection.error.get('9f', '') }}</td>
+                <td>Cold holding temperatures ≤ 5°C</td>
+                <td><span class="data-field">{{ inspection.obser.get('9f', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('9f', '') }}</span></td>
             </tr>
         </table>
 
@@ -489,15 +532,15 @@
             </tr>
             <tr class="critical">
                 <td>-</td>
-                <td>{{ inspection.details.get('10a', '') }}</td>
-                <td>{{ inspection.obser.get('10a', '') }}</td>
-                <td>{{ inspection.error.get('10a', '') }}</td>
+                <td>Hand washing facility installed and maintained for every 40 square meters of floor space or in each principal area</td>
+                <td><span class="data-field">{{ inspection.obser.get('10a', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('10a', '') }}</span></td>
             </tr>
             <tr class="critical">
                 <td>-</td>
-                <td>{{ inspection.details.get('10b', '') }}</td>
-                <td>{{ inspection.obser.get('10b', '') }}</td>
-                <td>{{ inspection.error.get('10b', '') }}</td>
+                <td>Equipped with hot and cold water, soap a dispenser and hand drying facility</td>
+                <td><span class="data-field">{{ inspection.obser.get('10b', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('10b', '') }}</span></td>
             </tr>
         </table>
 
@@ -511,45 +554,45 @@
             </tr>
             <tr>
                 <td>A</td>
-                <td>{{ inspection.details.get('11a', '') }}</td>
-                <td>{{ inspection.obser.get('11a', '') }}</td>
-                <td>{{ inspection.error.get('11a', '') }}</td>
+                <td>Provides adequate space</td>
+                <td><span class="data-field">{{ inspection.obser.get('11a', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('11a', '') }}</span></td>
             </tr>
             <tr class="critical">
                 <td>B</td>
-                <td>{{ inspection.details.get('11b', '') }}</td>
-                <td>{{ inspection.obser.get('11b', '') }}</td>
-                <td>{{ inspection.error.get('11b', '') }}</td>
+                <td>Food areas kept clean, free from vermin and unpleasant odours</td>
+                <td><span class="data-field">{{ inspection.obser.get('11b', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('11b', '') }}</span></td>
             </tr>
             <tr>
                 <td>C</td>
-                <td>{{ inspection.details.get('11c', '') }}</td>
-                <td>{{ inspection.obser.get('11c', '') }}</td>
-                <td>{{ inspection.error.get('11c', '') }}</td>
+                <td>Floor, walls and ceiling clean, in good repair</td>
+                <td><span class="data-field">{{ inspection.obser.get('11c', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('11c', '') }}</span></td>
             </tr>
             <tr>
                 <td>D</td>
-                <td>{{ inspection.details.get('11d', '') }}</td>
-                <td>{{ inspection.obser.get('11d', '') }}</td>
-                <td>{{ inspection.error.get('11d', '') }}</td>
+                <td>Mechanical ventilation operable where required</td>
+                <td><span class="data-field">{{ inspection.obser.get('11d', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('11d', '') }}</span></td>
             </tr>
             <tr>
                 <td>E</td>
-                <td>{{ inspection.details.get('11e', '') }}</td>
-                <td>{{ inspection.obser.get('11e', '') }}</td>
-                <td>{{ inspection.error.get('11e', '') }}</td>
+                <td>Lighting adequate for food preparation and cleaning</td>
+                <td><span class="data-field">{{ inspection.obser.get('11e', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('11e', '') }}</span></td>
             </tr>
             <tr>
                 <td>F</td>
-                <td>{{ inspection.details.get('11f', '') }}</td>
-                <td>{{ inspection.obser.get('11f', '') }}</td>
-                <td>{{ inspection.error.get('11f', '') }}</td>
+                <td>General housekeeping satisfactory</td>
+                <td><span class="data-field">{{ inspection.obser.get('11f', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('11f', '') }}</span></td>
             </tr>
             <tr>
                 <td>G</td>
-                <td>{{ inspection.details.get('11g', '') }}</td>
-                <td>{{ inspection.obser.get('11g', '') }}</td>
-                <td>{{ inspection.error.get('11g', '') }}</td>
+                <td>Animals, insect and pest excluded</td>
+                <td><span class="data-field">{{ inspection.obser.get('11g', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('11g', '') }}</span></td>
             </tr>
         </table>
 
@@ -563,21 +606,21 @@
             </tr>
             <tr>
                 <td>A</td>
-                <td>{{ inspection.details.get('12a', '') }}</td>
-                <td>{{ inspection.obser.get('12a', '') }}</td>
-                <td>{{ inspection.error.get('12a', '') }}</td>
+                <td>Made from material which is non-absorbent and non-toxic</td>
+                <td><span class="data-field">{{ inspection.obser.get('12a', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('12a', '') }}</span></td>
             </tr>
             <tr>
                 <td>B</td>
-                <td>{{ inspection.details.get('12b', '') }}</td>
-                <td>{{ inspection.obser.get('12b', '') }}</td>
-                <td>{{ inspection.error.get('12b', '') }}</td>
+                <td>Smooth, cleanable, corrosion resistant</td>
+                <td><span class="data-field">{{ inspection.obser.get('12b', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('12b', '') }}</span></td>
             </tr>
             <tr>
                 <td>C</td>
-                <td>{{ inspection.details.get('12c', '') }}</td>
-                <td>{{ inspection.obser.get('12c', '') }}</td>
-                <td>{{ inspection.error.get('12c', '') }}</td>
+                <td>Proper storage and use of clean utensils</td>
+                <td><span class="data-field">{{ inspection.obser.get('12c', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('12c', '') }}</span></td>
             </tr>
         </table>
 
@@ -591,21 +634,21 @@
             </tr>
             <tr class="critical">
                 <td>A</td>
-                <td>{{ inspection.details.get('13a', '') }}</td>
-                <td>{{ inspection.obser.get('13a', '') }}</td>
-                <td>{{ inspection.error.get('13a', '') }}</td>
+                <td>Employee traffic pattern avoids food cross-contamination</td>
+                <td><span class="data-field">{{ inspection.obser.get('13a', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('13a', '') }}</span></td>
             </tr>
             <tr class="critical">
                 <td>B</td>
-                <td>{{ inspection.details.get('13b', '') }}</td>
-                <td>{{ inspection.obser.get('13b', '') }}</td>
-                <td>{{ inspection.error.get('13b', '') }}</td>
+                <td>Product flow not at risk for cross-contamination</td>
+                <td><span class="data-field">{{ inspection.obser.get('13b', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('13b', '') }}</span></td>
             </tr>
             <tr class="critical">
                 <td>C</td>
-                <td>{{ inspection.details.get('13c', '') }}</td>
-                <td>{{ inspection.obser.get('13c', '') }}</td>
-                <td>{{ inspection.error.get('13c', '') }}</td>
+                <td>Living quarters, toilets, washrooms, locker separated from areas where food is handled</td>
+                <td><span class="data-field">{{ inspection.obser.get('13c', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('13c', '') }}</span></td>
             </tr>
         </table>
 
@@ -619,33 +662,33 @@
             </tr>
             <tr>
                 <td>A</td>
-                <td>{{ inspection.details.get('14a', '') }}</td>
-                <td>{{ inspection.obser.get('14a', '') }}</td>
-                <td>{{ inspection.error.get('14a', '') }}</td>
+                <td>Mechanical dishwashing wash-rinse water clean</td>
+                <td><span class="data-field">{{ inspection.obser.get('14a', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('14a', '') }}</span></td>
             </tr>
             <tr>
                 <td>B</td>
-                <td>{{ inspection.details.get('14b', '') }}</td>
-                <td>{{ inspection.obser.get('14b', '') }}</td>
-                <td>{{ inspection.error.get('14b', '') }}</td>
+                <td>Proper water temperature</td>
+                <td><span class="data-field">{{ inspection.obser.get('14b', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('14b', '') }}</span></td>
             </tr>
             <tr>
                 <td>C</td>
-                <td>{{ inspection.details.get('14c', '') }}</td>
-                <td>{{ inspection.obser.get('14c', '') }}</td>
-                <td>{{ inspection.error.get('14c', '') }}</td>
+                <td>Proper timing of cycles</td>
+                <td><span class="data-field">{{ inspection.obser.get('14c', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('14c', '') }}</span></td>
             </tr>
             <tr>
                 <td>D</td>
-                <td>{{ inspection.details.get('14d', '') }}</td>
-                <td>{{ inspection.obser.get('14d', '') }}</td>
-                <td>{{ inspection.error.get('14d', '') }}</td>
+                <td>Sanitizer for low temperature</td>
+                <td><span class="data-field">{{ inspection.obser.get('14d', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('14d', '') }}</span></td>
             </tr>
             <tr class="critical">
                 <td>E</td>
-                <td>{{ inspection.details.get('14e', '') }}</td>
-                <td>{{ inspection.obser.get('14e', '') }}</td>
-                <td>{{ inspection.error.get('14e', '') }}</td>
+                <td>Proper handling of hazardous materials</td>
+                <td><span class="data-field">{{ inspection.obser.get('14e', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('14e', '') }}</span></td>
             </tr>
         </table>
 
@@ -659,21 +702,21 @@
             </tr>
             <tr class="critical">
                 <td>A</td>
-                <td>{{ inspection.details.get('15a', '') }}</td>
-                <td>{{ inspection.obser.get('15a', '') }}</td>
-                <td>{{ inspection.error.get('15a', '') }}</td>
+                <td>Approved Sewage Disposal System</td>
+                <td><span class="data-field">{{ inspection.obser.get('15a', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('15a', '') }}</span></td>
             </tr>
             <tr class="critical">
                 <td>B</td>
-                <td>{{ inspection.details.get('15b', '') }}</td>
-                <td>{{ inspection.obser.get('15b', '') }}</td>
-                <td>{{ inspection.error.get('15b', '') }}</td>
+                <td>Sanitary maintenance of facilities and protections against the entrance of vermin, rodents, dust, and fumes</td>
+                <td><span class="data-field">{{ inspection.obser.get('15b', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('15b', '') }}</span></td>
             </tr>
             <tr class="critical">
                 <td>C</td>
-                <td>{{ inspection.details.get('15c', '') }}</td>
-                <td>{{ inspection.obser.get('15c', '') }}</td>
-                <td>{{ inspection.error.get('15c', '') }}</td>
+                <td>Suitable pest control programme</td>
+                <td><span class="data-field">{{ inspection.obser.get('15c', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('15c', '') }}</span></td>
             </tr>
         </table>
 
@@ -687,15 +730,15 @@
             </tr>
             <tr class="critical">
                 <td>A</td>
-                <td>{{ inspection.details.get('16a', '') }}</td>
-                <td>{{ inspection.obser.get('16a', '') }}</td>
-                <td>{{ inspection.error.get('16a', '') }}</td>
+                <td>Approved source(s), sufficient pressure and capacity</td>
+                <td><span class="data-field">{{ inspection.obser.get('16a', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('16a', '') }}</span></td>
             </tr>
             <tr class="critical">
                 <td>B</td>
-                <td>{{ inspection.details.get('16b', '') }}</td>
-                <td>{{ inspection.obser.get('16b', '') }}</td>
-                <td>{{ inspection.error.get('16b', '') }}</td>
+                <td>Water quality satisfactory</td>
+                <td><span class="data-field">{{ inspection.obser.get('16b', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('16b', '') }}</span></td>
             </tr>
         </table>
 
@@ -709,9 +752,9 @@
             </tr>
             <tr class="critical">
                 <td>A</td>
-                <td>{{ inspection.details.get('17a', '') }}</td>
-                <td>{{ inspection.obser.get('17a', '') }}</td>
-                <td>{{ inspection.error.get('17a', '') }}</td>
+                <td>Satisfactory Ice storage conditions</td>
+                <td><span class="data-field">{{ inspection.obser.get('17a', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('17a', '') }}</span></td>
             </tr>
         </table>
 
@@ -725,15 +768,15 @@
             </tr>
             <tr class="critical">
                 <td>A</td>
-                <td>{{ inspection.details.get('18a', '') }}</td>
-                <td>{{ inspection.obser.get('18a', '') }}</td>
-                <td>{{ inspection.error.get('18a', '') }}</td>
+                <td>Traps and vent in good condition</td>
+                <td><span class="data-field">{{ inspection.obser.get('18a', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('18a', '') }}</span></td>
             </tr>
             <tr class="critical">
                 <td>B</td>
-                <td>{{ inspection.details.get('18b', '') }}</td>
-                <td>{{ inspection.obser.get('18b', '') }}</td>
-                <td>{{ inspection.error.get('18b', '') }}</td>
+                <td>Floor drains clear and drain freely</td>
+                <td><span class="data-field">{{ inspection.obser.get('18b', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('18b', '') }}</span></td>
             </tr>
         </table>
 
@@ -747,33 +790,69 @@
             </tr>
             <tr class="critical">
                 <td>A</td>
-                <td>{{ inspection.details.get('19a', '') }}</td>
-                <td>{{ inspection.obser.get('19a', '') }}</td>
-                <td>{{ inspection.error.get('19a', '') }}</td>
+                <td>Properly constructed with vents and traps where necessary</td>
+                <td><span class="data-field">{{ inspection.obser.get('19a', '') }}</span></td>
+                <td><span class="data-field">{{ inspection.error.get('19a', '') }}</span></td>
             </tr>
         </table>
 
         <div class="form-header">Inspector's Comments</div>
-        <div class="comments">{{ inspection.comments }}</div>
+        <p class="comments">{{ inspection.comments }}</p>
 
         <table>
             <tr>
                 <td>Inspector's Signature</td>
-                <td>{{ inspection.inspector_signature }}</td>
+                <td><span class="data-field">{{ inspection.inspector_signature }}</span></td>
                 <td>Date</td>
-                <td>{{ inspection.inspector_date }}</td>
+                <td><span class="data-field">{{ inspection.inspector_date }}</span></td>
             </tr>
             <tr>
                 <td>Manager's Signature</td>
-                <td>{{ inspection.manager_signature }}</td>
+                <td><span class="data-field">{{ inspection.manager_signature }}</span></td>
                 <td>Date</td>
-                <td>{{ inspection.manager_date }}</td>
+                <td><span class="data-field">{{ inspection.manager_date }}</span></td>
+            </tr>
+            <tr>
+                <td>Received By</td>
+                <td><span class="data-field">{{ inspection.received_by }}</span></td>
+                <td colspan="2"></td>
             </tr>
         </table>
 
         <div class="buttons">
+            <button id="print-btn" class="btn" onclick="window.print()">Print</button>
+            <button id="download-btn" class="btn" onclick="downloadPDF()">Download PDF</button>
+            <button id="share-btn" class="btn" onclick="shareInspection()">Share</button>
             <a href="{{ url_for('dashboard') }}" id="back-btn" class="btn">Back to Dashboard</a>
         </div>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+    <script>
+        function downloadPDF() {
+            const element = document.querySelector('.form-container');
+            html2pdf().from(element).save('inspection_{{ inspection.id }}.pdf');
+        }
+
+        function shareInspection() {
+            const url = window.location.href;
+            const subject = encodeURIComponent('Small Hotels Inspection Report - {{ inspection.establishment_name }}');
+            const body = encodeURIComponent(`View the inspection report here: ${url}`);
+            const mailto = `mailto:?subject=${subject}&body=${body}`;
+            const fallback = `Copy this link to share: ${url}`;
+
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Small Hotels Inspection Report',
+                    text: `Inspection report for ${'{{ inspection.establishment_name }}'}`,
+                    url: url
+                }).catch(error => {
+                    console.error('Share failed:', error);
+                    alert(fallback);
+                });
+            } else {
+                window.location.href = mailto;
+            }
+        }
+    </script>
 </body>
 </html>

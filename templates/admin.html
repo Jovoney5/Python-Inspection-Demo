@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: url('{{ url_for("static", filename="dark.jpg") }}') no-repeat center center fixed;
+            background-size: cover;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        canvas {
+            max-height: 400px;
+        }
+        .chat-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        .chat-icon {
+            background-color: #00ffff;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+            position: relative;
+        }
+        .chat-icon-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ff0000;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            display: none;
+        }
+        .chat-window {
+            display: none;
+            width: 300px;
+            height: 400px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+            flex-direction: column;
+        }
+        .chat-window.open {
+            display: flex;
+        }
+        .chat-header {
+            background: #00b7b7;
+            color: white;
+            padding: 10px;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .chat-body {
+            flex: 1;
+            padding: 10px;
+            overflow-y: auto;
+            background: #f9f9f9;
+            display: flex;
+            flex-direction: column;
+        }
+        .chat-footer {
+            padding: 10px;
+            border-top: 1px solid #ddd;
+            display: flex;
+            gap: 5px;
+        }
+        .chat-tab-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            padding: 5px 0;
+            order: 2;
+        }
+        .chat-tab {
+            background: #00b7b7;
+            color: white;
+            padding: 8px 25px 8px 15px;
+            border-radius: 5px 5px 0 0;
+            cursor: pointer;
+            margin-right: 5px;
+            display: inline-flex;
+            align-items: center;
+            position: relative;
+            font-size: 14px;
+        }
+        .chat-tab.active {
+            background: #008080;
+        }
+        .chat-tab-close {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 12px;
+            cursor: pointer;
+            padding: 2px;
+        }
+        .chat-tab-close:hover {
+            color: #ff5555;
+        }
+        .chat-message {
+            margin: 5px;
+            padding: 8px;
+            border-radius: 5px;
+        }
+        .chat-message.sent {
+            background: #00ffff;
+            color: black;
+            margin-left: 20%;
+            text-align: right;
+        }
+        .chat-message.received {
+            background: #e0e0e0;
+            margin-right: 20%;
+        }
+        .contact-list {
+            display: none;
+            position: absolute;
+            bottom: 60px;
+            right: 0;
+            width: 200px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            padding: 10px;
+            z-index: 1001;
+        }
+        .contact-list.open {
+            display: block;
+        }
+        .contact-item {
+            padding: 8px;
+            cursor: pointer;
+            border-radius: 5px;
+            position: relative;
+        }
+        .contact-item:hover {
+            background: #f0f0f0;
+        }
+        .contact-item.selected {
+            background: #00b7b7;
+            color: white;
+        }
+        .unread-badge {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #ff0000;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        .neon-glow {
+            color: #00ffff;
+            text-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff, 0 0 15px #00ffff;
+        }
+        .neon-glow-select {
+            background: rgba(255, 255, 255, 0.1);
+            color: #00ffff;
+            border: 1px solid #00ffff;
+            box-shadow: 0 0 10px #00ffff;
+            transition: box-shadow 0.3s;
+        }
+        .neon-glow-select:focus {
+            box-shadow: 0 0 15px #00ffff;
+        }
+        .chat-input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        footer {
+            text-align: center;
+            padding: 10px;
+            margin-top: 20px;
+        }
+        /* Restore neon glow for chart tabs and labels */
+        select[id^="chart-type"],
+        select[id^="time-frame"] {
+            color: #00ffff;
+            text-shadow: 0 0 5px #00ffff;
+            border-color: #00ffff;
+        }
+        select[id^="chart-type"] option,
+        select[id^="time-frame"] option {
+            color: black; /* Ensure dropdown options are readable */
+            background: #fff;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto p-6">
+        <form class="absolute top-4 left-4" method="POST" action="/logout">
+            <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Logout</button>
+        </form>
+        <h1 class="text-3xl font-bold text-center neon-glow mb-6">Admin Dashboard</h1>
+
+        <div class="flex justify-center mb-6">
+            <div class="inline-flex rounded-md shadow-sm" role="group">
+                <button data-tab="overview" class="tab active px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-l-lg hover:bg-gray-100">Overview</button>
+                <button data-tab="food" class="tab px-4 py-2 text-sm font-medium text-gray-900 bg-white border-t border-b border-gray-200 hover:bg-gray-100">Food Inspection</button>
+                <button data-tab="residential" class="tab px-4 py-2 text-sm font-medium text-gray-900 bg-white border-t border-b border-gray-200 hover:bg-gray-100">Residential</button>
+                <button data-tab="burial" class="tab px-4 py-2 text-sm font-medium text-gray-900 bg-white border-t border-b border-gray-200 hover:bg-gray-100">Burial</button>
+                <button data-tab="spirit_licence" class="tab px-4 py-2 text-sm font-medium text-gray-900 bg-white border-t border-b border-gray-200 hover:bg-gray-100">Spirit Licence</button>
+                <button data-tab="swimming_pool" class="tab px-4 py-2 text-sm font-medium text-gray-900 bg-white border-t border-b border-gray-200 hover:bg-gray-100">Swimming Pool</button>
+                <button data-tab="small_hotels" class="tab px-4 py-2 text-sm font-medium text-gray-900 bg-white border-t border-b border-gray-200 rounded-r-lg hover:bg-gray-100">Small Hotels</button>
+            </div>
+        </div>
+
+        <div id="overview" class="tab-content active">
+            <h2 class="text-2xl font-bold mb-4 neon-glow">All Inspections</h2>
+            <div class="mb-4 flex space-x-4">
+                <select id="chart-type" class="p-2 border rounded neon-glow-select">
+                    <option value="bar">Bar</option>
+                    <option value="line">Line</option>
+                </select>
+                <select id="time-frame" class="p-2 border rounded neon-glow-select">
+                    <option value="daily">Daily</option>
+                    <option value="monthly">Monthly</option>
+                    <option value="yearly">Yearly</option>
+                </select>
+            </div>
+            <canvas id="metricsChart"></canvas>
+            <div class="bg-white shadow-md rounded-lg overflow-hidden mt-6">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Form ID</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Form Type</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Inspector</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Completion Time</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        {% for form in forms %}
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap">{{ form[0] }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ form[1] }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ form[2] or 'N/A' }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">30 min</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ form[3] }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ form[4] or 'N/A' }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ 'Pass' if form[5] in ['Pass', 'Completed'] else 'Fail' }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        {% for tab in ['food', 'residential', 'burial', 'spirit_licence', 'swimming_pool', 'small_hotels'] %}
+        <div id="{{ tab }}" class="tab-content">
+            <h2 class="text-2xl font-bold mb-4 neon-glow">{{ tab.replace('_', ' ').title() }} Inspections</h2>
+            <div class="mb-4 flex space-x-4">
+                <select id="chart-type-{{ tab }}" class="p-2 border rounded neon-glow-select">
+                    <option value="bar">Bar</option>
+                    <option value="line">Line</option>
+                </select>
+                <select id="time-frame-{{ tab }}" class="p-2 border rounded neon-glow-select">
+                    <option value="daily">Daily</option>
+                    <option value="monthly">Monthly</option>
+                    <option value="yearly">Yearly</option>
+                </select>
+                <select id="form-type-{{ tab }}" class="p-2 border rounded neon-glow-select">
+                    <option value="{% if tab == 'food' %}Food Establishment{% elif tab == 'spirit_licence' %}Spirit Licence Premises{% elif tab == 'swimming_pool' %}Swimming Pool{% elif tab == 'small_hotels' %}Small Hotel{% else %}{{ tab.replace('_', ' ').title() }}{% endif %}">{{ tab.replace('_', ' ').title() }}</option>
+                </select>
+            </div>
+            <canvas id="metricsChart-{{ tab }}"></canvas>
+            <div class="bg-white shadow-md rounded-lg overflow-hidden mt-6">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Form ID</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Inspector</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Completion Time</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        {% for form in forms %}
+                        {% if form[1]|lower == tab.replace('_', ' ') or (tab == 'food' and form[1] == 'Food Establishment') or (tab == 'spirit_licence' and form[1] == 'Spirit Licence Premises') or (tab == 'swimming_pool' and form[1] == 'Swimming Pool') or (tab == 'small_hotels' and form[1] == 'Small Hotel') %}
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap">{{ form[0] }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ form[2] or 'N/A' }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">30 min</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ form[3] }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ form[4] or 'N/A' }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ 'Pass' if form[5] in ['Pass', 'Completed'] else 'Fail' }}</td>
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endfor %}
+
+        <div class="chat-container">
+            <div class="chat-icon" onclick="toggleChat()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                </svg>
+                <span id="chatIconBadge" class="chat-icon-badge"></span>
+            </div>
+            <div class="chat-window" id="chatWindow">
+                <div class="chat-header">
+                    <span>Messages</span>
+                    <span class="add-contact" onclick="toggleContactList(true)">+</span>
+                </div>
+                <div class="chat-body" id="chatBody">
+                    <div class="message-area" id="messageArea"></div>
+                    <div class="chat-tab-container"></div>
+                </div>
+                <div class="chat-footer">
+                    <input type="text" class="chat-input" id="chatInput" placeholder="Type a message..." disabled>
+                    <button onclick="sendMessage()">Send</button>
+                </div>
+            </div>
+            <div class="contact-list" id="contactList"></div>
+        </div>
+    </div>
+
+    <footer>
+        <a href="https://www.linkedin.com" target="_blank" class="neon-glow">Connect on LinkedIn</a>
+    </footer>
+
+    <script>
+        // Chart and tab logic (unchanged)
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const charts = {};
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('active'));
+                tab.classList.add('active');
+                document.querySelector(`#${tab.dataset.tab}`).classList.add('active');
+                loadMetrics(tab.dataset.tab);
+            });
+        });
+
+        async function loadMetrics(tab) {
+            const formType = tab === 'overview' ? 'all' :
+                             tab === 'food' ? 'Food Establishment' :
+                             tab === 'spirit_licence' ? 'Spirit Licence Premises' :
+                             tab === 'swimming_pool' ? 'Swimming Pool' :
+                             tab === 'small_hotels' ? 'Small Hotel' :
+                             tab.charAt(0).toUpperCase() + tab.slice(1);
+            const chartTypeSelect = document.querySelector(`#chart-type${tab !== 'overview' ? '-' + tab : ''}`);
+            const timeFrameSelect = document.querySelector(`#time-frame${tab !== 'overview' ? '-' + tab : ''}`);
+            const chartId = `metricsChart${tab !== 'overview' ? '-' + tab : ''}`;
+            const canvas = document.getElementById(chartId);
+            if (!canvas) {
+                console.error(`Canvas not found: ${chartId}`);
+                return;
+            }
+            const ctx = canvas.getContext('2d');
+
+            if (charts[chartId]) {
+                charts[chartId].destroy();
+            }
+
+            try {
+                const response = await fetch(`/admin_metrics?form_type=${encodeURIComponent(formType)}&time_frame=${timeFrameSelect.value}`);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const data = await response.json();
+
+                const formattedDates = data.dates.map(date =>
+                    new Date(date).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' })
+                );
+
+                charts[chartId] = new Chart(ctx, {
+                    type: chartTypeSelect.value,
+                    data: {
+                        labels: formattedDates,
+                        datasets: [
+                            {
+                                label: 'Pass',
+                                data: data.pass,
+                                backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                borderWidth: 1
+                            },
+                            {
+                                label: 'Fail',
+                                data: data.fail,
+                                backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                                borderColor: 'rgba(255, 99, 132, 1)',
+                                borderWidth: 1
+                            }
+                        ]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    color: '#00ffff',
+                                    font: { family: 'Arial', size: 12 },
+                                    callback: value => value
+                                },
+                                grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                            },
+                            x: {
+                                ticks: {
+                                    color: '#00ffff',
+                                    font: { family: 'Arial', size: 12 }
+                                },
+                                grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                labels: { color: '#00ffff' }
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error(`Error loading metrics for ${tab}:`, error);
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = '#ff0000';
+                ctx.font = '16px Arial';
+                ctx.fillText('Error loading chart', 10, 50);
+            }
+        }
+
+        document.querySelectorAll('[id^="chart-type"]').forEach(select => {
+            select.addEventListener('change', () => {
+                const tab = select.id.replace('chart-type-', '') || 'overview';
+                loadMetrics(tab);
+            });
+        });
+
+        document.querySelectorAll('[id^="time-frame"]').forEach(select => {
+            select.addEventListener('change', () => {
+                const tab = select.id.replace('time-frame-', '') || 'overview';
+                loadMetrics(tab);
+            });
+        });
+
+        // Updated Chat JavaScript
+        let activeChats = {};
+        let currentContactId = null;
+        let pollingInterval = null;
+
+        function toggleChat() {
+            const chatWindow = document.getElementById('chatWindow');
+            chatWindow.classList.toggle('open');
+            if (chatWindow.classList.contains('open')) {
+                loadContacts();
+                startPolling();
+            } else {
+                toggleContactList(false);
+                stopPolling();
+            }
+        }
+
+        function toggleContactList(show) {
+            const contactList = document.getElementById('contactList');
+            contactList.classList.toggle('open', show);
+            if (show) {
+                loadContacts();
+            }
+        }
+
+        async function loadContacts() {
+            try {
+                const response = await fetch('/api/contacts');
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${await response.text()}`);
+                }
+                const contacts = await response.json();
+                const contactList = document.getElementById('contactList');
+                contactList.innerHTML = '';
+                let totalUnread = 0;
+                contacts.forEach(contact => {
+                    const div = document.createElement('div');
+                    div.className = `contact-item ${currentContactId === contact.id ? 'selected' : ''}`;
+                    div.dataset.contactId = contact.id;
+                    div.textContent = contact.username;
+                    if (contact.unread_count > 0) {
+                        const badge = document.createElement('span');
+                        badge.className = 'unread-badge';
+                        badge.textContent = contact.unread_count;
+                        div.appendChild(badge);
+                        totalUnread += contact.unread_count;
+                    }
+                    div.onclick = () => openChat(contact.id, contact.username);
+                    contactList.appendChild(div);
+                });
+                const badge = document.getElementById('chatIconBadge');
+                if (totalUnread > 0) {
+                    badge.textContent = totalUnread;
+                    badge.style.display = 'flex';
+                } else {
+                    badge.style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Error loading contacts:', error);
+                const contactList = document.getElementById('contactList');
+                contactList.innerHTML = '<div class="contact-item">Error loading contacts</div>';
+            }
+        }
+
+        function openChat(contactId, username) {
+            contactId = parseInt(contactId); // Ensure contactId is a number
+            if (!activeChats[contactId]) {
+                activeChats[contactId] = { username, messages: [] };
+            }
+            currentContactId = contactId;
+            switchChat(contactId);
+            toggleContactList(false);
+            document.getElementById('chatInput').focus();
+        }
+
+        function updateChatTabs() {
+            const tabContainer = document.querySelector('.chat-tab-container');
+            tabContainer.innerHTML = '';
+            Object.keys(activeChats).forEach(contactId => {
+                const tab = document.createElement('div');
+                tab.className = `chat-tab ${currentContactId === parseInt(contactId) ? 'active' : ''}`;
+                tab.textContent = activeChats[contactId].username;
+                tab.onclick = () => switchChat(contactId);
+                const close = document.createElement('span');
+                close.className = 'chat-tab-close';
+                close.textContent = '×';
+                close.onclick = (e) => {
+                    e.stopPropagation();
+                    closeChat(contactId);
+                };
+                tab.appendChild(close);
+                tabContainer.appendChild(tab);
+            });
+        }
+
+        async function switchChat(contactId) {
+            contactId = parseInt(contactId);
+            currentContactId = contactId;
+            await loadMessages(contactId);
+            updateChatTabs();
+            const messageArea = document.getElementById('messageArea');
+            messageArea.scrollTop = messageArea.scrollHeight;
+            document.getElementById('chatInput').disabled = false;
+        }
+
+        async function loadMessages(contactId) {
+            contactId = parseInt(contactId);
+            try {
+                const response = await fetch(`/api/messages/${contactId}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${await response.text()}`);
+                }
+                const messages = await response.json();
+                const messageArea = document.getElementById('messageArea');
+                messageArea.innerHTML = '';
+                messages.forEach(msg => {
+                    const div = document.createElement('div');
+                    div.className = `chat-message ${msg.is_sent ? 'sent' : 'received'}`;
+                    div.innerHTML = `<strong>${activeChats[msg.sender_id]?.username || 'Unknown'}</strong>: ${msg.content} <br><small>${new Date(msg.timestamp).toLocaleString()}</small>`;
+                    messageArea.appendChild(div);
+                });
+                activeChats[contactId].messages = messages;
+                messageArea.scrollTop = messageArea.scrollHeight;
+                await loadContacts(); // Update unread counts
+            } catch (error) {
+                console.error(`Error loading messages for contact ${contactId}:`, error);
+                const messageArea = document.getElementById('messageArea');
+                messageArea.innerHTML = `<div class="chat-message">Error loading messages: ${error.message}</div>`;
+            }
+        }
+
+        async function sendMessage() {
+            if (!currentContactId) {
+                alert('Please select a contact to send a message.');
+                return;
+            }
+            const input = document.getElementById('chatInput');
+            const content = input.value.trim();
+            if (!content) return;
+            try {
+                const response = await fetch('/api/messages', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ receiver_id: currentContactId, content })
+                });
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${await response.text()}`);
+                }
+                const msg = await response.json();
+                const messageArea = document.getElementById('messageArea');
+                const div = document.createElement('div');
+                div.className = 'chat-message sent';
+                div.innerHTML = `<strong>You</strong>: ${content} <br><small>${new Date(msg.timestamp).toLocaleString()}</small>`;
+                messageArea.appendChild(div);
+                messageArea.scrollTop = messageArea.scrollHeight;
+                input.value = '';
+                activeChats[currentContactId].messages.push({
+                    id: msg.id,
+                    sender_id: msg.sender_id,
+                    receiver_id: msg.receiver_id,
+                    content: msg.content,
+                    timestamp: msg.timestamp,
+                    is_sent: true
+                });
+                await loadContacts();
+            } catch (error) {
+                console.error('Error sending message:', error);
+                alert(`Failed to send message: ${error.message}`);
+            }
+        }
+
+        function closeChat(contactId) {
+            contactId = parseInt(contactId);
+            delete activeChats[contactId];
+            if (currentContactId === contactId) {
+                currentContactId = null;
+                document.getElementById('messageArea').innerHTML = '';
+                document.getElementById('chatInput').disabled = true;
+            }
+            updateChatTabs();
+        }
+
+        function startPolling() {
+            if (pollingInterval) return;
+            pollingInterval = setInterval(async () => {
+                if (currentContactId) {
+                    await loadMessages(currentContactId);
+                }
+                await loadContacts();
+            }, 3000);
+        }
+
+        function stopPolling() {
+            if (pollingInterval) {
+                clearInterval(pollingInterval);
+                pollingInterval = null;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadMetrics('overview');
+            document.getElementById('chatInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') sendMessage();
+            });
+            startPolling(); // Start polling immediately
+        });
+    </script>
+</body>
+</html>

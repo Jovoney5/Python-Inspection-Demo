@@ -5,7 +5,7 @@ def init_db():
     conn = sqlite3.connect('inspections.db')
     c = conn.cursor()
 
-    # Only create table if it doesn't exist, no DROP
+    # Inspections table
     c.execute('''CREATE TABLE IF NOT EXISTS inspections
                  (id INTEGER PRIMARY KEY AUTOINCREMENT,
                   establishment_name TEXT,
@@ -35,6 +35,7 @@ def init_db():
                   scores TEXT,
                   inspector_code TEXT)''')
 
+    # Inspection items table
     c.execute('''CREATE TABLE IF NOT EXISTS inspection_items
                  (id INTEGER PRIMARY KEY AUTOINCREMENT,
                   inspection_id INTEGER,
@@ -44,6 +45,7 @@ def init_db():
                   error TEXT,
                   FOREIGN KEY (inspection_id) REFERENCES inspections(id))''')
 
+    # Burial site inspections table
     c.execute('''CREATE TABLE IF NOT EXISTS burial_site_inspections
                  (id INTEGER PRIMARY KEY AUTOINCREMENT,
                   inspection_date TEXT,
@@ -62,6 +64,7 @@ def init_db():
                   received_by TEXT,
                   created_at TEXT DEFAULT CURRENT_TIMESTAMP)''')
 
+    # Residential inspections table
     c.execute('''CREATE TABLE IF NOT EXISTS residential_inspections
                  (id INTEGER PRIMARY KEY AUTOINCREMENT,
                   premises_name TEXT,
@@ -86,6 +89,7 @@ def init_db():
                   received_by TEXT,
                   created_at TEXT DEFAULT CURRENT_TIMESTAMP)''')
 
+    # Residential checklist scores table
     c.execute('''CREATE TABLE IF NOT EXISTS residential_checklist_scores
                  (id INTEGER PRIMARY KEY AUTOINCREMENT,
                   form_id INTEGER,
@@ -93,14 +97,56 @@ def init_db():
                   score INTEGER,
                   FOREIGN KEY (form_id) REFERENCES residential_inspections(id))''')
 
+    # Users table
+    c.execute('''CREATE TABLE IF NOT EXISTS users
+                 (id INTEGER PRIMARY KEY AUTOINCREMENT,
+                  username TEXT NOT NULL UNIQUE,
+                  password TEXT NOT NULL,
+                  role TEXT NOT NULL)''')
+
+    # Insert users
+    users = [
+        ('inspector1', 'Insp123!secure', 'inspector'),
+        ('inspector2', 'Insp456!secure', 'inspector'),
+        ('inspector3', 'Insp789!secure', 'inspector'),
+        ('inspector4', 'Insp012!secure', 'inspector'),
+        ('inspector5', 'Insp345!secure', 'inspector'),
+        ('inspector6', 'Insp678!secure', 'inspector'),
+        ('admin', 'Admin901!secure', 'admin')
+    ]
+    c.executemany("INSERT OR IGNORE INTO users (username, password, role) VALUES (?, ?, ?)", users)
+
+    # Contacts table
+    c.execute('''CREATE TABLE IF NOT EXISTS contacts
+                 (user_id INTEGER,
+                  contact_id INTEGER,
+                  PRIMARY KEY (user_id, contact_id),
+                  FOREIGN KEY (user_id) REFERENCES users(id),
+                  FOREIGN KEY (contact_id) REFERENCES users(id))''')
+
+    # Messages table
+    c.execute('''CREATE TABLE IF NOT EXISTS messages
+                 (id INTEGER PRIMARY KEY AUTOINCREMENT,
+                  sender_id INTEGER NOT NULL,
+                  receiver_id INTEGER NOT NULL,
+                  content TEXT NOT NULL,
+                  timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+                  is_read INTEGER DEFAULT 0,
+                  FOREIGN KEY (sender_id) REFERENCES users(id),
+                  FOREIGN KEY (receiver_id) REFERENCES users(id))''')
+
+    # Add is_read column if it doesn't exist
+    try:
+        c.execute("ALTER TABLE messages ADD COLUMN is_read INTEGER DEFAULT 0")
+    except sqlite3.OperationalError:
+        pass  # Column already exists
+
+    # Set existing messages as read
+    c.execute("UPDATE messages SET is_read = 1 WHERE is_read IS NULL")
+
     conn.commit()
     conn.close()
 
-# Rest of the functions (save_inspection, etc.) remain unchanged
-
-if __name__ == "__main__":
-    init_db()
-
 def save_inspection(data):
     conn = sqlite3.connect('inspections.db')
     c = conn.cursor()
@@ -116,30 +162,10 @@ def save_inspection(data):
                data['inspector_signature'], data['received_by'], data['form_type'], data['scores'],
                data['created_at'], data['inspector_code'], data['license_no'], data['owner']))
     conn.commit()
-    return c.lastrowid
+    inspection_id = c.lastrowid
+    conn.close()
+    return inspection_id
 
-# Other functions (save_burial_inspection, save_residential_inspection, etc.) remain unchanged
-
-def save_inspection(data):
-    conn = sqlite3.connect('inspections.db')
-    c = conn.cursor()
-    c.execute('''INSERT INTO inspections (establishment_name, address, inspector_name, inspection_date, inspection_time, 
-                 type_of_establishment, no_of_employees, purpose_of_visit, action, result, food_inspected, food_condemned, 
-                 critical_score, overall_score, comments, inspector_signature, received_by, form_type, scores, created_at, 
-                 inspector_code, license_no, owner)
-                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
-              (data['establishment_name'], data['address'], data['inspector_name'], data['inspection_date'],
-               data['inspection_time'], data['type_of_establishment'], data['no_of_employees'],
-               data['purpose_of_visit'], data['action'], data['result'], data['food_inspected'],
-               data['food_condemned'], data['critical_score'], data['overall_score'], data['comments'],
-               data['inspector_signature'], data['received_by'], data['form_type'], data['scores'],
-               data['created_at'], data['inspector_code'], data['license_no'], data['owner']))
-    conn.commit()
-    return c.lastrowid
-
-# Other functions (save_burial_inspection, save_residential_inspection, etc.) remain unchanged
-
-# Other functions unchanged
 def save_burial_inspection(data):
     conn = sqlite3.connect('inspections.db')
     c = conn.cursor()
@@ -180,33 +206,42 @@ def save_residential_inspection(data):
     c = conn.cursor()
     try:
         if data.get('id'):
-            c.execute('''UPDATE residential_inspections SET premises_name = ?, owner = ?, address = ?, inspector_name = ?,
-                         inspection_date = ?, inspector_code = ?, treatment_facility = ?, vector = ?, result = ?,
-                         onsite_system = ?, building_construction_type = ?, purpose_of_visit = ?, action = ?,
-                         no_of_bedrooms = ?, total_population = ?, critical_score = ?, overall_score = ?, comments = ?,
-                         inspector_signature = ?, received_by = ?, created_at = ?
-                         WHERE id = ?''',
-                      (data['premises_name'], data['owner'], data['address'], data['inspector_name'],
-                       data['inspection_date'], data['inspector_code'], data['treatment_facility'], data['vector'],
-                       data['result'], data['onsite_system'], data['building_construction_type'], data['purpose_of_visit'],
-                       data['action'], data.get('no_of_bedrooms', ''), data.get('total_population', ''),
-                       data.get('critical_score', 0), data.get('overall_score', 0), data['comments'],
-                       data['inspector_signature'], data['received_by'],
-                       data.get('created_at', datetime.now().strftime('%Y-%m-%d %H:%M:%S')), data['id']))
+            c.execute("""
+                            UPDATE residential_inspections 
+                            SET premises_name = ?, owner = ?, address = ?, inspector_name = ?,
+                                inspection_date = ?, inspector_code = ?, treatment_facility = ?, vector = ?, result = ?,
+                                onsite_system = ?, building_construction_type = ?, purpose_of_visit = ?, action = ?,
+                                no_of_bedrooms = ?, total_population = ?, critical_score = ?, overall_score = ?, comments = ?,
+                                inspector_signature = ?, received_by = ?, created_at = ?
+                            WHERE id = ?
+                        """,
+                        (data['premises_name'], data['owner'], data['address'], data['inspector_name'],
+                         data['inspection_date'], data['inspector_code'], data['treatment_facility'], data['vector'],
+                         data['result'], data['onsite_system'], data['building_construction_type'], data['purpose_of_visit'],
+                         data['action'], data.get('no_of_bedrooms', ''), data.get('total_population', ''),
+                         data.get('critical_score', 0), data.get('overall_score', 0), data['comments'],
+                         data['inspector_signature'], data['received_by'],
+                         data.get('created_at', datetime.now().strftime('%Y-%m-%d %H:%M:%S')), data['id']))
         else:
-            c.execute('''INSERT INTO residential_inspections (premises_name, owner, address, inspector_name,
-                        inspection_date, inspector_code, treatment_facility, vector, result, onsite_system,
-                        building_construction_type, purpose_of_visit, action, no_of_bedrooms, total_population,
-                        critical_score, overall_score, comments, inspector_signature, received_by, created_at)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
-                      (data['premises_name'], data['owner'], data['address'], data['inspector_name'],
-                       data['inspection_date'], data['inspector_code'], data['treatment_facility'], data['vector'],
-                       data['result'], data['onsite_system'], data['building_construction_type'], data['purpose_of_visit'],
-                       data['action'], data.get('no_of_bedrooms', ''), data.get('total_population', ''),
-                       data.get('critical_score', 0), data.get('overall_score', 0), data['comments'],
-                       data['inspector_signature'], data['received_by'],
-                       datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
-        conn.commit()
+            c.execute("""
+                INSERT INTO residential_inspections (
+                    premises_name, owner, address, inspector_name,
+                    inspection_date, inspector_code, treatment_facility, vector, result, onsite_system,
+                    building_construction_type, purpose_of_visit, action, no_of_bedrooms, total_population,
+                    critical_score, overall_score, comments, inspector_signature, received_by, created_at
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                data['premises_name'], data['owner'], data['address'], data['inspector_name'],
+                data['inspection_date'], data['inspector_code'], data['treatment_facility'], data['vector'],
+                data['result'], data['onsite_system'], data['building_construction_type'], data['purpose_of_visit'],
+                data['action'], data.get('no_of_bedrooms', ''), data.get('total_population', ''),
+                data.get('critical_score', 0), data.get('overall_score', 0), data['comments'],
+                data['inspector_signature'], data['received_by'],
+                datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            ))
+            conn.commit()
+
         inspection_id = c.lastrowid if not data.get('id') else data['id']
     except sqlite3.Error as e:
         print(f"Database error: {e}")
@@ -218,8 +253,7 @@ def save_residential_inspection(data):
 def get_inspections():
     conn = sqlite3.connect('inspections.db')
     c = conn.cursor()
-    c.execute(
-        "SELECT id, establishment_name, inspector_name, inspection_date, type_of_establishment, created_at, result FROM inspections")
+    c.execute("SELECT id, establishment_name, inspector_name, inspection_date, type_of_establishment, created_at, result FROM inspections")
     inspections = c.fetchall()
     conn.close()
     return inspections
@@ -227,8 +261,7 @@ def get_inspections():
 def get_burial_inspections():
     conn = sqlite3.connect('inspections.db')
     c = conn.cursor()
-    c.execute(
-        "SELECT id, applicant_name, deceased_name, created_at, 'Completed' AS status FROM burial_site_inspections")
+    c.execute("SELECT id, applicant_name, deceased_name, created_at, 'Completed' AS status FROM burial_site_inspections")
     inspections = c.fetchall()
     conn.close()
     return inspections
@@ -248,7 +281,7 @@ def get_inspection_details(inspection_id):
     inspection = c.fetchone()
 
     if inspection:
-        if inspection[24] == 'Food Establishment':  # Adjusted index for form_type
+        if inspection[24] == 'Food Establishment':
             scores = [int(x) for x in inspection[25].split(',')] if inspection[25] else [0] * 45
             inspection_dict = {
                 'id': inspection[0],
@@ -258,7 +291,7 @@ def get_inspection_details(inspection_id):
                 'inspection_date': inspection[4],
                 'inspection_time': inspection[5],
                 'type_of_establishment': inspection[6],
-                'comments': inspection[7],
+                'comments': inspection.get(7, ''),
                 'inspector_signature': inspection[8],
                 'manager_signature': inspection[9],
                 'manager_date': inspection[10],
@@ -291,7 +324,7 @@ def get_inspection_details(inspection_id):
                 'inspection_date': inspection[4],
                 'inspection_time': inspection[5],
                 'type_of_establishment': inspection[6],
-                'comments': inspection[7],
+                'comments': inspection.get(7, ''),
                 'inspector_signature': inspection[8],
                 'manager_signature': inspection[9],
                 'manager_date': inspection[10],
@@ -372,7 +405,7 @@ def get_residential_inspection_details(inspection_id):
             'total_population': inspection[15],
             'critical_score': inspection[16],
             'overall_score': inspection[17],
-            'comments': inspection[18],
+            'comments': inspection.get(18, ''),
             'inspector_signature': inspection[19],
             'received_by': inspection[20],
             'created_at': inspection[21],
@@ -381,6 +414,5 @@ def get_residential_inspection_details(inspection_id):
     conn.close()
     return None
 
-# Initialize database
 if __name__ == "__main__":
     init_db()

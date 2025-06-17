@@ -171,82 +171,53 @@ SWIMMING_POOL_CHECKLIST_ITEMS = [
     {"id": "9c", "desc": "Well supplied and equipped", "wt": 5, "category": "Sanitary Facilities"},
 ]
 
-# Checklist for Small Hotels Inspection Form
+# Define checklist items (40 items, 28 critical)
 SMALL_HOTELS_CHECKLIST_ITEMS = [
-    {"id": "1a", "desc": "Action plan for foodborne illness occurrence", "category": "1"},
-    {"id": "1b", "desc": "Food Handlers have valid food handlers permits", "category": "1"},
-    {"id": "1c", "desc": "Relevant policy in place to restrict activities of sick employees", "category": "1"},
-    {"id": "1d", "desc": "Establishments have a written policy for the proper disposal of waste", "category": "1"},
-    {"id": "1e", "desc": "Cleaning schedule for equipment utensil etc available", "category": "1"},
-    {"id": "1f", "desc": "Material safety data sheet available for record of hazardous chemicals used", "category": "1"},
-    {"id": "1g", "desc": "Record of hazardous chemicals used", "category": "1"},
-    {"id": "1h", "desc": "Food suppliers list available", "category": "1"},
-    {"id": "2a", "desc": "Clean appropriate protective garments", "category": "2"},
-    {"id": "2b", "desc": "Hands free of jewellery", "category": "2"},
-    {"id": "2c", "desc": "Suitable hair restraints", "category": "2"},
-    {"id": "2d", "desc": "Nails clean, short and unpolished", "category": "2"},
-    {"id": "2e", "desc": "Hands washed as required", "category": "2"},
-    {"id": "3a", "desc": "Approved source", "category": "3"},
-    {"id": "3b", "desc": "Correct stocking procedures practiced", "category": "3"},
-    {"id": "3c", "desc": "Food stored on pallets or shelves off the floor", "category": "3"},
-    {"id": "3d", "desc": "No cats, dogs or other animals present in the store", "category": "3"},
-    {"id": "3e", "desc": "Products free of infestation", "category": "3"},
-    {"id": "3f", "desc": "No pesticides or other hazardous chemicals in food stores", "category": "3"},
-    {"id": "3g", "desc": "Satisfactory condition of refrigeration units", "category": "3"},
-    {"id": "3h", "desc": "Refrigerated foods < 4°C", "category": "3"},
-    {"id": "3i", "desc": "Frozen foods -18°C", "category": "3"},
-    {"id": "4a", "desc": "Foods thawed according to recommended procedures", "category": "4"},
-    {"id": "4b", "desc": "No evidence of cross-contamination during preparation", "category": "4"},
-    {"id": "4c", "desc": "No evidence of cross-contamination during holding in refrigerators/coolers", "category": "4"},
-    {"id": "4d", "desc": "Foods cooled according to recommended procedures", "category": "4"},
-    {"id": "4e", "desc": "Manual dishwashing wash, rinse, sanitize, rinse technique", "category": "4"},
-    {"id": "4f", "desc": "Food contact surfaces washed-rinsed-sanitized before & after each use", "category": "4"},
-    {"id": "4g", "desc": "Wiping cloths handled properly (sanitizing solution used)", "category": "4"},
-    {"id": "5a", "desc": "Appropriate design, convenient placement", "category": "5"},
-    {"id": "5b", "desc": "Kept covered when not in continuous use", "category": "5"},
-    {"id": "5c", "desc": "Emptied as often as necessary", "category": "5"},
-    {"id": "6a", "desc": "Insect and vermin-proof containers provided where required", "category": "6"},
-    {"id": "6b", "desc": "The area around each waste container kept clean", "category": "6"},
-    {"id": "6c", "desc": "Effluent from waste bins disposed of in a sanitary manner", "category": "6"},
-    {"id": "6d", "desc": "Frequency of garbage removal adequate", "category": "6"},
-    {"id": "7a", "desc": "Garbage, refuse properly disposed of, facilities maintained", "category": "7"},
-    {"id": "8a", "desc": "Hazardous materials stored in properly labelled containers", "category": "8"},
-    {"id": "8b", "desc": "Stored away from living quarters and food areas", "category": "8"},
-    {"id": "9a", "desc": "Food protected during transportation", "category": "9"},
-    {"id": "9b", "desc": "Dishes identified and labelled", "category": "9"},
-    {"id": "9c", "desc": "Food covered or protected from contamination", "category": "9"},
-    {"id": "9d", "desc": "Sufficient, appropriate utensils on service line", "category": "9"},
-    {"id": "9e", "desc": "Hot holding temperatures > 63°C", "category": "9"},
-    {"id": "9f", "desc": "Cold holding temperatures ≤ 5°C", "category": "9"},
-    {"id": "10a", "desc": "Hand washing facility installed and maintained for every 40 square meters of floor space or in each principal food area", "category": "10"},
-    {"id": "10b", "desc": "Equipped with hot and cold water, a soap dispenser and hand drying facility", "category": "10"},
-    {"id": "11a", "desc": "Provides adequate space", "category": "11"},
-    {"id": "11b", "desc": "Food areas kept clean, free from vermin and unpleasant odours", "category": "11"},
-    {"id": "11c", "desc": "Floor, walls and ceiling clean, in good repair", "category": "11"},
-    {"id": "11d", "desc": "Mechanical ventilation operable where required", "category": "11"},
-    {"id": "11e", "desc": "Lighting adequate for food preparation and cleaning", "category": "11"},
-    {"id": "11f", "desc": "General housekeeping satisfactory", "category": "11"},
-    {"id": "11g", "desc": "Animals, insect and pest excluded", "category": "11"},
-    {"id": "12a", "desc": "Made from material which is non-absorbent and non-toxic", "category": "12"},
-    {"id": "12b", "desc": "Smooth, cleanable, corrosion resistant", "category": "12"},
-    {"id": "12c", "desc": "Proper storage and use of clean utensils", "category": "12"},
-    {"id": "13a", "desc": "Employee traffic pattern avoids food cross-contamination", "category": "13"},
-    {"id": "13b", "desc": "Product flow not at risk for cross-contamination", "category": "13"},
-    {"id": "13c", "desc": "Living quarters, toilets, washrooms, locker separated from areas where food is handled", "category": "13"},
-    {"id": "14a", "desc": "Mechanical dishwashing wash-rinse water clean", "category": "14"},
-    {"id": "14b", "desc": "Proper water temperature", "category": "14"},
-    {"id": "14c", "desc": "Proper timing of cycles", "category": "14"},
-    {"id": "14d", "desc": "Sanitizer for low temperature", "category": "14"},
-    {"id": "14e", "desc": "Proper handling of hazardous materials", "category": "14"},
-    {"id": "15a", "desc": "Approved Sewage Disposal System", "category": "15"},
-    {"id": "15b", "desc": "Sanitary maintenance of facilities and provision against the entrance of vermin, rodents, dust, and fumes", "category": "15"},
-    {"id": "15c", "desc": "Suitable pest control programme", "category": "15"},
-    {"id": "16a", "desc": "Approved source(s), sufficient pressure and capacity", "category": "16"},
-    {"id": "16b", "desc": "Water quality satisfactory", "category": "16"},
-    {"id": "17a", "desc": "Satisfactory Ice storage conditions", "category": "17"},
-    {"id": "18a", "desc": "Traps and vent in good condition", "category": "18"},
-    {"id": "18b", "desc": "Floor drains clear and drain freely", "category": "18"},
-    {"id": "19a", "desc": "Properly constructed with vents and traps where necessary", "category": "19"},
+    {"id": "1a", "description": "Action plan for foodborne illness", "critical": False},
+    {"id": "1b", "description": "Food Handlers permits", "critical": False},
+    {"id": "1c", "description": "Policy to restrict sick employees", "critical": False},
+    {"id": "1d", "description": "Waste disposal policy", "critical": False},
+    {"id": "1e", "description": "Cleaning schedule", "critical": False},
+    {"id": "1f", "description": "Material safety data sheet", "critical": False},
+    {"id": "1g", "description": "Hazardous chemicals record", "critical": False},
+    {"id": "1h", "description": "Food suppliers list", "critical": False},
+    {"id": "2a", "description": "Protective garments", "critical": True},
+    {"id": "2b", "description": "Hands free of jewellery", "critical": False},
+    {"id": "2c", "description": "Hair restraints", "critical": False},
+    {"id": "2d", "description": "Nails clean", "critical": False},
+    {"id": "2e", "description": "Hands washed", "critical": True},
+    {"id": "3a", "description": "Approved source", "critical": True},
+    {"id": "3b", "description": "Correct stocking procedures", "critical": False},
+    {"id": "3c", "description": "Food stored off floor", "critical": False},
+    {"id": "3d", "description": "No animals in store", "critical": True},
+    {"id": "3e", "description": "Products free of infestation", "critical": False},
+    {"id": "3f", "description": "No pesticides in food stores", "critical": True},
+    {"id": "3g", "description": "Refrigeration condition", "critical": False},
+    {"id": "3h", "description": "Refrigerated foods < 4°C", "critical": True},
+    {"id": "3i", "description": "Frozen foods -18°C", "critical": True},
+    {"id": "4a", "description": "Foods thawed properly", "critical": True},
+    {"id": "4b", "description": "No cross-contamination during prep", "critical": True},
+    {"id": "4c", "description": "No cross-contamination in coolers", "critical": True},
+    {"id": "4d", "description": "Foods cooled properly", "critical": True},
+    {"id": "4e", "description": "Manual dishwashing", "critical": True},
+    {"id": "4f", "description": "Food surfaces sanitized", "critical": False},
+    {"id": "5a", "description": "Waste container design", "critical": True},
+    {"id": "5c", "description": "Waste containers emptied", "critical": True},
+    {"id": "6a", "description": "Vermin-proof waste containers", "critical": True},
+    {"id": "8a", "description": "Hazardous materials labelled", "critical": True},
+    {"id": "8b", "description": "Hazardous materials stored safely", "critical": True},
+    {"id": "9a", "description": "Food protected during transport", "critical": True},
+    {"id": "9b", "description": "Dishes labelled", "critical": True},
+    {"id": "9c", "description": "Food protected from contamination", "critical": True},
+    {"id": "10a", "description": "Hand washing facility installed", "critical": True},
+    {"id": "10b", "description": "Hand washing equipped", "critical": True},
+    {"id": "12b", "description": "Food surfaces smooth", "critical": True},
+    {"id": "12c", "description": "Utensils stored properly", "critical": True},
+    {"id": "13a", "description": "Employee traffic pattern", "critical": True},
+    {"id": "13b", "description": "Product flow safe", "critical": True},
+    {"id": "15a", "description": "Approved sewage system", "critical": True},
+    {"id": "16a", "description": "Water source approved", "critical": True},
+    {"id": "16b", "description": "Water quality satisfactory", "critical": True},
 ]
 # ... (Other checklists omitted as per your request; paste them back if needed)
 
@@ -264,19 +235,127 @@ def login():
         return render_template('dashboard.html', inspections=get_inspections(), burial_inspections=get_burial_inspections())
     return render_template('login.html')
 
+
 @app.route('/login', methods=['POST'])
 def login_post():
     username = request.form['username']
     password = request.form['password']
-    if username == 'inspector' and password == 'password123':
-        session['inspector'] = True
-        return redirect(url_for('login'))
+    login_type = request.form['login_type']
+
+    conn = sqlite3.connect('inspections.db')
+    c = conn.cursor()
+    c.execute("SELECT id, username, password, role FROM users WHERE username = ? AND password = ?",
+              (username, password))
+    user = c.fetchone()
+    conn.close()
+
+    if user and (
+            (login_type == 'inspector' and user[3] == 'inspector') or (login_type == 'admin' and user[3] == 'admin')):
+        session['user_id'] = user[0]
+        session[login_type] = True
+        if login_type == 'inspector':
+            return redirect(url_for('dashboard'))
+        else:
+            return redirect(url_for('admin'))
     return render_template('login.html', error='Invalid credentials')
 
-@app.route('/logout')
+
+@app.route('/admin')
+def admin():
+    if 'admin' not in session:
+        return redirect(url_for('login'))
+    conn = sqlite3.connect('inspections.db')
+    c = conn.cursor()
+    c.execute("""
+        SELECT id, form_type, inspector_name, created_at, establishment_name, result
+        FROM inspections
+        WHERE form_type IN ('Food Establishment', 'Spirit Licence Premises', 'Swimming Pool', 'Small Hotel')
+        UNION
+        SELECT id, 'Residential' AS form_type, inspector_name, created_at, premises_name, result
+        FROM residential_inspections
+        UNION
+        SELECT id, 'Burial' AS form_type, '' AS inspector_name, created_at, applicant_name, 'Completed' AS result
+        FROM burial_site_inspections
+    """)
+    forms = c.fetchall()
+    conn.close()
+    return render_template('admin.html', forms=forms)
+
+
+@app.route('/admin_metrics', methods=['GET'])
+def admin_metrics():
+    form_type = request.args.get('form_type', 'all')
+    time_frame = request.args.get('time_frame', 'daily')
+    conn = sqlite3.connect('inspections.db')
+    c = conn.cursor()
+
+    if form_type == 'all':
+        query = """
+            SELECT strftime('%Y-%m-%d', created_at) AS date, result, COUNT(*) AS count
+            FROM (
+                SELECT created_at, result FROM inspections
+                WHERE form_type IN ('Food Establishment', 'Spirit Licence Premises', 'Swimming Pool', 'Small Hotel')
+                UNION
+                SELECT created_at, result FROM residential_inspections
+                UNION
+                SELECT created_at, 'Completed' AS result FROM burial_site_inspections
+            )
+            GROUP BY date, result
+        """
+    else:
+        if form_type == 'Residential':
+            query = """
+                SELECT strftime('%Y-%m-%d', created_at) AS date, result, COUNT(*) AS count
+                FROM residential_inspections
+                GROUP BY date, result
+            """
+        elif form_type == 'Burial':
+            query = """
+                SELECT strftime('%Y-%m-%d', created_at) AS date, 'Completed' AS result, COUNT(*) AS count
+                FROM burial_site_inspections
+                GROUP BY date, result
+            """
+        else:
+            query = """
+                SELECT strftime('%Y-%m-%d', created_at) AS date, result, COUNT(*) AS count
+                FROM inspections
+                WHERE form_type = ?
+                GROUP BY date, result
+            """
+            c.execute(query, (form_type,))
+            results = c.fetchall()
+            conn.close()
+            return jsonify(process_metrics(results, time_frame))
+
+    c.execute(query)
+    results = c.fetchall()
+    conn.close()
+    return jsonify(process_metrics(results, time_frame))
+
+
+def process_metrics(results, time_frame):
+    data = {'dates': [], 'pass': [], 'fail': []}
+    date_format = '%Y-%m-%d' if time_frame == 'daily' else '%Y-%m' if time_frame == 'monthly' else '%Y'
+
+    for date, result, count in results:
+        formatted_date = datetime.strptime(date, '%Y-%m-%d').strftime(date_format)
+        if formatted_date not in data['dates']:
+            data['dates'].append(formatted_date)
+            data['pass'].append(0)
+            data['fail'].append(0)
+
+        idx = data['dates'].index(formatted_date)
+        if result == 'Pass' or result == 'Completed':
+            data['pass'][idx] += count
+        else:
+            data['fail'][idx] += count
+
+    return data
+
+@app.route('/logout', methods=['POST'])
 def logout():
-    session.pop('inspector', None)
-    return redirect(url_for('login'))
+    session.clear()  # Clear all session data
+    return redirect(url_for('login'))  # Redirect to login page
 
 @app.route('/new_form')
 def new_form():
@@ -417,29 +496,8 @@ def new_swimming_pool_form():
 def new_small_hotels_form():
     if 'inspector' not in session:
         return redirect(url_for('login'))
-    inspection = {
-        'id': '',
-        'establishment_name': '',
-        'address': '',
-        'physical_location': '',
-        'type_of_establishment': 'Small Hotel',
-        'inspector_name': '',
-        'inspection_date': '',
-        'inspection_time': '',
-        'result': '',
-        'overall_score': 0,
-        'critical_score': 0,
-        'comments': '',
-        'inspector_signature': '',
-        'inspector_date': '',
-        'manager_signature': '',
-        'manager_date': '',
-        'details': {},
-        'obser': {},
-        'error': {}
-    }
     today = datetime.now().strftime('%Y-%m-%d')
-    return render_template('small_hotels_form.html', checklist=[], inspections=get_inspections(), inspection=inspection, today=today)
+    return render_template('small_hotels_form.html', checklist_items=SMALL_HOTELS_CHECKLIST_ITEMS, today=today)
 
 
 @app.route('/submit_spirit_licence', methods=['POST'])
@@ -758,59 +816,52 @@ def swimming_pool_inspection_detail(id):
 @app.route('/submit_small_hotels', methods=['POST'])
 def submit_small_hotels():
     if 'inspector' not in session:
-        return jsonify({'status': 'error', 'message': 'Please log in.'}), 401
+        return jsonify({"status": "error", "message": "Unauthorized"}), 401
 
-    try:
-        # Collect form data
-        data = {
-            'establishment_name': request.form.get('establishment_name', ''),
-            'address': request.form.get('address', ''),
-            'physical_location': request.form.get('physical_location', ''),
-            'inspector_name': request.form.get('inspector_name', ''),
-            'inspection_date': request.form.get('inspection_date', ''),
-            'inspection_time': request.form.get('inspection_time', ''),
-            'type_of_establishment': 'Small Hotel',
-            'comments': request.form.get('comments', ''),
-            'inspector_signature': request.form.get('inspector_signature', ''),
-            'inspector_date': request.form.get('inspector_date', ''),
-            'manager_signature': request.form.get('manager_signature', ''),
-            'manager_date': request.form.get('manager_date', ''),
-            'form_type': 'Small Hotel',
-            'created_at': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-            'result': '',
-            'overall_score': 0,
-            'critical_score': 0,
-            'owner': '',
-            'license_no': '',
-            'purpose_of_visit': '',
-            'action': '',
-            'food_inspected': 0.0,
-            'food_condemned': 0.0,
-            'inspector_code': '',
-            'no_of_employees': ''
-        }
+    data = request.form
+    conn = sqlite3.connect('inspections.db')
+    c = conn.cursor()
 
-        # Save inspection and get ID
-        inspection_id = save_inspection(data)
+    # Calculate scores
+    scores = []
+    critical_score = 0
+    overall_score = 0
+    for item in SMALL_HOTELS_CHECKLIST_ITEMS:
+        item_id = item['id'].lower()
+        error = data.get(f'error_{item_id}', '0').strip()
+        score = 2.5 if error == '0' else 0
+        scores.append(score)
+        if item['critical']:
+            critical_score += score
+        overall_score += score
 
-        # Save checklist items
-        conn = sqlite3.connect('inspections.db')
-        c = conn.cursor()
-        for item in SMALL_HOTELS_CHECKLIST_ITEMS:
-            item_id = item['id'].lower()
-            details = request.form.get(f'details_{item_id}', '')
-            obser = request.form.get(f'obser_{item_id}', '')
-            error = request.form.get(f'error_{item_id}', '')
-            c.execute('''
-                INSERT INTO inspection_items (inspection_id, item_id, details, obser, error)
-                VALUES (?, ?, ?, ?, ?)
-            ''', (inspection_id, item_id, details, obser, error))
-        conn.commit()
-        conn.close()
+    # Insert inspection
+    c.execute('''
+        INSERT INTO inspections (establishment_name, address, physical_location, inspector_name, 
+                                inspection_date, comments, result, overall_score, critical_score, 
+                                created_at, form_type)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'), ?)
+    ''', (
+        data.get('establishment_name'), data.get('address'), data.get('physical_location'),
+        data.get('inspector_name'), data.get('inspection_date'), data.get('comments'),
+        data.get('result'), overall_score, critical_score, 'Small Hotel'
+    ))
+    inspection_id = c.lastrowid
 
-        return jsonify({'status': 'success', 'message': 'Inspection submitted successfully', 'inspection_id': inspection_id})
-    except sqlite3.Error as e:
-        return jsonify({'status': 'error', 'message': f'Database error: {str(e)}'}), 500
+    # Insert checklist items
+    for item in SMALL_HOTELS_CHECKLIST_ITEMS:
+        item_id = item['id'].lower()
+        c.execute('''
+            INSERT INTO inspection_items (inspection_id, item_id, obser, error)
+            VALUES (?, ?, ?, ?)
+        ''', (
+            inspection_id, item_id, data.get(f'obser_{item_id}', ''),
+            data.get(f'error_{item_id}', '0')
+        ))
+
+    conn.commit()
+    conn.close()
+    return jsonify({"status": "success", "message": "Inspection submitted successfully"})
 
 
 @app.route('/dashboard')
@@ -1221,8 +1272,8 @@ def download_residential_pdf(form_id):
     return "PDF generation failed", 500
 
 
-@app.route('/small_hotels/inspection/<int:id>')
-def small_hotel_inspection_detail(id):
+@app.route('/view_small_hotels/<int:inspection_id>')
+def view_small_hotels(inspection_id):
     if 'inspector' not in session:
         return redirect(url_for('login'))
 
@@ -1231,11 +1282,11 @@ def small_hotel_inspection_detail(id):
     c = conn.cursor()
     c.execute('''
         SELECT id, establishment_name, address, physical_location, inspector_name, 
-               inspection_date, inspection_time, type_of_establishment, comments, 
-               inspector_signature, inspector_date, manager_signature, manager_date, 
-               result, overall_score, critical_score, created_at
+               inspection_date, type_of_establishment, comments, result, overall_score, 
+               critical_score, created_at, owner, license_no, purpose_of_visit, action, 
+               food_inspected, food_condemned, inspector_code, no_of_employees, scores
         FROM inspections WHERE id = ? AND form_type = 'Small Hotel'
-    ''', (id,))
+    ''', (inspection_id,))
     inspection = c.fetchone()
 
     if not inspection:
@@ -1246,7 +1297,7 @@ def small_hotel_inspection_detail(id):
     c.execute('''
         SELECT item_id, details, obser, error 
         FROM inspection_items WHERE inspection_id = ?
-    ''', (id,))
+    ''', (inspection_id,))
     items = c.fetchall()
 
     # Structure inspection data
@@ -1255,11 +1306,179 @@ def small_hotel_inspection_detail(id):
     inspection_dict['obser'] = {item['item_id']: item['obser'] for item in items}
     inspection_dict['error'] = {item['item_id']: item['error'] for item in items}
 
+    # Parse scores if available
+    if inspection['scores']:
+        scores = [float(x) for x in inspection['scores'].split(',')]
+        inspection_dict['scores'] = dict(zip([item['id'].lower() for item in SMALL_HOTELS_CHECKLIST_ITEMS], scores))
+    else:
+        inspection_dict['scores'] = {item['id'].lower(): 0.0 for item in SMALL_HOTELS_CHECKLIST_ITEMS}
+
     conn.close()
 
     return render_template('small_hotel_inspection_detail.html',
                            inspection=inspection_dict,
                            checklist_items=SMALL_HOTELS_CHECKLIST_ITEMS)
+
+
+
+def get_db_connection():
+    conn = sqlite3.connect('inspections.db', timeout=10)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+def init_db():
+    conn = get_db_connection()
+    c = conn.cursor()
+    c.execute('''CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT NOT NULL UNIQUE,
+        password TEXT NOT NULL,
+        role TEXT NOT NULL CHECK(role IN ('inspector', 'admin'))
+    )''')
+    c.execute('''CREATE TABLE IF NOT EXISTS messages (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        sender_id INTEGER NOT NULL,
+        recipient_id INTEGER NOT NULL,
+        content TEXT NOT NULL,
+        timestamp TEXT NOT NULL,
+        is_read INTEGER DEFAULT 0,
+        FOREIGN KEY (sender_id) REFERENCES users(id),
+        FOREIGN KEY (recipient_id) REFERENCES users(id)
+    )''')
+    # Insert default users if not exist
+    try:
+        c.execute('INSERT OR IGNORE INTO users (username, password, role) VALUES (?, ?, ?)', ('admin', 'adminpass', 'admin'))
+        for i in range(1, 7):
+            c.execute('INSERT OR IGNORE INTO users (username, password, role) VALUES (?, ?, ?)', (f'inspector{i}', f'pass{i}', 'inspector'))
+        conn.commit()
+    except sqlite3.IntegrityError:
+        pass
+    conn.close()
+
+@app.route('/api/users', methods=['GET'])
+def get_users():
+    if 'user_id' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    user_id = session['user_id']
+    conn = get_db_connection()
+    try:
+        c = conn.cursor()
+        c.execute('SELECT role FROM users WHERE id = ?', (user_id,))
+        user_role = c.fetchone()['role']
+        if user_role == 'admin':
+            c.execute('SELECT id, username FROM users WHERE role = "inspector" AND id != ?', (user_id,))
+        else:  # inspector
+            c.execute('SELECT id, username FROM users WHERE role = "admin" AND id != ?', (user_id,))
+        users = [{'id': row['id'], 'username': row['username']} for row in c.fetchall()]
+        return jsonify(users)
+    finally:
+        conn.close()
+
+@app.route('/api/contacts', methods=['GET'])
+def get_contacts():
+    if 'user_id' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    user_id = session['user_id']
+    conn = get_db_connection()
+    try:
+        c = conn.cursor()
+        c.execute('SELECT role FROM users WHERE id = ?', (user_id,))
+        user_role = c.fetchone()['role']
+        if user_role == 'inspector':
+            c.execute('''SELECT u.id, u.username, 
+                         (SELECT COUNT(*) FROM messages m WHERE m.recipient_id = ? AND m.sender_id = u.id AND m.is_read = 0) AS unread_count
+                         FROM users u WHERE u.role = "admin" AND u.id != ?''', (user_id, user_id))
+        else:  # admin
+            c.execute('''SELECT u.id, u.username, 
+                         (SELECT COUNT(*) FROM messages m WHERE m.recipient_id = ? AND m.sender_id = u.id AND m.is_read = 0) AS unread_count
+                         FROM users u WHERE u.role = "inspector" AND u.id != ?''', (user_id, user_id))
+        contacts = [{'id': row['id'], 'username': row['username'], 'unread_count': row['unread_count']} for row in c.fetchall()]
+        return jsonify(contacts)
+    finally:
+        conn.close()
+
+@app.route('/api/messages', methods=['POST'])
+def send_message():
+    if 'user_id' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    data = request.get_json()
+    recipient_id = data.get('receiver_id')  # Frontend sends 'receiver_id'
+    content = data.get('content')
+    if not recipient_id or not content:
+        return jsonify({'error': 'Missing recipient_id or content'}), 400
+    sender_id = session['user_id']
+    conn = get_db_connection()
+    try:
+        c = conn.cursor()
+        c.execute('SELECT role FROM users WHERE id = ?', (sender_id,))
+        sender_role = c.fetchone()['role']
+        c.execute('SELECT role FROM users WHERE id = ?', (recipient_id,))
+        recipient = c.fetchone()
+        if not recipient:
+            return jsonify({'error': 'Invalid recipient'}), 400
+        recipient_role = recipient['role']
+        if (sender_role == 'inspector' and recipient_role != 'admin') or (sender_role == 'admin' and recipient_role != 'inspector'):
+            return jsonify({'error': 'Invalid recipient for your role'}), 403
+        timestamp = datetime.utcnow().isoformat()
+        c.execute('INSERT INTO messages (sender_id, recipient_id, content, timestamp, is_read) VALUES (?, ?, ?, ?, ?)',
+                  (sender_id, recipient_id, content, timestamp, 0))
+        conn.commit()
+        message_id = c.lastrowid
+        return jsonify({
+            'id': message_id,
+            'sender_id': sender_id,
+            'recipient_id': recipient_id,
+            'content': content,
+            'timestamp': timestamp,
+            'is_read': 0
+        }), 201
+    except sqlite3.IntegrityError as e:
+        return jsonify({'error': str(e)}), 400
+    finally:
+        conn.close()
+
+@app.route('/api/messages/<int:contact_id>', methods=['GET'])
+def get_messages(contact_id):
+    if 'user_id' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    user_id = session['user_id']
+    conn = get_db_connection()
+    try:
+        c = conn.cursor()
+        c.execute('SELECT role FROM users WHERE id = ?', (user_id,))
+        user_role = c.fetchone()['role']
+        c.execute('SELECT role FROM users WHERE id = ?', (contact_id,))
+        contact = c.fetchone()
+        if not contact:
+            return jsonify({'error': 'Invalid contact'}), 400
+        contact_role = contact['role']
+        if (user_role == 'inspector' and contact_role != 'admin') or (user_role == 'admin' and contact_role != 'inspector'):
+            return jsonify({'error': 'Invalid contact for your role'}), 403
+        c.execute('''SELECT id, sender_id, recipient_id, content, timestamp, is_read,
+                     CASE WHEN sender_id = ? THEN 1 ELSE 0 END AS is_sent
+                     FROM messages
+                     WHERE (sender_id = ? AND recipient_id = ?) OR (sender_id = ? AND recipient_id = ?)
+                     ORDER BY timestamp ASC''',
+                  (user_id, user_id, contact_id, contact_id, user_id))
+        messages = [
+            {
+                'id': row['id'],
+                'sender_id': row['sender_id'],
+                'recipient_id': row['recipient_id'],
+                'content': row['content'],
+                'timestamp': row['timestamp'],
+                'is_read': row['is_read'],
+                'is_sent': row['is_sent']
+            } for row in c.fetchall()
+        ]
+        c.execute('UPDATE messages SET is_read = 1 WHERE recipient_id = ? AND sender_id = ? AND is_read = 0',
+                  (user_id, contact_id))
+        conn.commit()
+        return jsonify(messages)
+    except sqlite3.OperationalError as e:
+        return jsonify({'error': str(e)}), 500
+    finally:
+        conn.close()
 
 if __name__ == '__main__':
     init_db()

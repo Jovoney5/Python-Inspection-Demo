@@ -5,113 +5,114 @@
     <title>Login</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            background: url('{{ url_for("static", filename="national_bird.png") }}') no-repeat center center fixed;
-            background-size: cover;
             overflow: hidden;
             position: relative;
         }
-        .login-container {
-            background: rgba(255, 255, 255, 0.6);
-            padding: 15px;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            text-align: center;
-            width: 280px;
-            z-index: 1;
-            position: relative;
-        }
-        h1 {
-            font-family: "Rockwell", "Roboto Slab", serif;
-            font-size: 22px;
-            font-weight: bold;
-            margin-bottom: 8px;
-        }
-        h2 {
-            font-family: "Rockwell", "Roboto Slab", serif;
-            font-size: 16px;
-            margin-bottom: 15px;
-        }
-        .error {
-            color: red;
-            margin-bottom: 8px;
-        }
-        label {
-            display: block;
-            margin-bottom: 4px;
-            text-align: left;
-        }
-        input {
-            width: 100%;
-            padding: 6px;
-            margin-bottom: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        button {
-            width: 100%;
-            padding: 8px;
-            background: #28a745;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .light-effect {
+        video {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            pointer-events: none;
-            z-index: 0;
+            object-fit: cover;
+            z-index: -1;
+            filter: brightness(0.7);
         }
-        .light-line {
-            position: absolute;
-            width: 2px;
-            height: 100px;
-            animation: moveLight 1.5s linear infinite;
+        .login-container {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+            text-align: center;
+            width: 350px;
+            z-index: 1;
+            border: 1px solid #00ffff;
+            margin-top: 100px;
         }
-        #line1-left { left: 5%; background: linear-gradient(to bottom, transparent, #000000, transparent); }
-#line2-left { left: 10%; background: linear-gradient(to bottom, transparent, #00ff00, transparent); }
-#line3-left { left: 15%; background: linear-gradient(to bottom, transparent, #ffd700, transparent); }
-#line1-right { right: 5%; background: linear-gradient(to bottom, transparent, #000000, transparent); }
-#line2-right { right: 10%; background: linear-gradient(to bottom, transparent, #00ff00, transparent); }
-#line3-right { right: 15%; background: linear-gradient(to bottom, transparent, #ffd700, transparent); }
-
-        @keyframes moveLight {
-            0% { transform: translateY(-100%); opacity: 1; }
-            90% { opacity: 1; }
-            100% { transform: translateY(100vh); opacity: 0; }
+        h1 {
+            font-family: 'Roboto', sans-serif;
+            font-size: 24px;
+            color: #00ffff;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            text-shadow: 0 0 5px #00ffff;
+        }
+        h2 {
+            font-family: 'Roboto', sans-serif;
+            font-size: 18px;
+            color: #ffffff;
+            margin-bottom: 15px;
+            text-shadow: 0 0 3px #ffffff;
+        }
+        .error {
+            color: #ff5555;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            text-align: left;
+            color: #00ffff;
+            font-size: 14px;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #00ffff;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            font-size: 14px;
+            box-sizing: border-box;
+            transition: box-shadow 0.3s;
+        }
+        input:focus {
+            outline: none;
+            box-shadow: 0 0 10px #00ffff;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(45deg, #00ffff, #00b7b7);
+            color: #000000;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            text-transform: uppercase;
+            transition: box-shadow 0.3s;
+        }
+        button:hover {
+            box-shadow: 0 0 15px #00ffff;
+        }
+        .login-type {
+            margin-bottom: 15px;
+        }
+        select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #00ffff;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            font-size: 14px;
         }
     </style>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const body = document.body;
-            const lightEffect = document.createElement('div');
-            lightEffect.className = 'light-effect';
-
-            const lines = ['line1-left', 'line2-left', 'line3-left', 'line1-right', 'line2-right', 'line3-right'];
-            lines.forEach((id, index) => {
-                const line = document.createElement('div');
-                line.id = id;
-                line.className = 'light-line';
-                line.style.animationDelay = `${index * 0.3}s`;
-                lightEffect.appendChild(line);
-            });
-
-            body.appendChild(lightEffect);
-        });
-    </script>
 </head>
 <body>
+    <video autoplay muted loop playsinline>
+        <source src="{{ url_for('static', filename='inspector v.mp4') }}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
     <div class="login-container">
         <h1>Westmoreland Health Department</h1>
         <h2>Inspector Login</h2>
@@ -119,6 +120,13 @@
             <p class="error">{{ error }}</p>
         {% endif %}
         <form method="POST" action="/login">
+            <div class="login-type">
+                <label for="login_type">Login Type:</label>
+                <select id="login_type" name="login_type" required>
+                    <option value="inspector">Inspector</option>
+                    <option value="admin">Admin</option>
+                </select>
+            </div>
             <label for="username">Username:</label>
             <input type="text" id="username" name="username" required>
             <label for="password">Password:</label>

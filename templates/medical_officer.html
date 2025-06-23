@@ -1,0 +1,1389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Medical Officer Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: url('{{ url_for("static", filename="heart2.jpg") }}') no-repeat center center fixed;
+            background-size: cover;
+            margin: 0;
+            padding: 0;
+        }
+        .tab-content, .subtab-content, .analytics-detail, .home-tab-content {
+            display: none;
+        }
+        .tab-content.active, .subtab-content.active, .analytics-detail.active, .home-tab-content.active {
+            display: block;
+        }
+        .tab.active, .subtab.active, .analytics-dept.active, .home-tab.active {
+            background-color: #0000FF;
+            color: white;
+        }
+        canvas {
+            max-height: 400px;
+        }
+        .blue-bold {
+            color: #0000FF;
+            font-weight: bold;
+        }
+        .blue-bold-btn {
+            box-shadow: 0 0 5px rgba(0, 0, 255, 0.5);
+            transition: box-shadow 0.3s ease, transform 0.2s ease;
+        }
+        .blue-bold-btn:hover {
+            box-shadow: 0 0 15px rgba(0, 0, 255, 0.7);
+            transform: scale(1.05);
+        }
+        .blue-bold-select {
+            background: rgba(255, 255, 255, 0.1);
+            color: #0000FF;
+            border: 1px solid #0000FF;
+            transition: box-shadow 0.3s;
+        }
+        .blue-bold-select:focus {
+            box-shadow: 0 0 15px #0000FF;
+        }
+        select[id^="chart-type"], select[id^="time-frame"] {
+            color: #0000FF;
+            border-color: #0000FF;
+            cursor: pointer;
+        }
+        select[id^="chart-type"] option, select[id^="time-frame"] option {
+            color: black;
+            background: #fff;
+        }
+        footer {
+            text-align: center;
+            padding: 10px;
+            margin-top: 20px;
+        }
+        .chat-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        .chat-icon {
+            background-color: #0000FF;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 0, 255, 0.5);
+            position: relative;
+        }
+        .chat-icon-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ff0000;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            display: none;
+        }
+        .chat-window {
+            display: none;
+            width: 300px;
+            height: 400px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+            flex-direction: column;
+        }
+        .chat-window.open {
+            display: flex;
+        }
+        .chat-header {
+            background: #0000FF;
+            color: white;
+            padding: 10px;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .chat-body {
+            flex: 1;
+            padding: 10px;
+            overflow-y: auto;
+            background: #f9f9f9;
+            display: flex;
+            flex-direction: column;
+        }
+        .chat-footer {
+            padding: 10px;
+            border-top: 1px solid #ddd;
+            display: flex;
+            gap: 5px;
+        }
+        .chat-tab-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            padding: 5px;
+            order: 2;
+        }
+        .chat-tab {
+            background: #0000FF;
+            color: white;
+            padding: 8px 25px 8px 15px;
+            border-radius: 5px 15px 0 0;
+            cursor: pointer;
+            margin-right: 5px;
+            display: inline-flex;
+            align-items: center;
+            position: relative;
+            font-size: 14px;
+        }
+        .chat-tab.active {
+            background: #000080;
+        }
+        .chat-tab-close {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 12px;
+            cursor: pointer;
+            padding: 2px;
+        }
+        .chat-tab-close:hover {
+            color: #ff5555;
+        }
+        .chat-message {
+            margin: 5px;
+            padding: 8px;
+            border-radius: 5px;
+        }
+        .chat-message.sent {
+            background: #0000FF;
+            color: white;
+            margin-left: 20%;
+            text-align: right;
+        }
+        .chat-message.received {
+            background: #e0e0e0;
+            margin-right: 20%;
+        }
+        .contact-list {
+            display: none;
+            position: absolute;
+            bottom: 60px;
+            right: 0;
+            width: 200px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            padding: 10px;
+            z-index: 1001;
+        }
+        .contact-list.open {
+            display: block;
+        }
+        .contact-item {
+            padding: 8px;
+            cursor: pointer;
+            border-radius: 5px;
+            position: relative;
+        }
+        .contact-item:hover {
+            background: #f0f0f0;
+        }
+        .contact-item.selected {
+            background: #0000FF;
+            color: white;
+        }
+        .unread-badge {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #ff0000;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        .chat-input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .flatpickr-calendar {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid #0000FF;
+        }
+        .flatpickr-day.selected, .flatpickr-day.selected:hover {
+            background: #0000FF;
+            border-color: #0000FF;
+        }
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+            z-index: 1002;
+            max-width: 400px;
+        }
+        .popup.open {
+            display: block;
+        }
+        .popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1001;
+        }
+        .popup-overlay.open {
+            display: block;
+        }
+        .appointment-row {
+            cursor: pointer;
+        }
+        .appointment-row:hover {
+            background: #f0f0f0;
+        }
+        .error-message {
+            color: #ff0000;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto p-6">
+        <form class="absolute top-4 left-4" method="POST" action="/logout">
+            <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 blue-bold-btn">Logout</button>
+        </form>
+        <h1 class="text-3xl font-bold text-center blue-bold mb-6">Medical Officer Dashboard</h1>
+
+        <div class="flex justify-center mb-6">
+            <div class="inline-flex rounded-md shadow-sm" role="group">
+                <button data-tab="home" class="tab active px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-l-lg hover:bg-gray-100">Home</button>
+                <button data-tab="dashboard" class="tab px-4 py-2 text-sm font-medium text-gray-900 bg-white border-t border-b border-gray-200 hover:bg-gray-100">Dashboard</button>
+                <button data-tab="appointments" class="tab px-4 py-2 text-sm font-medium text-gray-900 bg-white border-t border-b border-gray-200 hover:bg-gray-100">Appointments</button>
+                <button data-tab="task_manager" class="tab px-4 py-2 text-sm font-medium text-gray-900 bg-white border-t border-b border-gray-200 hover:bg-gray-100">Task Manager</button>
+                <button data-tab="analytics" class="tab px-4 py-2 text-sm font-medium text-gray-900 bg-white border-t border-b border-gray-200 hover:bg-gray-100">Analytics</button>
+                <button data-tab="approvals" class="tab px-4 py-2 text-sm font-medium text-gray-900 bg-white border-t border-b border-gray-200 hover:bg-gray-100">Approvals</button>
+                <button data-tab="patients" class="tab px-4 py-2 text-sm font-medium text-gray-900 bg-white border-t border-b border-gray-200 hover:bg-gray-100">Patients</button>
+                <button data-tab="reports" class="tab px-4 py-2 text-sm font-medium text-gray-900 bg-white border-t border-b border-gray-200 hover:bg-gray-100">Reports</button>
+                <button data-tab="inspections" class="tab px-4 py-2 text-sm font-medium text-gray-900 bg-white border-t border-b border-gray-200 rounded-r-lg hover:bg-gray-100">Inspections</button>
+            </div>
+        </div>
+
+        <div id="home" class="tab-content active">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="col-span-2 space-y-6">
+                    <div class="bg-white/95 shadow-xl rounded-xl p-6 border border-blue-100">
+                        <h2 class="text-2xl font-bold mb-4 blue-bold ">Command Center</h2>
+                        <div class="flex justify-center mb-4">
+                            <div class="inline-flex rounded-md shadow-sm" role="group">
+                                <button data-home-tab="dashboard" class="home-tab active px-4 py-2 text-sm font-medium text-gray-900 bg-white home-tab-btn">Dashboard</button>
+                                <button data-home-tab="appointments" class="home-tab px-4 py-2 text-sm font-medium text-blue-600 hover:bg-blue-100">Appointments</button>
+                                <button data-home-tab="tasks" class="home-tab px-4 py-2 text-sm font-medium text-blue-600 hover:bg-blue-100">Tasks</button>
+                                <button data-home-tab="analytics" class="home-tab px-4 py-2 text-sm font-medium text-blue-600 hover:bg-blue-100">Analytics</button>
+                            </div>
+                        </div>
+                        <div id="home-dashboard" class="home-tab-content active">
+                            <canvas id="patientChart"></canvas>
+                        </div>
+                        <div id="home-appointments" class="home-tab-content">
+                            <div class="border rounded-xl p-4 bg-white shadow-sm">
+                                <input id="appointmentCalendar" class="w-full p-2 border-blue-200 rounded focus:ring-blue-500 flatpickr-input" placeholder="Select date and time..." readonly>
+                                <p id="calendarError" class="error-message">Please select a date and time.</p>
+                            </div>
+                            <div class="mt-4 space-y-3">
+                                <input id="appointmentTitle" type="text" placeholder="Add appointment title..." class="w-full p-2 border border-blue-200 rounded focus:ring-blue-500">
+                                <p id="titleError" class="error-message">Please enter an appointment title.</p>
+                                <input id="patientName" type="text" placeholder="Patient name..." class="w-full p-2 border border-blue-200 rounded focus:ring-blue-500">
+                                <p id="patientError" class="error-message">Please enter a patient name.</p>
+                                <textarea id="appointmentNotes" placeholder="Add notes or assign staff..." class="w-full p-2 border border-blue-200 rounded focus:ring-blue-500"></textarea>
+                                <button id="scheduleAppointment" type="button" class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded blue-bold-btn">Schedule Appointment</button>
+                            </div>
+                        </div>
+                        <div id="home-tasks" class="home-tab-content">
+                            <input type="text" id="taskTitle" placeholder="Task title (e.g., Review Lab Results)" class="w-full p-2 border border-blue-200 rounded focus:ring-blue-500 mb-3">
+                            <textarea id="taskDetails" placeholder="Add details and select recipient..." class="w-full p-2 border border-blue-200 rounded focus:ring-blue-500 mb-3"></textarea>
+                            <button id="sendTask" class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded blue-bold-btn">Send Task</button>
+                        </div>
+                        <div id="home-analytics" class="home-tab-content">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-blue-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-blue-700 uppercase tracking-wider">Department</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-blue-700 uppercase tracking-wider">Cases This Week</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-blue-700 uppercase tracking-wider">Resolved</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <tr class="hover:bg-blue-50">
+                                        <td class="px-6 py-4 whitespace-nowrap">Emergency</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">5800</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">4300</td>
+                                    </tr>
+                                    <tr class="hover:bg-blue-50">
+                                        <td class="px-6 py-4 whitespace-nowrap">Community</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">3900</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">3500</td>
+                                    </tr>
+                                    <tr class="hover:bg-blue-50">
+                                        <td class="px-6 py-4 whitespace-nowrap">Vector Control</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">1900</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">1900</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="space-y-6">
+                    <div class="bg-white shadow-xl rounded-md p-6 border-blue-100">
+                        <h3 class="text-lg font-semibold mb-3 blue-bold">Quick Actions</h3>
+                        <button class="w-full mb-3 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded blue-bold-btn">View All Patient Records</button>
+                        <button class="w-full mb-3 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded blue-bold-btn">Broadcast Emergency Alert</button>
+                        <button class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded blue-bold-btn">Assign Regional Leader</button>
+                    </div>
+                    <div class="bg-white shadow-xl rounded-md p-6 border-blue-100">
+                        <h3 class="text-lg font-semibold mb-3 blue-bold">System Logs</h3>
+                        <ul class="text-sm list-disc pl-5 text-gray-700">
+                            <li>Last login: Today 08:00 AM</li>
+                            <li>3 Appointments created</li>
+                            <li>1 Task assigned</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="dashboard" class="tab-content">
+            <h2 class="text-2xl font-bold mb-4 blue-bold">Dashboard</h2>
+            <div class="bg-white shadow-md rounded-lg overflow-hidden">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-blue-600 text-white">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Metric</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Value</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <tr><td class="px-6 py-4">Active Cases</td><td class="px-6 py-4">890</td></tr>
+                        <tr><td class="px-6 py-4">Staff On Duty</td><td class="px-6 py-4">150</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="appointments" class="tab-content">
+            <h2 class="text-2xl font-bold mb-4 blue-bold">Appointments</h2>
+            <div class="bg-white shadow-md rounded-lg overflow-auto">
+                <table id="appointmentsTable" class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-blue-600 text-white">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Appointment ID</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Title</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Patient Name</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Date</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Time</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Created At</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <!-- Rows added via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            <div id="notesPopup" class="popup">
+                <h3 class="text-lg font-bold mb-2">Appointment Notes</h3>
+                <p id="popupNotes" class="mb-4"></p>
+                <button onclick="closeModal()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Close</button>
+            </div>
+            <div id="overlay" class="popup-overlay" onclick="closeModal()"></div>
+        </div>
+
+        <div id="task_manager" class="tab-content">
+            <h2 class="text-2xl font-bold mb-4 blue-bold">Task Manager</h2>
+            <div class="bg-white shadow-md rounded-lg overflow-hidden">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-blue-600 text-white">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Task ID</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Description</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Due Date</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <tr><td class="px-4 py-4">T001</td><td class="px-4 py-4">Review Lab Results</td><td class="text-sm">2025-06-18</td><td class="px-4 py-4">Pending</td></tr>
+                        <tr><td class="px-4 py-4">T002</td><td class="px-4 py-4">Update Patient Records</td><td class="text-sm">2025-06-19</td><td class="px-4 py-4">In Progress</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="analytics" class="tab-content">
+            <h2 class="text-2xl font-bold mb-4 blue-bold">Analytics</h2>
+            <div class="flex justify-center mb-6">
+                <div class="inline-flex rounded-md shadow-sm" role="group">
+                    <button data-dept="emergency" class="analytics-dept active px-4 py-2 px-4 text-sm font-medium">Emergency</button>
+                    <button data-dept="community" class="analytics-dept px-4 py-2 text-sm font-medium text-blue-600 bg-white border-t border-b border-blue-200 hover:bg-blue-100">Community</button>
+                    <button data-dept="vector_control" class="analytics-dept px-5 py-2 text-sm font-medium text-blue-600 bg-white border-blue-200 rounded-r-lg hover:bg-blue-100">Vector Control</button>
+                </div>
+            </div>
+            <div id="analytics-emergency" class="analytics-detail active">
+                <div class="mb-4 flex space-x-4">
+                    <select id="chart-type-emergency" class="p-2 border rounded blue-bold">
+                        <option value="bar">Bar</option>
+                        <option value="line">Line</option>
+                    </select>
+                    <select id="time-frame-emergency" class="p-2 border rounded blue-bold">
+                        <option value="12hours">12 Hours</option>
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly">Monthly</option>
+                        <option value="yearly">Yearly</option>
+                    </select>
+                </div>
+                <canvas id="analyticsChart-emergency"></canvas>
+            </div>
+            <div id="analytics-community" class="analytics-detail">
+                <div class="mb-4 flex space-x-4">
+                    <select id="chart-type-community" class="p-2 border rounded blue-bold">
+                        <option value="bar">Bar</option>
+                        <option value="line">Line</option>
+                    </select>
+                    <select id="time-frame-community" class="p-2 border rounded blue-bold">
+                        <option value="12hours">12 Hours</option>
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly">Monthly</option>
+                        <option value="yearly">Yearly</option>
+                    </select>
+                </div>
+                <canvas id="analyticsChart-community"></canvas>
+            </div>
+            <div id="analytics-vector_control" class="analytics-detail">
+                <div class="mb-4 flex space-x-4">
+                    <select id="chart-type-vector_control" class="p-2 border rounded blue-bold">
+                        <option value="bar">Bar</option>
+                        <option value="line">Line</option>
+                    </select>
+                    <select id="time-frame-vector_control" class="p-2 border rounded blue-bold">
+                        <option value="12hours">12 Hours</option>
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly">Monthly</option>
+                        <option value="yearly">Yearly</option>
+                    </select>
+                </div>
+                <canvas id="analyticsChart-vector_control"></canvas>
+            </div>
+        </div>
+
+        <div id="approvals" class="tab-content">
+            <h2 class="text-2xl font-bold mb-4 blue-bold">Approvals</h2>
+            <div class="bg-white shadow-md rounded-lg overflow-hidden">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-blue-600 text-white">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Request</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Requested By</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <tr class="hover:bg-blue-50">
+                            <td class="px-4 py-4 whitespace-nowrap">New Clinic Registration</td>
+                            <td class="px-4 py-4 whitespace-nowrap">Dr. Reid</td>
+                            <td class="px-4 py-4 whitespace-nowrap">
+                                <button class="border border-blue-500 text-blue-500 hover:bg-blue-100 px-4 py-2 rounded blue-bold-btn">Approve</button>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-blue-50">
+                            <td class="px-4 py-4 whitespace-nowrap">Medical Leave</td>
+                            <td class="px-4 py-4 whitespace-nowrap">Nurse Blake</td>
+                            <td class="px-4 py-4 whitespace-nowrap">
+                                <button class="border border-blue-500 text-blue-500 hover:bg-blue-100 px-4 py-2 rounded blue-bold-btn">Approve</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="patients" class="tab-content">
+            <h2 class="text-2xl font-bold mb-4 blue-bold">Patients</h2>
+            <div class="bg-white shadow-md rounded-lg overflow-hidden">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-blue-600 text-white">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Patient ID</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Name</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Last Visit</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <tr><td class="px-4 py-4">P001</td><td class="px-4 py-4">John Doe</td><td class="px-4 py-4">2025-06-10</td><td class="px-4 py-4">Stable</td></tr>
+                        <tr><td class="px-4 py-4">P002</td><td class="px-4 py-4">Jane Smith</td><td class="px-4 py-4">2025-06-12</td><td class="px-4 py-4">Under Observation</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="reports" class="tab-content">
+            <h2 class="text-2xl font-bold mb-4 blue-bold">Reports</h2>
+            <div class="bg-white shadow-md rounded-lg overflow-hidden">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-blue-600 text-white">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Report ID</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Type</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Date</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <tr><td class="px-4 py-4">R001</td><td class="px-4 py-4">Lab Results</td><td class="px-4 py-4">2025-06-10</td><td class="px-4 py-4">Pending</td></tr>
+                        <tr><td class="px-4 py-4">R002</td><td class="px-4 py-4">Inspection</td><td class="px-4 py-4">2025-06-12</td><td class="px-4 py-4">Completed</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="inspections" class="tab-content">
+            <h2 class="text-2xl font-bold mb-4 blue-bold">Inspections Dashboard</h2>
+            <div class="flex justify-center mb-6">
+                <div class="inline-flex rounded-md shadow-sm" role="group">
+                    <button data-subtab="overview" class="subtab active px-4 py-2 text-sm font-medium text-blue-600 bg-white border border-blue-200 rounded-l-lg hover:bg-blue-100">Overview</button>
+                    <button data-subtab="food" class="subtab px-4 py-2 text-sm font-medium text-blue-600 bg-white border-t border-b border-blue-200 hover:bg-blue-100">Food Inspection</button>
+                    <button data-subtab="residential" class="subtab px-4 py-2 text-sm font-medium text-blue-600 bg-white border-t border-b border-blue-200 hover:bg-blue-100">Residential</button>
+                    <button data-subtab="burial" class="subtab px-4 py-2 text-sm font-medium text-blue-600 bg-white border-t border-b border-blue-200 hover:bg-blue-100">Burial</button>
+                    <button data-subtab="spirit_licence" class="subtab px-4 py-2 text-sm font-medium text-blue-600 bg-white border-t border-b border-blue-200 hover:bg-blue-100">Spirit Licence</button>
+                    <button data-subtab="swimming_pool" class="subtab px-4 py-2 text-sm font-medium text-blue-600 bg-white border-t border-b border-blue-200 hover:bg-blue-100">Swimming Pool</button>
+                    <button data-subtab="small_hotels" class="subtab px-4 py-2 text-sm font-medium text-blue-600 bg-white border-blue-200 rounded-r-lg hover:bg-blue-100">Small Hotels</button>
+                </div>
+            </div>
+
+            <div id="subtab-overview" class="subtab-content active">
+                <h3 class="text-xl font-bold mb-4 blue-bold">All Inspections</h3>
+                <div class="mb-4 flex space-x-4">
+                    <select id="chart-type-overview" class="p-2 border rounded blue-bold">
+                        <option value="bar">Bar</option>
+                        <option value="line">Line</option>
+                    </select>
+                    <select id="time-frame-overview" class="p-2 border rounded blue-bold">
+                        <option value="daily">Daily</option>
+                        <option value="monthly">Monthly</option>
+                        <option value="yearly">Yearly</option>
+                    </select>
+                </div>
+                <canvas id="metricsChart-overview"></canvas>
+                <div class="bg-white shadow-md rounded-lg overflow-auto mt-6">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-blue-600 text-white">
+                            <tr>
+                                <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Form ID</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Form Type</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Inspector</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium uppercase">Completion Time</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium uppercase">Date</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Name</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium uppercase">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            {% for form in forms %}
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-4 py-4 whitespace-nowrap">{{ form[0] }}</td>
+                                <td class="px-4 py-4 whitespace-nowrap">{{ form[1] }}</td>
+                                <td class="px-4 py-4 whitespace-nowrap">{{ form[2] or 'N/A' }}</td>
+                                <td class="px-4 py-4 whitespace-nowrap">30 min</td>
+                                <td class="px-4 py-4 whitespace-nowrap">{{ form[3] }}</td>
+                                <td class="px-4 py-4 whitespace-nowrap">{{ form[4] or 'N/A' }}</td>
+                                <td class="px-4 py-4 whitespace-nowrap">{{ 'Pass' if form[5] in ['Pass', 'Completed'] else 'Fail' }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            {% for tab in ['food', 'residential', 'burial', 'spirit_licence', 'swimming_pool', 'small_hotels'] %}
+            <div id="subtab-{{ tab }}" class="subtab-content">
+                <h3 class="text-xl font-bold mb-4 blue-bold">{{ tab.replace('_', ' ').title() }} Inspections</h3>
+                <div class="mb-4 flex space-x-4">
+                    <select id="chart-type-{{ tab }}" class="p-2 border rounded blue-bold">
+                        <option value="bar">Bar</option>
+                        <option value="line">Line</option>
+                    </select>
+                    <select id="time-frame-{{ tab }}" class="p-2 border rounded blue-bold">
+                        <option value="daily">Daily</option>
+                        <option value="monthly">Monthly</option>
+                        <option value="yearly">Yearly</option>
+                    </select>
+                    <select id="form-type-{{ tab }}" class="p-2 border rounded blue-bold">
+                        <option value="{% if tab == 'food' %}Food Establishment{% elif tab == 'spirit_licence' %}Spirit Licence Premises{% elif tab == 'swimming_pool' %}Swimming Pool{% elif tab == 'small_hotels' %}Small Hotel{% else %}{{ tab.replace('_', ' ').title() }}{% endif %}">{{ tab.replace('_', ' ').title() }}</option>
+                    </select>
+                </div>
+                <canvas id="metricsChart-{{ tab }}"></canvas>
+                <div class="bg-white shadow-md rounded-lg overflow-auto mt-6">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-blue-600 text-white">
+                            <tr>
+                                <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Form ID</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Inspector</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium uppercase">Completion Time</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium uppercase">Date</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Name</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium uppercase">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            {% for form in forms %}
+                            {% if form[1]|lower == tab.replace('_', ' ') or (tab == 'food' and form[1] == 'Food Establishment') or (tab == 'spirit_licence' and form[1] == 'Spirit Licence Premises') or (tab == 'swimming_pool' and form[1] == 'Swimming Pool') or (tab == 'small_hotels' and form[1] == 'Small Hotel') %}
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-4 py-4 whitespace-nowrap">{{ form[0] }}</td>
+                                <td class="px-4 py-4 whitespace-nowrap">{{ form[2] or 'N/A' }}</td>
+                                <td class="px-4 py-4 whitespace-nowrap">30 min</td>
+                                <td class="px-4 py-4 whitespace-nowrap">{{ form[3] }}</td>
+                                <td class="px-4 py-4 whitespace-nowrap">{{ form[4] or 'N/A' }}</td>
+                                <td class="px-4 py-4 whitespace-nowrap">{{ 'Pass' if form[5] in ['Pass', 'Completed'] else 'Fail' }}</td>
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% endfor %}
+
+            <div class="chat-container">
+                <div class="chat-icon" onclick="toggleChat()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                    <span id="chatIconBadge" class="chat-icon-badge"></span>
+                </div>
+                <div class="chat-window" id="chatWindow">
+                    <div class="chat-header">
+                        <span>Messages</span>
+                        <span class="add-contact" onclick="toggleContactList(true)">+</span>
+                    </div>
+                    <div class="chat-body" id="chatBody">
+                        <div class="message-area" id="messageArea"></div>
+                        <div class="chat-tab-container"></div>
+                    </div>
+                    <div class="chat-footer">
+                        <input type="text" class="chat-input" id="chatInput" placeholder="Type a message..." disabled>
+                        <button onclick="sendMessage()">Send</button>
+                    </div>
+                </div>
+                <div class="contact-list" id="contactList"></div>
+            </div>
+        </div>
+
+        <footer>
+            <a href="https://www.linkedin.com" target="_blank" class="blue-bold">Connect on LinkedIn</a>
+        </footer>
+
+        <script>
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            const homeTabs = document.querySelectorAll('.home-tab');
+            const homeTabContents = document.querySelectorAll('.home-tab-content');
+            const subtabs = document.querySelectorAll('.subtab');
+            const subtabContents = document.querySelectorAll('.subtab-content');
+            const analyticsDepts = document.querySelectorAll('.analytics-dept');
+            const analyticsDetails = document.querySelectorAll('.analytics-detail');
+            const charts = {};
+
+            // Appointments Storage
+            let appointments = JSON.parse(localStorage.getItem('appointments')) || [];
+
+            // Main Tabs
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    tab.classList.add('active');
+                    const target = document.querySelector(`#${tab.dataset.tab}`);
+                    target.classList.add('active');
+                    if (tab.dataset.tab === 'inspections') loadMetrics('overview');
+                    else if (tab.dataset.tab === 'home') loadHomeChart();
+                    else if (tab.dataset.tab === 'analytics') loadAnalyticsChart('emergency');
+                    else if (tab.dataset.tab === 'appointments') loadAppointments();
+                });
+            });
+
+            // Home Subtabs
+            homeTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    homeTabs.forEach(t => t.classList.remove('active'));
+                    homeTabContents.forEach(content => content.classList.remove('active'));
+                    tab.classList.add('active');
+                    const target = document.querySelector(`#home-${tab.dataset.homeTab}`);
+                    target.classList.add('active');
+                    if (tab.dataset.homeTab === 'dashboard') loadHomeChart();
+                    else if (tab.dataset.homeTab === 'appointments') initializeFlatpickr();
+                });
+            });
+
+            // Inspections Subtabs
+            subtabs.forEach(subtab => {
+                subtab.addEventListener('click', () => {
+                    subtabs.forEach(t => t.classList.remove('active'));
+                    subtabContents.forEach(content => content.classList.remove('active'));
+                    subtab.classList.add('active');
+                    const target = document.querySelector(`#subtab-${subtab.dataset.subtab}`);
+                    target.classList.add('active');
+                    loadMetrics(subtab.dataset.subtab);
+                });
+            });
+
+            // Analytics Departments
+            analyticsDepts.forEach(dept => {
+                dept.addEventListener('click', () => {
+                    analyticsDepts.forEach(t => t.classList.remove('active'));
+                    analyticsDetails.forEach(content => content.classList.remove('active'));
+                    dept.classList.add('active');
+                    const target = document.querySelector(`#analytics-${dept.dataset.dept}`);
+                    target.classList.add('active');
+                    loadAnalyticsChart(dept.dataset.dept);
+                });
+            });
+
+            function loadHomeChart() {
+                const ctx = document.getElementById('patientChart');
+                if (window.patientChart) window.patientChart.destroy();
+                window.patientChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr'],
+                        datasets: [{
+                            label: 'Patients',
+                            data: [4500, 7000, 7500, 10200],
+                            backgroundColor: '#0000FF',
+                            borderColor: '#0000FF',
+                            borderWidth: 2,
+                            fill: false
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: { beginAtZero: true, ticks: { color: '#0000FF' }, grid: { color: 'rgba(255, 255, 255, 0.1)' } },
+                            x: { ticks: { color: '#0000FF' }, grid: { color: 'rgba(255, 255, 255, 0.1)' } }
+                        },
+                        plugins: { legend: { labels: { color: '#0000FF' } } }
+                    }
+                });
+            }
+
+            function loadAnalyticsChart(dept) {
+                const chartTypeSelect = document.querySelector(`#chart-type-${dept}`);
+                const timeFrameSelect = document.querySelector(`#time-frame-${dept}`);
+                const chartId = `analyticsChart-${dept}`;
+                const canvas = document.getElementById(chartId);
+                const ctx = canvas.getContext('2d');
+
+                if (charts[chartId]) charts[chartId].destroy();
+
+                const data = {
+                    emergency: {
+                        '12hours': {
+                            labels: ['00:00', '01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00', '08:00', '09:00', '10:00', '11:00'],
+                            resolved: [50, 45, 40, 55, 60, 50, 65, 70, 75, 80, 85, 90],
+                            unresolved: [20, 15, 25, 20, 15, 10, 20, 25, 30, 25, 20, 15],
+                            casesUp: [10, 12, 8, 15, 10, 13, 9, 14, 11, 16, 12, 10],
+                            casesDown: [8, 10, 7, 12, 9, 11, 8, 13, 10, 14, 11, 9]
+                        },
+                        daily: {
+                            labels: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7'],
+                            resolved: [600, 620, 590, 640, 610, 630, 650],
+                            unresolved: [200, 180, 220, 190, 210, 170, 200],
+                            casesUp: [100, 120, 90, 110, 130, 100, 115],
+                            casesDown: [80, 90, 70, 100, 85, 95, 75]
+                        },
+                        weekly: {
+                            labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                            resolved: [4300, 4500, 4200, 4600],
+                            unresolved: [1500, 1400, 1600, 1300],
+                            casesUp: [800, 900, 700, 1000],
+                            casesDown: [600, 500, 700, 400]
+                        },
+                        monthly: {
+                            labels: ['Jan', 'Feb', 'Mar', 'Apr'],
+                            resolved: [17200, 18000, 16800, 18400],
+                            unresolved: [6000, 5600, 6400, 5200],
+                            casesUp: [3200, 3600, 2800, 4000],
+                            casesDown: [2400, 2000, 2800, 1600]
+                        },
+                        yearly: {
+                            labels: ['2022', '2023', '2024', '2025'],
+                            resolved: [206400, 216000, 201600, 220800],
+                            unresolved: [72000, 67200, 76800, 62400],
+                            casesUp: [38400, 43200, 33600, 48000],
+                            casesDown: [28800, 24000, 33600, 19200]
+                        }
+                    },
+                    community: {
+                        '12hours': {
+                            labels: ['00:00', '01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00', '08:00', '09:00', '10:00', '11:00'],
+                            resolved: [40, 35, 30, 45, 50, 40, 55, 60, 65, 70, 75, 80],
+                            unresolved: [10, 8, 12, 10, 8, 5, 10, 12, 15, 12, 10, 8],
+                            casesUp: [8, 10, 6, 12, 8, 11, 7, 13, 9, 14, 10, 8],
+                            casesDown: [6, 8, 5, 10, 7, 9, 6, 11, 8, 12, 9, 7]
+                        },
+                        daily: {
+                            labels: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7'],
+                            resolved: [500, 520, 490, 530, 510, 520, 540],
+                            unresolved: [50, 40, 60, 50, 55, 45, 50],
+                            casesUp: [80, 90, 70, 85, 100, 80, 90],
+                            casesDown: [60, 70, 50, 75, 65, 70, 55]
+                        },
+                        weekly: {
+                            labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                            resolved: [3500, 3600, 3400, 3700],
+                            unresolved: [400, 300, 500, 200],
+                            casesUp: [600, 700, 500, 800],
+                            casesDown: [500, 400, 600, 300]
+                        },
+                        monthly: {
+                            labels: ['Jan', 'Feb', 'Mar', 'Apr'],
+                            resolved: [14000, 14400, 13600, 14800],
+                            unresolved: [1600, 1200, 2000, 800],
+                            casesUp: [2400, 2800, 2000, 3200],
+                            casesDown: [2000, 1600, 2400, 1200]
+                        },
+                        yearly: {
+                            labels: ['2022', '2023', '2024', '2025'],
+                            resolved: [168000, 172800, 163200, 177600],
+                            unresolved: [19200, 14400, 24000, 9600],
+                            casesUp: [28800, 33600, 24000, 38400],
+                            casesDown: [24000, 19200, 28800, 14400]
+                        }
+                    },
+                    vector_control: {
+                        '12hours': {
+                            labels: ['00:00', '01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00', '08:00', '09:00', '10:00', '11:00'],
+                            resolved: [25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25],
+                            unresolved: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                            casesUp: [5, 6, 4, 7, 5, 6, 4, 8, 5, 7, 6, 5],
+                            casesDown: [4, 5, 3, 6, 4, 5, 3, 7, 4, 6, 5, 4]
+                        },
+                        daily: {
+                            labels: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7'],
+                            resolved: [270, 270, 270, 270, 270, 270, 270],
+                            unresolved: [0, 0, 0, 0, 0, 0, 0],
+                            casesUp: [40, 50, 30, 60, 40, 50, 45],
+                            casesDown: [30, 40, 20, 50, 30, 40, 35]
+                        },
+                        weekly: {
+                            labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                            resolved: [1900, 1900, 1900, 1900],
+                            unresolved: [0, 0, 0, 0],
+                            casesUp: [300, 400, 200, 500],
+                            casesDown: [200, 300, 100, 400]
+                        },
+                        monthly: {
+                            labels: ['Jan', 'Feb', 'Mar', 'Apr'],
+                            resolved: [7600, 7600, 7600, 7600],
+                            unresolved: [0, 0, 0, 0],
+                            casesUp: [1200, 1600, 800, 2000],
+                            casesDown: [800, 1200, 400, 1600]
+                        },
+                        yearly: {
+                            labels: ['2022', '2023', '2024', '2025'],
+                            resolved: [91200, 91200, 91200, 91200],
+                            unresolved: [0, 0, 0, 0],
+                            casesUp: [9600, 14400, 8000, 16000],
+                            casesDown: [9600, 14400, 8000, 16000]
+                        }
+                    }
+                };
+
+                charts[chartId] = new Chart(ctx, {
+                    type: chartTypeSelect.value,
+                    data: {
+                        labels: data[dept][timeFrameSelect.value].labels,
+                        datasets: [
+                            {
+                                label: 'Resolved',
+                                data: data[dept][timeFrameSelect.value].resolved,
+                                backgroundColor: '#006400',
+                                borderColor: '#006400',
+                                borderWidth: 1,
+                                fill: chartTypeSelect.value === 'line' ? false : true
+                            },
+                            {
+                                label: 'Unresolved',
+                                data: data[dept][timeFrameSelect.value].unresolved,
+                                backgroundColor: '#FF0000',
+                                borderColor: '#FF0000',
+                                borderWidth: 1,
+                                fill: chartTypeSelect.value === 'line' ? false : true
+                            },
+                            {
+                                label: 'Cases Going Up',
+                                data: data[dept][timeFrameSelect.value].casesUp,
+                                backgroundColor: '#0000FF',
+                                borderColor: '#0000FF',
+                                borderWidth: 1,
+                                fill: chartTypeSelect.value === 'line' ? false : true
+                            },
+                            {
+                                label: 'Cases Going Down',
+                                data: data[dept][timeFrameSelect.value].casesDown,
+                                backgroundColor: '#FFFF00',
+                                borderColor: '#FFFF00',
+                                borderWidth: 1,
+                                fill: chartTypeSelect.value === 'line' ? false : true
+                            }
+                        ]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    color: '#0000FF',
+                                    font: { family: 'Arial', size: 12 },
+                                    callback: function(value) {
+                                        if (value >= 1000000) return (value / 1000000) + 'M';
+                                        if (value >= 1000) return (value / 1000) + 'k';
+                                        return value;
+                                    }
+                                },
+                                grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                            },
+                            x: {
+                                ticks: { color: '#0000FF', font: { family: 'Arial', size: 12 } },
+                                grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                            }
+                        },
+                        plugins: { legend: { labels: { color: '#0000FF' } } }
+                    }
+                });
+            }
+
+            async function loadMetrics(tab) {
+                const formType = tab === 'overview' ? 'all' :
+                    tab === 'food' ? 'Food Establishment' :
+                    tab === 'spirit_licence' ? 'Spirit Licence Premises' :
+                    tab === 'swimming_pool' ? 'Swimming Pool' :
+                    tab === 'small_hotels' ? 'Small Hotel' :
+                    tab.charAt(0).toUpperCase() + tab.slice(1);
+                const chartTypeSelect = document.querySelector(`#chart-type-${tab}`);
+                const timeFrameSelect = document.querySelector(`#time-frame-${tab}`);
+                const chartId = `metricsChart-${tab}`;
+                const canvas = document.getElementById(chartId);
+                const ctx = canvas.getContext('2d');
+
+                if (charts[chartId]) charts[chartId].destroy();
+
+                const data = {
+                    labels: timeFrameSelect.value === 'daily' ? ['Day 1', 'Day 2', 'Day 3'] :
+                            timeFrameSelect.value === 'monthly' ? ['Jan', 'Feb', 'Mar'] :
+                            ['2023', '2024', '2025'],
+                    pass: [50, 60, 70],
+                    fail: [10, 15, 25]
+                };
+
+                charts[chartId] = new Chart(ctx, {
+                    type: chartTypeSelect.value,
+                    data: {
+                        labels: data.labels,
+                        datasets: [
+                            {
+                                label: 'Pass',
+                                data: data.pass,
+                                backgroundColor: '#006400',
+                                borderColor: '#006400',
+                                borderWidth: 1,
+                                fill: chartTypeSelect.value === 'line' ? false : true
+                            },
+                            {
+                                label: 'Fail',
+                                data: data.fail,
+                                backgroundColor: '#FF0000',
+                                borderColor: '#FF0000',
+                                borderWidth: 1,
+                                fill: chartTypeSelect.value === 'line' ? false : true
+                            }
+                        ]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: { color: '#0000FF', font: { family: 'Arial', size: 12 } },
+                                grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                            },
+                            x: {
+                                ticks: { color: '#0000FF', font: { family: 'Arial', size: 12 } },
+                                grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                            }
+                        },
+                        plugins: { legend: { labels: { color: '#0000FF' } } }
+                    }
+                });
+            }
+
+            document.querySelectorAll('[id^="chart-type"]').forEach(select => {
+                select.addEventListener('change', () => {
+                    const id = select.id.replace('chart-type-', '');
+                    if (['emergency', 'community', 'vector_control'].includes(id)) loadAnalyticsChart(id);
+                    else loadMetrics(id);
+                });
+            });
+
+            document.querySelectorAll('[id^="time-frame"]').forEach(select => {
+                select.addEventListener('change', () => {
+                    const id = select.id.replace('time-frame-', '');
+                    if (['emergency', 'community', 'vector_control'].includes(id)) loadAnalyticsChart(id);
+                    else loadMetrics(id);
+                });
+            });
+
+            function initializeFlatpickr() {
+                flatpickr('#appointmentCalendar', {
+                    enableTime: true,
+                    dateFormat: 'Y-m-d H:i',
+                    minDate: 'today',
+                    time_24hr: false,
+                    inline: false,
+                    onChange: function(selectedDates, dateStr, instance) {
+                        document.getElementById('calendarError').style.display = 'none';
+                    }
+                });
+            }
+
+            function loadAppointments() {
+                const tbody = document.querySelector('#appointmentsTable tbody');
+                tbody.innerHTML = '';
+                appointments.forEach(appt => {
+                    const row = document.createElement('tr');
+                    row.className = 'appointment-row';
+                    row.dataset.id = appt.id;
+                    row.innerHTML = `
+                        <td class="px-4 py-4 whitespace-nowrap">${appt.id}</td>
+                        <td class="px-4 py-4 whitespace-nowrap">${appt.title}</td>
+                        <td class="px-4 py-4 whitespace-nowrap">${appt.patientName}</td>
+                        <td class="px-4 py-4 whitespace-nowrap">${appt.date}</td>
+                        <td class="px-4 py-4 whitespace-nowrap">${appt.time}</td>
+                        <td class="px-4 py-4 whitespace-nowrap">${new Date(appt.createdAt).toLocaleString()}</td>
+                        <td class="px-4 py-4 whitespace-nowrap">
+                            <button onclick="acceptAppointment('${appt.id}')" class="bg-green-500 text-white px-2 py-2 rounded hover:bg-blue-600 mr-2">Accept</button>
+                            <button onclick="declineAppointment('${appt.id}')" class="bg-red-500 text-white px-2 py-2 rounded hover:bg-red-600">Decline</button>
+                        </td>
+                    `;
+                    row.addEventListener('click', () => showNotes(appt.notes));
+                    tbody.appendChild(row);
+                });
+            }
+
+            function showNotes(notes) {
+                document.getElementById('popupNotes').textContent = notes || 'No notes provided';
+                document.getElementById('notesPopup').classList.add('open');
+                document.getElementById('overlay').classList.add('open');
+            }
+
+            function closeModal() {
+                document.getElementById('notesPopup').classList.remove('open');
+                document.getElementById('overlay').classList.remove('open');
+            }
+
+            function acceptAppointment(id) {
+                const appointment = appointments.find(a => a.id === id);
+                if (appointment) {
+                    alert(`Accepted appointment: ${appointment.title}`);
+                    // Update backend or status if needed
+                }
+            }
+
+            function declineAppointment(id) {
+                const appointment = appointments.find(a => a.id === id);
+                if (appointment) {
+                    alert(`Declined appointment: ${appointment.title}`);
+                    appointments = appointments.filter(a => a.id !== id);
+                    localStorage.setItem('appointments', JSON.stringify(appointments));
+                    loadAppointments();
+                }
+            }
+
+            function scheduleAppointment() {
+                const calendarInput = document.getElementById('appointmentCalendar').value;
+                const titleInput = document.getElementById('appointmentTitle').value.trim();
+                const patientInput = document.getElementById('patientName').value.trim();
+                const notesInput = document.getElementById('appointmentNotes').value.trim();
+
+                let hasError = false;
+
+                // Reset error messages
+                document.getElementById('calendarError').style.display = 'none';
+                document.getElementById('titleError').style.display = 'none';
+                document.getElementById('patientError').style.display = 'none';
+
+                // Validate inputs
+                if (!calendarInput) {
+                    document.getElementById('calendarError').style.display = 'block';
+                    hasError = true;
+                }
+                if (!titleInput) {
+                    document.getElementById('titleError').style.display = 'block';
+                    hasError = true;
+                }
+                if (!patientInput) {
+                    document.getElementById('patientError').style.display = 'block';
+                    hasError = true;
+                }
+
+                if (hasError) {
+                    return;
+                }
+
+                const dateTime = new Date(calendarInput);
+                if (isNaN(dateTime.getTime())) {
+                    document.getElementById('calendarError').style.display = 'block';
+                    return;
+                }
+
+                const date = dateTime.toISOString().split('T')[0];
+                const time = dateTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                const appointment = {
+                    id: 'A' + (appointments.length + 1).toString().padStart(3, '0'),
+                    title: titleInput,
+                    patientName: patientInput,
+                    date: date,
+                    time: time,
+                    notes: notesInput,
+                    createdAt: new Date().toISOString()
+                };
+
+                appointments.push(appointment);
+                localStorage.setItem('appointments', JSON.stringify(appointments));
+                loadAppointments();
+
+                // Clear form
+                document.getElementById('appointmentCalendar').value = '';
+                document.getElementById('appointmentTitle').value = '';
+                document.getElementById('patientName').value = '';
+                document.getElementById('appointmentNotes').value = '';
+
+                alert('Appointment scheduled successfully!');
+            }
+
+            let activeChats = {};
+            let currentContactId = null;
+            let pollingInterval = null;
+
+            function toggleChat() {
+                const chatWindow = document.getElementById('chatWindow');
+                chatWindow.classList.toggle('open');
+                if (chatWindow.classList.contains('open')) {
+                    loadContacts();
+                    startPolling();
+                } else {
+                    toggleContactList(false);
+                    stopPolling();
+                }
+            }
+
+            function toggleContactList(show) {
+                const contactList = document.getElementById('contactList');
+                contactList.classList.toggle('open', show);
+                if (show) loadContacts();
+            }
+
+            async function loadContacts() {
+                const contacts = [
+                    { id: 1, username: 'Dr. Smith', unread_count: 2 },
+                    { id: 2, username: 'Nurse Jones', unread_count: 0 }
+                ];
+                const contactList = document.getElementById('contactList');
+                contactList.innerHTML = '';
+                let totalUnread = 0;
+                contacts.forEach(contact => {
+                    const div = document.createElement('div');
+                    div.className = `contact-item ${currentContactId === contact.id ? 'selected' : ''}`;
+                    div.datasetId = contact.id;
+                    div.textContent = contact.username;
+                    if (contact.unread_count > 0) {
+                        const badge = document.createElement('span');
+                        badge.className = 'unread-badge';
+                        badge.textContent = contact.unread_count;
+                        div.appendChild(badge);
+                        totalUnread += contact.unread_count;
+                    }
+                    div.addEventListener('click', () => openChat(contact.id, contact.username));
+                    contactList.appendChild(div);
+                });
+                const badge = document.getElementById('chatIconBadge');
+                badge.textContent = totalUnread;
+                badge.style.display = totalUnread > 0 ? 'flex' : 'none';
+            }
+
+            function openChat(contactId, username) {
+                contactId = parseInt(contactId);
+                if (!activeChats[contactId]) {
+                    activeChats[contactId] = { username, messages: [] };
+                }
+                currentContactId = contactId;
+                switchChat(contactId);
+                toggleContactList(false);
+                document.getElementById('chatInput').focus();
+            }
+
+            function updateChatTabs() {
+                const tabContainer = document.querySelector('.chat-tab-container');
+                tabContainer.innerHTML = '';
+                Object.keys(activeChats).forEach(contactId => {
+                    const tab = document.createElement('div');
+                    tab.className = `chat-tab ${currentContactId === parseInt(contactId) ? 'active' : ''}`;
+                    tab.textContent = activeChats[contactId].username;
+                    tab.addEventListener('click', () => switchChat(contactId));
+                    const close = document.createElement('span');
+                    close.className = 'chat-tab-close';
+                    close.textContent = '×';
+                    close.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        closeChat(contactId);
+                    });
+                    tab.appendChild(close);
+                    tabContainer.appendChild(tab);
+                });
+            }
+
+            async function switchChat(contactId) {
+                contactId = parseInt(contactId);
+                currentContactId = contactId;
+                await loadMessages(contactId);
+                updateChatTabs();
+                const messageArea = document.getElementById('messageArea');
+                messageArea.scrollTop = messageArea.scrollHeight;
+                document.getElementById('chatInput').disabled = false;
+            }
+
+            async function loadMessages(contactId) {
+                const messages = [
+                    { id: 1, sender_id: contactId, content: 'Hello', timestamp: new Date().toISOString(), is_sent: false },
+                    { id: 2, sender_id: 0, content: 'Hi back', timestamp: new Date().toISOString(), is_sent: true }
+                ];
+                const messageArea = document.getElementById('messageArea');
+                messageArea.innerHTML = '';
+                messages.forEach(msg => {
+                    const div = document.createElement('div');
+                    div.className = `chat-message ${msg.is_sent ? 'sent' : 'received'}`;
+                    div.innerHTML = `<strong>${activeChats[msg.sender_id]?.username || 'User'}</strong>: ${msg.content} <br><small>${new Date(msg.timestamp).toLocaleString()}</small>`;
+                    messageArea.appendChild(div);
+                });
+                activeChats[contactId].messages = messages;
+                messageArea.scrollTop = messageArea.scrollHeight;
+                await loadContacts();
+            }
+
+            async function sendMessage() {
+                if (!currentContactId) return;
+                const input = document.getElementById('chatInput');
+                const content = input.value.trim();
+                if (!content) return;
+                const messageArea = document.getElementById('messageArea');
+                const div = document.createElement('div');
+                div.className = 'chat-message sent';
+                div.innerHTML = `<strong>You</strong>: ${content} <br><small>${new Date().toLocaleString()}</small>`;
+                messageArea.appendChild(div);
+                messageArea.scrollTop = messageArea.scrollHeight;
+                input.value = '';
+                activeChats[currentContactId].messages.push({
+                    id: Date.now(),
+                    sender_id: 0,
+                    content,
+                    timestamp: new Date().toISOString(),
+                    is_sent: true
+                });
+                await new Promise(resolve => setTimeout(resolve, 500));
+                await loadContacts();
+            }
+
+            function closeChat(contactId) {
+                contactId = Math.floor(Number(contactId));
+                delete activeChats[contactId];
+                if (currentContactId === contactId) {
+                    currentContactId = null;
+                    document.getElementById('messageArea').innerHTML = '';
+                    document.getElementById('chatInput').disabled = true;
+                }
+                updateChatTabs();
+                loadContacts();
+            }
+
+            function startPolling() {
+                if (pollingInterval) return;
+                pollingInterval = setInterval(async () => {
+                    if (currentContactId) await loadMessages(currentContactId);
+                    await loadContacts();
+                }, 3000);
+            }
+
+            function stopPolling() {
+                if (pollingInterval) {
+                    clearInterval(pollingInterval);
+                    pollingInterval = null;
+                }
+            }
+
+            document.addEventListener('DOMContentLoaded', () => {
+                loadHomeChart();
+                loadAppointments();
+                initializeFlatpickr();
+
+                document.getElementById('scheduleAppointment').addEventListener('click', scheduleAppointment);
+
+                document.getElementById('chatInput').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') sendMessage();
+                });
+
+                document.querySelectorAll('#approvals button').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        alert('Clicked Approve');
+                    });
+                });
+
+                startPolling();
+            });
+        </script>
+</body>
+</html>

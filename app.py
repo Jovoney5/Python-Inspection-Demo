@@ -250,13 +250,17 @@ def login_post():
     conn.close()
 
     if user and (
-            (login_type == 'inspector' and user[3] == 'inspector') or (login_type == 'admin' and user[3] == 'admin')):
+            (login_type == 'inspector' and user[3] == 'inspector') or
+            (login_type == 'admin' and user[3] == 'admin') or
+            (login_type == 'medical_officer' and user[3] == 'medical_officer')):
         session['user_id'] = user[0]
         session[login_type] = True
         if login_type == 'inspector':
             return redirect(url_for('dashboard'))
-        else:
+        elif login_type == 'admin':
             return redirect(url_for('admin'))
+        else:  # medical_officer
+            return redirect(url_for('medical_officer'))
     return render_template('login.html', error='Invalid credentials')
 
 
@@ -351,6 +355,50 @@ def process_metrics(results, time_frame):
             data['fail'][idx] += count
 
     return data
+
+@app.route('/generate_report', methods=['GET'])
+def generate_report():
+    if 'inspector' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    metric = request.args.get('metric', 'inspections')
+    timeframe = request.args.get('timeframe', 'daily')
+    conn = sqlite3.connect('inspections.db')
+    c = conn.cursor()
+    if metric == 'inspections':
+        query = """
+            SELECT strftime('%Y-%m-%d', created_at) AS date, COUNT(*) AS count
+            FROM inspections
+            GROUP BY date
+        """
+        c.execute(query)
+        results = c.fetchall()
+        data = {'dates': [], 'counts': []}
+        for date, count in results:
+            data['dates'].append(date)
+            data['counts'].append(count)
+        conn.close()
+        return jsonify(data)
+    conn.close()
+    return jsonify({'error': 'Invalid metric'}), 400
+
+@app.route('/api/system_health', methods=['GET'])
+def system_health():
+    if 'inspector' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    # Simulated data; replace with actual metrics
+    data = {
+        'uptime': 99.9,
+        'db_response': 50,
+        'error_rate': 0.1,
+        'history': {
+            'labels': ['1h', '2h', '3h', '4h', '5h'],
+            'uptime': [99.8, 99.9, 99.7, 99.9, 99.9],
+            'db_response': [45, 50, 55, 48, 50],
+            'error_rate': [0.2, 0.1, 0.3, 0.1, 0.1]
+        }
+    }
+    return jsonify(data)
+
 
 @app.route('/logout', methods=['POST'])
 def logout():
@@ -549,46 +597,6 @@ def submit_spirit_licence():
     except sqlite3.Error as e:
         return jsonify({'status': 'error', 'message': f'Database error: {str(e)}'}), 500
 
-@app.route('/spirit_licence/inspection/<int:id>')
-def spirit_licence_inspection_detail(id):
-    if 'inspector' not in session:
-        return redirect(url_for('login'))
-    conn = sqlite3.connect('inspections.db')
-    c = conn.cursor()
-    c.execute("SELECT id, establishment_name, owner, address, license_no, inspector_name, inspection_date, inspection_time, type_of_establishment, purpose_of_visit, action, result, scores, comments, created_at, form_type, no_of_employees, no_with_fhc, no_wo_fhc, status FROM inspections WHERE id = ?", (id,))
-    inspection = c.fetchone()
-    conn.close()
-    if inspection:
-        scores = [int(x) for x in inspection[12].split(',')]
-        inspection_data = {
-            'id': inspection[0],
-            'establishment_name': inspection[1],
-            'owner': inspection[2],
-            'address': inspection[3],
-            'license_no': inspection[4],
-            'inspector_name': inspection[5],
-            'inspection_date': inspection[6],
-            'inspection_time': inspection[7],
-            'type_of_establishment': inspection[8],
-            'purpose_of_visit': inspection[9],
-            'action': inspection[10],
-            'result': inspection[11],
-            'scores': dict(zip(range(1, 35), scores)),
-            'comments': inspection[13],
-            'inspector_signature': inspection[5],
-            'received_by': inspection[2],
-            'overall_score': sum(score for score in scores if score > 0),
-            'critical_score': sum(score for i, score in enumerate(scores, 1) if 0 and score > 0),
-            'form_type': inspection[15],
-            'no_of_employees': inspection[16],
-            'no_with_fhc': inspection[17],
-            'no_wo_fhc': inspection[18],
-            'status': inspection[19],
-            'created_at': inspection[14]
-        }
-        return render_template('spirit_licence_inspection_detail.html', checklist=[], inspection=inspection_data)
-    return "Not Found", 404
-
 
 @app.route('/submit/<form_type>', methods=['POST'])
 def submit_form(form_type):
@@ -768,51 +776,6 @@ def submit_swimming_pools():
     return jsonify({'status': 'success', 'message': 'Inspection submitted successfully'})
 
 
-@app.route('/swimming_pool/inspection/<int:id>')
-def swimming_pool_inspection_detail(id):
-    if 'inspector' not in session:
-        return redirect(url_for('login'))
-    conn = sqlite3.connect('inspections.db')
-    c = conn.cursor()
-    c.execute("""
-        SELECT id, establishment_name, owner, address, inspector_name, inspection_date, inspection_time, 
-               type_of_establishment, physical_location, result, scores, comments, inspector_signature, 
-               received_by, created_at, overall_score, critical_score, manager_date
-        FROM inspections WHERE id = ? AND form_type = 'Swimming Pool'
-    """, (id,))
-    inspection = c.fetchone()
-    c.execute("SELECT item_id, details FROM inspection_items WHERE inspection_id = ?", (id,))
-    checklist_scores = {row[0].lower(): float(row[1]) if row[1].replace('.', '', 1).isdigit() else 0.0 for row in c.fetchall()}
-    conn.close()
-    if inspection:
-        scores = [float(x) for x in inspection[10].split(',')] if inspection[10] else [0] * len(SWIMMING_POOL_CHECKLIST_ITEMS)
-        inspection_data = {
-            'id': inspection[0],
-            'establishment_name': inspection[1] or '',
-            'owner': inspection[2] or '',
-            'address': inspection[3] or '',
-            'inspector_name': inspection[4] or '',
-            'inspection_date': inspection[5] or '',
-            'inspection_time': inspection[6] or '',
-            'type_of_establishment': inspection[7] or '',
-            'physical_location': inspection[8] or '',
-            'result': inspection[9] or '',
-            'scores': dict(zip([item['id'].lower() for item in SWIMMING_POOL_CHECKLIST_ITEMS], scores)),
-            'comments': inspection[11] or '',
-            'inspector_signature': inspection[12] or '',
-            'received_by': inspection[13] or '',
-            'created_at': inspection[14] or '',
-            'overall_score': float(inspection[15]) if inspection[15] else 0.0,
-            'critical_score': float(inspection[16]) if inspection[16] else 0.0,
-            'manager_date': inspection[17] or '',
-            'checklist_scores': checklist_scores
-        }
-        return render_template('swimming_pool_inspection_detail.html',
-                              inspection=inspection_data,
-                              checklist=SWIMMING_POOL_CHECKLIST_ITEMS)
-    return "Inspection not found", 404
-
-
 @app.route('/submit_small_hotels', methods=['POST'])
 def submit_small_hotels():
     if 'inspector' not in session:
@@ -863,6 +826,11 @@ def submit_small_hotels():
     conn.close()
     return jsonify({"status": "success", "message": "Inspection submitted successfully"})
 
+@app.route('/medical_officer')
+def medical_officer():
+    if 'medical_officer' not in session:
+        return redirect(url_for('login'))
+    return render_template('medical_officer.html')
 
 @app.route('/dashboard')
 def dashboard():
@@ -1035,10 +1003,9 @@ def search_residential():
     conn.close()
     return jsonify({'suggestions': suggestions})
 
-
 @app.route('/inspection/<int:id>')
 def inspection_detail(id):
-    if 'inspector' not in session:
+    if 'inspector' not in session and 'admin' not in session:
         return redirect(url_for('login'))
     conn = sqlite3.connect('inspections.db')
     c = conn.cursor()
@@ -1079,6 +1046,8 @@ def inspection_detail(id):
 
 @app.route('/residential/inspection/<int:form_id>')
 def residential_inspection(form_id):
+    if 'inspector' not in session and 'admin' not in session:
+        return redirect(url_for('login'))
     details = get_residential_inspection_details(form_id)
     if details:
         premises_name = details['premises_name']
@@ -1133,94 +1102,16 @@ def residential_inspection(form_id):
                           checklist=RESIDENTIAL_CHECKLIST_ITEMS,
                           checklist_scores=checklist_scores)
 
-
-@app.route('/inspection/inspection/<int:form_id>')
-def inspection_inspection(form_id):
-    details = get_inspection_details(form_id)
-    if details:
-        establishment_name = details['establishment_name']
-        owner = details['owner']
-        address = details['address']
-        license_no = details['license_no']
-        inspector_name = details['inspector_name']
-        inspection_date = details['inspection_date']
-        inspection_time = details['inspection_time']
-        type_of_establishment = details['type_of_establishment']
-        purpose_of_visit = details['purpose_of_visit']
-        action = details['action']
-        result = details['result']
-        food_inspected = details['food_inspected']
-        food_condemned = details['food_condemned']
-        critical_score = details['critical_score']
-        overall_score = details['overall_score']
-        comments = details['comments']
-        inspector_signature = details['inspector_signature']
-        received_by = details['received_by']
-        created_at = details['created_at']
-        scores = details['scores']
-    else:
-        establishment_name = owner = address = license_no = inspector_name = inspection_date = inspection_time = type_of_establishment = purpose_of_visit = action = result = food_inspected = food_condemned = comments = inspector_signature = received_by = created_at = 'N/A'
-        critical_score = overall_score = 0
-        scores = {item['id']: '0' for item in FOOD_CHECKLIST_ITEMS}
-    return render_template('inspection_detail.html',
-                          form_id=form_id,
-                          establishment_name=establishment_name,
-                          owner=owner,
-                          address=address,
-                          license_no=license_no,
-                          inspector_name=inspector_name,
-                          inspection_date=inspection_date,
-                          inspection_time=inspection_time,
-                          type_of_establishment=type_of_establishment,
-                          purpose_of_visit=purpose_of_visit,
-                          action=action,
-                          result=result,
-                          food_inspected=food_inspected,
-                          food_condemned=food_condemned,
-                          critical_score=critical_score,
-                          overall_score=overall_score,
-                          comments=comments,
-                          inspector_signature=inspector_signature,
-                          received_by=received_by,
-                          created_at=created_at,
-                          checklist=FOOD_CHECKLIST_ITEMS,
-                          scores=scores)
-
-@app.route('/download_inspection_pdf/<int:form_id>')
-def download_inspection_pdf(form_id):
-    conn = sqlite3.connect('inspections.db')
-    c = conn.cursor()
-    c.execute("SELECT id, establishment_name, owner, address, license_no, inspector_name, inspection_date, inspection_time, type_of_establishment, purpose_of_visit, action, result, scores, comments, inspector_signature, received_by, created_at, inspector_code, no_of_employees, food_inspected, food_condemned FROM inspections WHERE id = ?", (form_id,))
-    form_data = c.fetchone()
-    conn.close()
-
-    if form_data:
-        id, establishment_name, owner, address, license_no, inspector_name, inspection_date, inspection_time, type_of_establishment, purpose_of_visit, action, result, scores, comments, inspector_signature, received_by, created_at, inspector_code, no_of_employees, food_inspected, food_condemned = form_data
-        response = make_response()
-        response.headers['Content-Type'] = 'application/pdf'
-        response.headers['Content-Disposition'] = f'attachment; filename=inspection_details_{form_id}.pdf'
-
-        buffer = io.BytesIO()
-        p = canvas.Canvas(buffer, pagesize=letter)
-        p.drawString(100, 750, f"Inspection Form - ID: {id}")
-        p.drawString(100, 700, f"Establishment: {establishment_name}")
-        p.drawString(100, 650, f"Owner: {owner}")
-        p.drawString(100, 600, f"Date Completed: {created_at}")
-        p.drawString(100, 550, f"Result: {result}")
-        p.showPage()
-        p.save()
-        buffer.seek(0)
-        pdf_data = buffer.getvalue()
-        buffer.close()
-        return Response(pdf_data, headers=response.headers)
-    return "PDF generation failed", 500
+import logging
+logging.basicConfig(level=logging.DEBUG)
 
 @app.route('/burial/inspection/<int:id>')
 def burial_inspection_detail(id):
-    if 'inspector' not in session:
+    if 'inspector' not in session and 'admin' not in session:
         return redirect(url_for('login'))
     inspection = get_burial_inspection_details(id)
     if not inspection:
+        logging.error(f"No burial inspection found for id: {id}")
         return "Not Found", 404
     inspection_data = {
         'id': inspection['id'],
@@ -1240,43 +1131,226 @@ def burial_inspection_detail(id):
         'received_by': inspection['received_by'],
         'created_at': inspection['created_at']
     }
+    logging.debug(f"Rendering burial inspection detail for id: {id}")
     return render_template('burial_inspection_detail.html', inspection=inspection_data)
+
+
+@app.route('/download_burial_pdf/<int:form_id>')
+def download_burial_pdf(form_id):
+    if 'inspector' not in session and 'admin' not in session:
+        return redirect(url_for('login'))
+    inspection = get_burial_inspection_details(form_id)
+    if not inspection:
+        logging.error(f"No burial inspection found for form_id: {form_id}")
+        return jsonify({'error': 'Inspection not found'}), 404
+
+    response = make_response()
+    response.headers['Content-Type'] = 'application/pdf'
+    response.headers['Content-Disposition'] = f'attachment; filename=burial_form_{form_id}.pdf'
+
+    buffer = io.BytesIO()
+    p = canvas.Canvas(buffer, pagesize=letter)
+    y = 750
+    textobject = p.beginText(100, y)
+    textobject.setFont("Helvetica", 12)
+    fields = [
+        f"Burial Site Inspection Form - ID: {inspection['id']}",
+        f"Applicant Name: {inspection['applicant_name']}",
+        f"Deceased Name: {inspection['deceased_name']}",
+        f"Burial Location: {inspection['burial_location']}",
+        f"Inspection Date: {inspection['inspection_date']}",
+        f"Site Description: {inspection['site_description'] or 'None'}",
+        f"Proximity to Water Source: {inspection['proximity_water_source']}",
+        f"Proximity to Perimeter Boundaries: {inspection['proximity_perimeter_boundaries']}",
+        f"Proximity to Road/Pathway: {inspection['proximity_road_pathway']}",
+        f"Proximity to Trees: {inspection['proximity_trees']}",
+        f"Proximity to Houses/Buildings: {inspection['proximity_houses_buildings']}",
+        f"Proposed Grave Type: {inspection['proposed_grave_type']}",
+        f"General Remarks: {inspection['general_remarks'] or 'None'}",
+        f"Inspector Signature: {inspection['inspector_signature']}",
+        f"Received By: {inspection['received_by']}",
+        f"Date Completed: {inspection['created_at']}",
+        "Checklist Scores:"
+    ]
+    for field in fields:
+        if y < 50:
+            p.drawText(textobject)
+            p.showPage()
+            textobject = p.beginText(100, 750)
+            y = 750
+        textobject.textLine(field)
+        y -= 20
+
+    for item in BURIAL_CHECKLIST_ITEMS:
+        score = inspection['checklist_scores'].get(str(item['id']), 0)
+        if y < 50:
+            p.drawText(textobject)
+            p.showPage()
+            textobject = p.beginText(100, 750)
+            y = 750
+        textobject.textLine(f"{item['id']}: {item['desc']} - Score: {score}")
+        y -= 20
+
+    p.drawText(textobject)
+    p.showPage()
+    p.save()
+    buffer.seek(0)
+    pdf_data = buffer.getvalue()
+    buffer.close()
+    logging.debug(f"Generated PDF for burial inspection form_id: {form_id}")
+    return Response(pdf_data, headers=response.headers)
+
+
+@app.route('/download_inspection_pdf/<int:form_id>')
+def download_inspection_pdf(form_id):
+    if 'inspector' not in session and 'admin' not in session:
+        return redirect(url_for('login'))
+    conn = sqlite3.connect('inspections.db')
+    c = conn.cursor()
+    c.execute("SELECT id, establishment_name, owner, address, license_no, inspector_name, inspection_date, inspection_time, type_of_establishment, purpose_of_visit, action, result, scores, comments, inspector_signature, received_by, created_at, inspector_code, no_of_employees, food_inspected, food_condemned, form_type FROM inspections WHERE id = ?", (form_id,))
+    form_data = c.fetchone()
+    if not form_data:
+        conn.close()
+        logging.error(f"No inspection found for form_id: {form_id}")
+        return jsonify({'error': 'Inspection not found'}), 404
+
+    # Fetch inspection items
+    c.execute("SELECT item_id, details FROM inspection_items WHERE inspection_id = ?", (form_id,))
+    checklist_scores = {row[0]: float(row[1]) if row[1].replace('.', '', 1).isdigit() else 0.0 for row in c.fetchall()}
+    conn.close()
+
+    id, establishment_name, owner, address, license_no, inspector_name, inspection_date, inspection_time, type_of_establishment, purpose_of_visit, action, result, scores, comments, inspector_signature, received_by, created_at, inspector_code, no_of_employees, food_inspected, food_condemned, form_type = form_data
+    response = make_response()
+    response.headers['Content-Type'] = 'application/pdf'
+    response.headers['Content-Disposition'] = f'attachment; filename=inspection_details_{form_id}.pdf'
+
+    buffer = io.BytesIO()
+    p = canvas.Canvas(buffer, pagesize=letter)
+    y = 750
+    textobject = p.beginText(100, y)
+    textobject.setFont("Helvetica", 12)
+    fields = [
+        f"{form_type} Inspection Form - ID: {id}",
+        f"Establishment: {establishment_name}",
+        f"Owner: {owner}",
+        f"Address: {address}",
+        f"License No: {license_no}",
+        f"Inspection Date: {inspection_date}",
+        f"Result: {result}",
+        f"Comments: {comments or 'None'}",
+        f"Inspector Signature: {inspector_signature}",
+        f"Received By: {received_by}",
+        f"Date Completed: {created_at}",
+        "Checklist Scores:"
+    ]
+    for field in fields:
+        if y < 50:
+            p.drawText(textobject)
+            p.showPage()
+            textobject = p.beginText(100, 750)
+            y = 750
+        textobject.textLine(field)
+        y -= 20
+
+    # Select checklist based on form_type
+    checklist = (
+        FOOD_CHECKLIST_ITEMS if form_type == 'Food Establishment' else
+        SPIRIT_LICENCE_CHECKLIST_ITEMS if form_type == 'Spirit Licence Premises' else
+        SWIMMING_POOL_CHECKLIST_ITEMS if form_type == 'Swimming Pool' else
+        SMALL_HOTELS_CHECKLIST_ITEMS if form_type == 'Small Hotel' else []
+    )
+    for item in checklist:
+        score = checklist_scores.get(str(item['id']).lower(), 0)
+        if y < 50:
+            p.drawText(textobject)
+            p.showPage()
+            textobject = p.beginText(100, 750)
+            y = 750
+        textobject.textLine(f"{item['id']}: {item['desc']} - Score: {score}")
+        y -= 20
+
+    p.drawText(textobject)
+    p.showPage()
+    p.save()
+    buffer.seek(0)
+    pdf_data = buffer.getvalue()
+    buffer.close()
+    logging.debug(f"Generated PDF for inspection form_id: {form_id}")
+    return Response(pdf_data, headers=response.headers)
 
 @app.route('/download_residential_pdf/<int:form_id>')
 def download_residential_pdf(form_id):
+    if 'inspector' not in session and 'admin' not in session:
+        return redirect(url_for('login'))
     conn = sqlite3.connect('inspections.db')
     c = conn.cursor()
-    c.execute("SELECT premises_name, owner, address, inspector_name, inspection_date, inspector_code, treatment_facility, vector, result, onsite_system, building_construction_type, purpose_of_visit, action, no_of_bedrooms, total_population, critical_score, overall_score, comments, inspector_signature, received_by, created_at FROM residential_inspections WHERE id = ?", (form_id,))
+    c.execute("SELECT premises_name, owner, address, insurance_type, inspector_name, inspection_date, inspector_code, treatment_facility, vector, result, onsite_system, building_construction_type, purpose_of_visit, action, no_of_bedrooms, total_population, critical_score, overall_score, comments, inspector_signature, received_by, created_at FROM residential_inspections WHERE id = ?", (form_id,))
     form_data = c.fetchone()
+    c.execute("SELECT item_id, score FROM residential_checklist_scores WHERE form_id = ?", (form_id,))
+    checklist_scores = {row[0]: float(row[1]) if row[1].replace('.', '', 1).isdigit() else 0.0 for row in c.fetchall()}
     conn.close()
 
-    if form_data:
-        premises_name, owner, address, inspector_name, inspection_date, inspector_code, treatment_facility, vector, result, onsite_system, building_construction_type, purpose_of_visit, action, no_of_bedrooms, total_population, critical_score, overall_score, comments, inspector_signature, received_by, created_at = form_data
-        response = make_response()
-        response.headers['Content-Type'] = 'application/pdf'
-        response.headers['Content-Disposition'] = f'attachment; filename=residential_inspection_details_{form_id}.pdf'
+    if not form_data:
+        logging.error(f"No residential inspection found for form_id: {form_id}")
+        return jsonify({'error': 'Inspection not found'}), 404
 
-        buffer = io.BytesIO()
-        p = canvas.Canvas(buffer, pagesize=letter)
-        p.drawString(100, 750, f"Residential Inspection Form - ID: {form_id}")
-        p.drawString(100, 700, f"Name of Premises: {premises_name}")
-        p.drawString(100, 650, f"Owner/Agent/Occupier: {owner}")
-        p.drawString(100, 600, f"Date Completed: {created_at}")
-        p.drawString(100, 550, f"Result: {result}")
-        p.showPage()
-        p.save()
-        buffer.seek(0)
-        pdf_data = buffer.getvalue()
-        buffer.close()
-        return Response(pdf_data, headers=response.headers)
-    return "PDF generation failed", 500
+    premises_name, owner, address, insurance_type, inspector_name, inspection_date, inspector_code, treatment_facility, vector, result, onsite_system, building_construction_type, purpose_of_visit, action, no_of_bedrooms, total_population, critical_score, overall_score, comments, inspector_signature, received_by, created_at = form_data
+    response = make_response()
+    response.headers['Content-Type'] = 'application/pdf'
+    response.headers['Content-Disposition'] = f'attachment; filename=residential_inspection_details_{form_id}.pdf'
 
+    buffer = io.BytesIO()
+    p = canvas.Canvas(buffer, pagesize=letter)
+    y = 750
+    textobject = p.beginText(100, y)
+    textobject.setFont("Helvetica", 12)
+    fields = [
+        f"Residential Inspection Form - ID: {form_id}",
+        f"Name of Premises: {premises_name}",
+        f"Owner/Agent/Occupier: {owner}",
+        f"Address: {address}",
+        f"Inspection Date: {inspection_date}",
+        f"Result: {result}",
+        f"Critical Score: {critical_score}",
+        f"Overall Score: {overall_score}",
+        f"Comments: {comments or 'None'}",
+        f"Inspector Signature: {inspector_signature}",
+        f"Received By: {received_by}",
+        f"Date Completed: {created_at}",
+        "Checklist Scores:"
+    ]
+    for field in fields:
+        if y < 50:
+            p.drawText(textobject)
+            p.showPage()
+            textobject = p.beginText(100, 750)
+            y = 750
+        textobject.textLine(field)
+        y -= 20
+
+    for item in RESIDENTIAL_CHECKLIST_ITEMS:
+        score = checklist_scores.get(str(item['id']), 0)
+        if y < 50:
+            p.drawText(textobject)
+            p.showPage()
+            textobject = p.beginText(100, 750)
+            y = 750
+        textobject.textLine(f"{item['id']}: {item['desc']} - Score: {score}")
+        y -= 20
+
+    p.drawText(textobject)
+    p.showPage()
+    p.save()
+    buffer.seek(0)
+    pdf_data = buffer.getvalue()
+    buffer.close()
+    logging.debug(f"Generated PDF for residential inspection form_id: {form_id}")
+    return Response(pdf_data, headers=response.headers)
 
 @app.route('/view_small_hotels/<int:inspection_id>')
 def view_small_hotels(inspection_id):
-    if 'inspector' not in session:
+    if 'inspector' not in session and 'admin' not in session:
         return redirect(url_for('login'))
-
     conn = sqlite3.connect('inspections.db')
     conn.row_factory = sqlite3.Row
     c = conn.cursor()
@@ -1293,20 +1367,17 @@ def view_small_hotels(inspection_id):
         conn.close()
         return "Inspection not found", 404
 
-    # Fetch checklist items
     c.execute('''
         SELECT item_id, details, obser, error 
         FROM inspection_items WHERE inspection_id = ?
     ''', (inspection_id,))
     items = c.fetchall()
 
-    # Structure inspection data
     inspection_dict = dict(inspection)
     inspection_dict['details'] = {item['item_id']: item['details'] for item in items}
     inspection_dict['obser'] = {item['item_id']: item['obser'] for item in items}
     inspection_dict['error'] = {item['item_id']: item['error'] for item in items}
 
-    # Parse scores if available
     if inspection['scores']:
         scores = [float(x) for x in inspection['scores'].split(',')]
         inspection_dict['scores'] = dict(zip([item['id'].lower() for item in SMALL_HOTELS_CHECKLIST_ITEMS], scores))
@@ -1314,11 +1385,95 @@ def view_small_hotels(inspection_id):
         inspection_dict['scores'] = {item['id'].lower(): 0.0 for item in SMALL_HOTELS_CHECKLIST_ITEMS}
 
     conn.close()
-
     return render_template('small_hotel_inspection_detail.html',
-                           inspection=inspection_dict,
-                           checklist_items=SMALL_HOTELS_CHECKLIST_ITEMS)
+                          inspection=inspection_dict,
+                          checklist_items=SMALL_HOTELS_CHECKLIST_ITEMS)
 
+@app.route('/spirit_licence/inspection/<int:id>')
+def spirit_licence_inspection_detail(id):
+    if 'inspector' not in session and 'admin' not in session:
+        return redirect(url_for('login'))
+    conn = sqlite3.connect('inspections.db')
+    c = conn.cursor()
+    c.execute("SELECT id, establishment_name, owner, address, license_no, inspector_name, inspection_date, inspection_time, type_of_establishment, purpose_of_visit, action, result, scores, comments, created_at, form_type, no_of_employees, critical_score, overall_score FROM inspections WHERE id = ? AND form_type = 'Spirit Licence Premises'", (id,))
+    inspection = c.fetchone()
+    conn.close()
+    if inspection:
+        scores = [int(x) for x in inspection[12].split(',')] if inspection[12] else [0] * 34
+        inspection_data = {
+            'id': inspection[0],
+            'establishment_name': inspection[1] or '',
+            'owner': inspection[2] or '',
+            'address': inspection[3] or '',
+            'license_no': inspection[4] or '',
+            'inspector_name': inspection[5] or '',
+            'inspection_date': inspection[6] or '',
+            'inspection_time': inspection[7] or '',
+            'type_of_establishment': inspection[8] or '',
+            'purpose_of_visit': inspection[9] or '',
+            'action': inspection[10] or '',
+            'result': inspection[11] or '',
+            'scores': dict(zip(range(1, 35), scores)),
+            'comments': inspection[13] or '',
+            'inspector_signature': inspection[5] or '',
+            'received_by': inspection[2] or '',
+            'overall_score': inspection[18] or 0,
+            'critical_score': inspection[17] or 0,
+            'form_type': inspection[15] or '',
+            'no_of_employees': inspection[16] or '',
+            'created_at': inspection[14] or ''
+        }
+        return render_template('spirit_licence_inspection_detail.html', checklist=[], inspection=inspection_data)
+    return "Not Found", 404
+
+@app.route('/swimming_pool/inspection/<int:id>')
+def swimming_pool_inspection_detail(id):
+    if 'inspector' not in session and 'admin' not in session:
+        return redirect(url_for('login'))
+    conn = sqlite3.connect('inspections.db')
+    c = conn.cursor()
+    c.execute("""
+        SELECT id, establishment_name, owner, address, inspector_name, inspection_date, inspection_time, 
+               type_of_establishment, physical_location, result, scores, comments, inspector_signature, 
+               received_by, created_at, overall_score, critical_score, manager_date
+        FROM inspections WHERE id = ? AND form_type = 'Swimming Pool'
+    """, (id,))
+    inspection = c.fetchone()
+    c.execute("SELECT item_id, details FROM inspection_items WHERE inspection_id = ?", (id,))
+    checklist_scores = {row[0].lower(): float(row[1]) if row[1].replace('.', '', 1).isdigit() else 0.0 for row in c.fetchall()}
+    conn.close()
+    if inspection:
+        scores = [float(x) for x in inspection[10].split(',')] if inspection[10] else [0] * len(SWIMMING_POOL_CHECKLIST_ITEMS)
+        inspection_data = {
+            'id': inspection[0],
+            'establishment_name': inspection[1] or '',
+            'owner': inspection[2] or '',
+            'address': inspection[3] or '',
+            'inspector_name': inspection[4] or '',
+            'inspection_date': inspection[5] or '',
+            'inspection_time': inspection[6] or '',
+            'type_of_establishment': inspection[7] or '',
+            'physical_location': inspection[8] or '',
+            'result': inspection[9] or '',
+            'scores': dict(zip([item['id'].lower() for item in SWIMMING_POOL_CHECKLIST_ITEMS], scores)),
+            'comments': inspection[11] or '',
+            'inspector_signature': inspection[12] or '',
+            'received_by': inspection[13] or '',
+            'created_at': inspection[14] or '',
+            'overall_score': float(inspection[15]) if inspection[15] else 0.0,
+            'critical_score': float(inspection[16]) if inspection[16] else 0.0,
+            'manager_date': inspection[17] or '',
+            'checklist_scores': checklist_scores
+        }
+        return render_template('swimming_pool_inspection_detail.html',
+                              inspection=inspection_data,
+                              checklist=SWIMMING_POOL_CHECKLIST_ITEMS)
+    return "Inspection not found", 404
+
+# Debug route for session verification
+@app.route('/debug_session')
+def debug_session():
+    return jsonify(dict(session))
 
 
 def get_db_connection():
@@ -1333,7 +1488,7 @@ def init_db():
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         username TEXT NOT NULL UNIQUE,
         password TEXT NOT NULL,
-        role TEXT NOT NULL CHECK(role IN ('inspector', 'admin'))
+        role TEXT NOT NULL CHECK(role IN ('inspector', 'admin', 'medical_officer'))
     )''')
     c.execute('''CREATE TABLE IF NOT EXISTS messages (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -1348,6 +1503,7 @@ def init_db():
     # Insert default users if not exist
     try:
         c.execute('INSERT OR IGNORE INTO users (username, password, role) VALUES (?, ?, ?)', ('admin', 'adminpass', 'admin'))
+        c.execute('INSERT OR IGNORE INTO users (username, password, role) VALUES (?, ?, ?)', ('medofficer', 'medpass', 'medical_officer'))
         for i in range(1, 7):
             c.execute('INSERT OR IGNORE INTO users (username, password, role) VALUES (?, ?, ?)', (f'inspector{i}', f'pass{i}', 'inspector'))
         conn.commit()
@@ -1373,6 +1529,36 @@ def get_users():
         return jsonify(users)
     finally:
         conn.close()
+
+@app.route('/api/tasks', methods=['GET'])
+def get_tasks():
+    if 'inspector' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    conn = sqlite3.connect('inspections.db')
+    c = conn.cursor()
+    c.execute("SELECT id, title, assignee, due_date, status, details FROM tasks")
+    tasks = [{'id': row[0], 'title': row[1], 'assignee': row[2], 'due_date': row[3], 'status': row[4], 'details': row[5]} for row in c.fetchall()]
+    conn.close()
+    return jsonify(tasks)
+
+@app.route('/api/tasks', methods=['POST'])
+def assign_task():
+    if 'inspector' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    data = request.get_json()
+    title = data.get('title')
+    assignee = data.get('assignee')
+    due_date = data.get('due_date')
+    details = data.get('details')
+    status = 'Pending'
+    conn = sqlite3.connect('inspections.db')
+    c = conn.cursor()
+    c.execute("INSERT INTO tasks (title, assignee, due_date, status, details, created_at) VALUES (?, ?, ?, ?, ?, ?)",
+              (title, assignee, due_date, status, details, datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
+    conn.commit()
+    conn.close()
+    return jsonify({'status': 'success', 'message': 'Task assigned'})
+
 
 @app.route('/api/contacts', methods=['GET'])
 def get_contacts():

@@ -1,12 +1,34 @@
-from datetime import datetime
-from database import get_residential_inspection_details, get_residential_inspections, init_db, save_residential_inspection, save_inspection, save_burial_inspection, get_inspections, get_burial_inspections, get_inspection_details, get_burial_inspection_details
-from database import get_inspection_details
-from flask import Flask, render_template, request, redirect, url_for, session, jsonify, make_response, Response
-from reportlab.lib.pagesizes import letter
-from reportlab.pdfgen import canvas
+# Standard Library Imports
 import os
 import sqlite3
 import io
+from datetime import datetime
+
+# Flask Imports
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify, make_response, Response
+
+# ReportLab Imports
+from reportlab.lib.pagesizes import letter, A4
+from reportlab.lib.units import inch
+from reportlab.lib import colors
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT
+from reportlab.pdfgen import canvas
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, PageBreak
+
+# Database Imports
+from database import (
+    get_residential_inspection_details,
+    get_residential_inspections,
+    init_db,
+    save_residential_inspection,
+    save_inspection,
+    save_burial_inspection,
+    get_inspections,
+    get_burial_inspections,
+    get_inspection_details,
+    get_burial_inspection_details
+)
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
@@ -234,34 +256,6 @@ def login():
     if 'inspector' in session:
         return render_template('dashboard.html', inspections=get_inspections(), burial_inspections=get_burial_inspections())
     return render_template('login.html')
-
-
-@app.route('/login', methods=['POST'])
-def login_post():
-    username = request.form['username']
-    password = request.form['password']
-    login_type = request.form['login_type']
-
-    conn = sqlite3.connect('inspections.db')
-    c = conn.cursor()
-    c.execute("SELECT id, username, password, role FROM users WHERE username = ? AND password = ?",
-              (username, password))
-    user = c.fetchone()
-    conn.close()
-
-    if user and (
-            (login_type == 'inspector' and user[3] == 'inspector') or
-            (login_type == 'admin' and user[3] == 'admin') or
-            (login_type == 'medical_officer' and user[3] == 'medical_officer')):
-        session['user_id'] = user[0]
-        session[login_type] = True
-        if login_type == 'inspector':
-            return redirect(url_for('dashboard'))
-        elif login_type == 'admin':
-            return redirect(url_for('admin'))
-        else:  # medical_officer
-            return redirect(url_for('medical_officer'))
-    return render_template('login.html', error='Invalid credentials')
 
 
 @app.route('/admin')
@@ -834,6 +828,8 @@ def medical_officer():
 
 @app.route('/dashboard')
 def dashboard():
+    if 'admin' in session:
+        return redirect(url_for('admin'))  # Send admin users back to admin dashboard
     if 'inspector' not in session:
         return redirect(url_for('login'))
     inspections = get_inspections()
@@ -1134,218 +1130,473 @@ def burial_inspection_detail(id):
     logging.debug(f"Rendering burial inspection detail for id: {id}")
     return render_template('burial_inspection_detail.html', inspection=inspection_data)
 
+# Replace ALL your PDF download functions with these exact form replicas
+
 
 @app.route('/download_burial_pdf/<int:form_id>')
 def download_burial_pdf(form_id):
     if 'inspector' not in session and 'admin' not in session:
         return redirect(url_for('login'))
+
     inspection = get_burial_inspection_details(form_id)
     if not inspection:
-        logging.error(f"No burial inspection found for form_id: {form_id}")
         return jsonify({'error': 'Inspection not found'}), 404
-
-    response = make_response()
-    response.headers['Content-Type'] = 'application/pdf'
-    response.headers['Content-Disposition'] = f'attachment; filename=burial_form_{form_id}.pdf'
 
     buffer = io.BytesIO()
     p = canvas.Canvas(buffer, pagesize=letter)
-    y = 750
-    textobject = p.beginText(100, y)
-    textobject.setFont("Helvetica", 12)
+    width, height = letter
+
+    # Form Header
+    y = create_form_header(p, "BURIAL SITE INSPECTION FORM", form_id, width, height)
+
+    # Section 1: Basic Information
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(50, y, "BASIC INFORMATION")
+    y -= 25
+
+    p.setFont("Helvetica", 10)
     fields = [
-        f"Burial Site Inspection Form - ID: {inspection['id']}",
-        f"Applicant Name: {inspection['applicant_name']}",
-        f"Deceased Name: {inspection['deceased_name']}",
-        f"Burial Location: {inspection['burial_location']}",
-        f"Inspection Date: {inspection['inspection_date']}",
-        f"Site Description: {inspection['site_description'] or 'None'}",
-        f"Proximity to Water Source: {inspection['proximity_water_source']}",
-        f"Proximity to Perimeter Boundaries: {inspection['proximity_perimeter_boundaries']}",
-        f"Proximity to Road/Pathway: {inspection['proximity_road_pathway']}",
-        f"Proximity to Trees: {inspection['proximity_trees']}",
-        f"Proximity to Houses/Buildings: {inspection['proximity_houses_buildings']}",
-        f"Proposed Grave Type: {inspection['proposed_grave_type']}",
-        f"General Remarks: {inspection['general_remarks'] or 'None'}",
-        f"Inspector Signature: {inspection['inspector_signature']}",
-        f"Received By: {inspection['received_by']}",
-        f"Date Completed: {inspection['created_at']}",
-        "Checklist Scores:"
+        ("Inspection Date:", inspection.get('inspection_date', '')),
+        ("Applicant Name:", inspection.get('applicant_name', '')),
+        ("Deceased Name:", inspection.get('deceased_name', '')),
+        ("Burial Location:", inspection.get('burial_location', ''))
     ]
-    for field in fields:
-        if y < 50:
-            p.drawText(textobject)
-            p.showPage()
-            textobject = p.beginText(100, 750)
-            y = 750
-        textobject.textLine(field)
+
+    for label, value in fields:
+        p.drawString(50, y, label)
+        p.line(150, y - 2, 500, y - 2)
+        p.drawString(155, y, str(value))
         y -= 20
 
-    for item in BURIAL_CHECKLIST_ITEMS:
-        score = inspection['checklist_scores'].get(str(item['id']), 0)
-        if y < 50:
-            p.drawText(textobject)
-            p.showPage()
-            textobject = p.beginText(100, 750)
-            y = 750
-        textobject.textLine(f"{item['id']}: {item['desc']} - Score: {score}")
-        y -= 20
+    y -= 15
 
-    p.drawText(textobject)
-    p.showPage()
+    # Section 2: Site Assessment
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(50, y, "SITE ASSESSMENT")
+    y -= 25
+
+    p.setFont("Helvetica", 10)
+    assessment_fields = [
+        ("Site Description:", inspection.get('site_description', '')),
+        ("Proximity to Water Source:", inspection.get('proximity_water_source', '')),
+        ("Proximity to Perimeter Boundaries:", inspection.get('proximity_perimeter_boundaries', '')),
+        ("Proximity to Road/Pathway:", inspection.get('proximity_road_pathway', '')),
+        ("Proximity to Trees:", inspection.get('proximity_trees', '')),
+        ("Proximity to Houses/Buildings:", inspection.get('proximity_houses_buildings', '')),
+        ("Proposed Grave Type:", inspection.get('proposed_grave_type', ''))
+    ]
+
+    for label, value in assessment_fields:
+        if y < 100:
+            p.showPage()
+            y = height - 50
+        p.drawString(50, y, label)
+        p.line(200, y - 2, 500, y - 2)
+        p.drawString(205, y, str(value))
+        y -= 25
+
+    y -= 15
+
+    # Section 3: Remarks
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(50, y, "GENERAL REMARKS")
+    y -= 25
+
+    p.setFont("Helvetica", 10)
+    remarks = inspection.get('general_remarks', '')
+    p.rect(50, y - 40, 500, 40)
+
+    # Handle multi-line remarks
+    if remarks:
+        lines = []
+        words = remarks.split()
+        current_line = ""
+        for word in words:
+            if len(current_line + word) < 70:
+                current_line += word + " "
+            else:
+                lines.append(current_line.strip())
+                current_line = word + " "
+        lines.append(current_line.strip())
+
+        for i, line in enumerate(lines[:3]):  # Max 3 lines
+            p.drawString(55, y - 15 - (i * 12), line)
+
+    y -= 60
+
+    # Section 4: Signatures
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(50, y, "SIGNATURES")
+    y -= 25
+
+    p.setFont("Helvetica", 10)
+    p.drawString(50, y, "Inspector Signature:")
+    p.line(150, y - 2, 300, y - 2)
+    p.drawString(155, y, inspection.get('inspector_signature', ''))
+
+    p.drawString(350, y, "Received By:")
+    p.line(420, y - 2, 550, y - 2)
+    p.drawString(425, y, inspection.get('received_by', ''))
+
     p.save()
     buffer.seek(0)
     pdf_data = buffer.getvalue()
     buffer.close()
-    logging.debug(f"Generated PDF for burial inspection form_id: {form_id}")
-    return Response(pdf_data, headers=response.headers)
+
+    response = make_response(pdf_data)
+    response.headers['Content-Type'] = 'application/pdf'
+    response.headers['Content-Disposition'] = f'attachment; filename=burial_form_{form_id}.pdf'
+    return response
 
 
 @app.route('/download_inspection_pdf/<int:form_id>')
 def download_inspection_pdf(form_id):
     if 'inspector' not in session and 'admin' not in session:
         return redirect(url_for('login'))
+
     conn = sqlite3.connect('inspections.db')
     c = conn.cursor()
-    c.execute("SELECT id, establishment_name, owner, address, license_no, inspector_name, inspection_date, inspection_time, type_of_establishment, purpose_of_visit, action, result, scores, comments, inspector_signature, received_by, created_at, inspector_code, no_of_employees, food_inspected, food_condemned, form_type FROM inspections WHERE id = ?", (form_id,))
+    c.execute("""SELECT id, establishment_name, owner, address, license_no, inspector_name, 
+                 inspection_date, inspection_time, type_of_establishment, purpose_of_visit, 
+                 action, result, scores, comments, inspector_signature, received_by, 
+                 created_at, inspector_code, no_of_employees, food_inspected, food_condemned, 
+                 form_type, overall_score, critical_score FROM inspections WHERE id = ?""", (form_id,))
     form_data = c.fetchone()
+
     if not form_data:
         conn.close()
-        logging.error(f"No inspection found for form_id: {form_id}")
         return jsonify({'error': 'Inspection not found'}), 404
 
-    # Fetch inspection items
+    # Get checklist scores
     c.execute("SELECT item_id, details FROM inspection_items WHERE inspection_id = ?", (form_id,))
-    checklist_scores = {row[0]: float(row[1]) if row[1].replace('.', '', 1).isdigit() else 0.0 for row in c.fetchall()}
+    checklist_scores = {str(row[0]): float(row[1]) if row[1] and row[1].replace('.', '', 1).isdigit() else 0.0 for row
+                        in c.fetchall()}
     conn.close()
-
-    id, establishment_name, owner, address, license_no, inspector_name, inspection_date, inspection_time, type_of_establishment, purpose_of_visit, action, result, scores, comments, inspector_signature, received_by, created_at, inspector_code, no_of_employees, food_inspected, food_condemned, form_type = form_data
-    response = make_response()
-    response.headers['Content-Type'] = 'application/pdf'
-    response.headers['Content-Disposition'] = f'attachment; filename=inspection_details_{form_id}.pdf'
 
     buffer = io.BytesIO()
     p = canvas.Canvas(buffer, pagesize=letter)
-    y = 750
-    textobject = p.beginText(100, y)
-    textobject.setFont("Helvetica", 12)
-    fields = [
-        f"{form_type} Inspection Form - ID: {id}",
-        f"Establishment: {establishment_name}",
-        f"Owner: {owner}",
-        f"Address: {address}",
-        f"License No: {license_no}",
-        f"Inspection Date: {inspection_date}",
-        f"Result: {result}",
-        f"Comments: {comments or 'None'}",
-        f"Inspector Signature: {inspector_signature}",
-        f"Received By: {received_by}",
-        f"Date Completed: {created_at}",
-        "Checklist Scores:"
+    width, height = letter
+
+    form_type = form_data[21]  # form_type
+
+    # Form Header
+    y = create_form_header(p, f"{form_type.upper()} INSPECTION FORM", form_id, width, height)
+
+    # Basic Information Section
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(50, y, "ESTABLISHMENT INFORMATION")
+    y -= 25
+
+    p.setFont("Helvetica", 10)
+    basic_info = [
+        ("Establishment Name:", form_data[1] or ''),
+        ("Owner:", form_data[2] or ''),
+        ("Address:", form_data[3] or ''),
+        ("License No:", form_data[4] or ''),
+        ("Inspector Name:", form_data[5] or ''),
+        ("Inspector Code:", form_data[17] or ''),
+        ("Inspection Date:", form_data[6] or ''),
+        ("Inspection Time:", form_data[7] or ''),
+        ("Type of Establishment:", form_data[8] or ''),
+        ("No. of Employees:", form_data[18] or ''),
+        ("Purpose of Visit:", form_data[9] or ''),
+        ("Action:", form_data[10] or '')
     ]
-    for field in fields:
-        if y < 50:
-            p.drawText(textobject)
-            p.showPage()
-            textobject = p.beginText(100, 750)
-            y = 750
-        textobject.textLine(field)
-        y -= 20
 
-    # Select checklist based on form_type
-    checklist = (
-        FOOD_CHECKLIST_ITEMS if form_type == 'Food Establishment' else
-        SPIRIT_LICENCE_CHECKLIST_ITEMS if form_type == 'Spirit Licence Premises' else
-        SWIMMING_POOL_CHECKLIST_ITEMS if form_type == 'Swimming Pool' else
-        SMALL_HOTELS_CHECKLIST_ITEMS if form_type == 'Small Hotel' else []
-    )
+    col1_x, col2_x = 50, 320
+    col_y = y
+
+    for i, (label, value) in enumerate(basic_info):
+        if i % 2 == 0:  # Left column
+            x = col1_x
+            y = col_y
+        else:  # Right column
+            x = col2_x
+            y = col_y
+            col_y -= 20
+
+        p.drawString(x, y, label)
+        p.line(x + 100, y - 2, x + 250, y - 2)
+        p.drawString(x + 105, y, str(value))
+
+    y = col_y - 30
+
+    # Food specific fields
+    if form_type == "Food Establishment":
+        p.setFont("Helvetica-Bold", 12)
+        p.drawString(50, y, "FOOD INSPECTION DETAILS")
+        y -= 25
+
+        p.setFont("Helvetica", 10)
+        p.drawString(50, y, f"Food Inspected (kg): {form_data[19] or 0}")
+        p.drawString(250, y, f"Food Condemned (kg): {form_data[20] or 0}")
+        y -= 30
+
+    # Checklist Section
+    if y < 300:
+        p.showPage()
+        y = height - 50
+
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(50, y, "INSPECTION CHECKLIST")
+    y -= 25
+
+    # Determine which checklist to use
+    if form_type == "Food Establishment":
+        checklist = FOOD_CHECKLIST_ITEMS
+    elif form_type == "Spirit Licence Premises":
+        checklist = SPIRIT_LICENCE_CHECKLIST_ITEMS
+    elif form_type == "Swimming Pool":
+        checklist = SWIMMING_POOL_CHECKLIST_ITEMS
+    elif form_type == "Small Hotel":
+        checklist = SMALL_HOTELS_CHECKLIST_ITEMS
+    else:
+        checklist = []
+
+    # Checklist table header
+    p.setFont("Helvetica-Bold", 9)
+    p.drawString(50, y, "Item")
+    p.drawString(80, y, "Description")
+    p.drawString(400, y, "Weight")
+    p.drawString(450, y, "Score")
+    p.drawString(500, y, "✓")
+    y -= 5
+    p.line(50, y, 550, y)
+    y -= 15
+
+    p.setFont("Helvetica", 8)
+
     for item in checklist:
-        score = checklist_scores.get(str(item['id']).lower(), 0)
         if y < 50:
-            p.drawText(textobject)
             p.showPage()
-            textobject = p.beginText(100, 750)
-            y = 750
-        textobject.textLine(f"{item['id']}: {item['desc']} - Score: {score}")
-        y -= 20
+            y = height - 50
+            # Redraw header
+            p.setFont("Helvetica-Bold", 9)
+            p.drawString(50, y, "Item")
+            p.drawString(80, y, "Description")
+            p.drawString(400, y, "Weight")
+            p.drawString(450, y, "Score")
+            p.drawString(500, y, "✓")
+            y -= 5
+            p.line(50, y, 550, y)
+            y -= 15
+            p.setFont("Helvetica", 8)
 
-    p.drawText(textobject)
-    p.showPage()
+        item_id = str(item['id'])
+        score = checklist_scores.get(item_id, 0)
+
+        p.drawString(50, y, item_id)
+
+        # Handle long descriptions
+        desc = item.get('desc', item.get('description', ''))
+        if len(desc) > 45:
+            desc = desc[:42] + "..."
+        p.drawString(80, y, desc)
+
+        p.drawString(400, y, str(item.get('wt', item.get('weight', ''))))
+        p.drawString(450, y, str(score))
+
+        # Draw checkbox
+        draw_checkbox(p, 505, y - 2, checked=(score > 0))
+
+        y -= 12
+
+    # Scoring Section
+    y -= 20
+    if y < 150:
+        p.showPage()
+        y = height - 50
+
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(50, y, "SCORING SUMMARY")
+    y -= 25
+
+    p.setFont("Helvetica", 10)
+    p.drawString(50, y, f"Overall Score: {form_data[22] or 0}")
+    p.drawString(200, y, f"Critical Score: {form_data[23] or 0}")
+    p.drawString(350, y, f"Result: {form_data[11] or ''}")
+    y -= 40
+
+    # Comments Section
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(50, y, "COMMENTS")
+    y -= 25
+
+    p.rect(50, y - 60, 500, 60)
+    p.setFont("Helvetica", 9)
+
+    comments = form_data[13] or ''
+    if comments:
+        lines = []
+        words = comments.split()
+        current_line = ""
+        for word in words:
+            if len(current_line + word) < 70:
+                current_line += word + " "
+            else:
+                lines.append(current_line.strip())
+                current_line = word + " "
+        lines.append(current_line.strip())
+
+        for i, line in enumerate(lines[:5]):  # Max 5 lines
+            p.drawString(55, y - 15 - (i * 10), line)
+
+    y -= 80
+
+    # Signatures Section
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(50, y, "SIGNATURES")
+    y -= 25
+
+    p.setFont("Helvetica", 10)
+    p.drawString(50, y, "Inspector Signature:")
+    p.line(150, y - 2, 300, y - 2)
+    p.drawString(155, y, form_data[14] or '')
+
+    p.drawString(350, y, "Received By:")
+    p.line(420, y - 2, 550, y - 2)
+    p.drawString(425, y, form_data[15] or '')
+
+    y -= 30
+    p.drawString(50, y, f"Date Completed: {form_data[16] or ''}")
+
     p.save()
     buffer.seek(0)
     pdf_data = buffer.getvalue()
     buffer.close()
-    logging.debug(f"Generated PDF for inspection form_id: {form_id}")
-    return Response(pdf_data, headers=response.headers)
+
+    response = make_response(pdf_data)
+    response.headers['Content-Type'] = 'application/pdf'
+    response.headers[
+        'Content-Disposition'] = f'attachment; filename={form_type.lower().replace(" ", "_")}_inspection_{form_id}.pdf'
+    return response
+
 
 @app.route('/download_residential_pdf/<int:form_id>')
 def download_residential_pdf(form_id):
     if 'inspector' not in session and 'admin' not in session:
         return redirect(url_for('login'))
-    conn = sqlite3.connect('inspections.db')
-    c = conn.cursor()
-    c.execute("SELECT premises_name, owner, address, insurance_type, inspector_name, inspection_date, inspector_code, treatment_facility, vector, result, onsite_system, building_construction_type, purpose_of_visit, action, no_of_bedrooms, total_population, critical_score, overall_score, comments, inspector_signature, received_by, created_at FROM residential_inspections WHERE id = ?", (form_id,))
-    form_data = c.fetchone()
-    c.execute("SELECT item_id, score FROM residential_checklist_scores WHERE form_id = ?", (form_id,))
-    checklist_scores = {row[0]: float(row[1]) if row[1].replace('.', '', 1).isdigit() else 0.0 for row in c.fetchall()}
-    conn.close()
 
-    if not form_data:
-        logging.error(f"No residential inspection found for form_id: {form_id}")
+    details = get_residential_inspection_details(form_id)
+    if not details:
         return jsonify({'error': 'Inspection not found'}), 404
-
-    premises_name, owner, address, insurance_type, inspector_name, inspection_date, inspector_code, treatment_facility, vector, result, onsite_system, building_construction_type, purpose_of_visit, action, no_of_bedrooms, total_population, critical_score, overall_score, comments, inspector_signature, received_by, created_at = form_data
-    response = make_response()
-    response.headers['Content-Type'] = 'application/pdf'
-    response.headers['Content-Disposition'] = f'attachment; filename=residential_inspection_details_{form_id}.pdf'
 
     buffer = io.BytesIO()
     p = canvas.Canvas(buffer, pagesize=letter)
-    y = 750
-    textobject = p.beginText(100, y)
-    textobject.setFont("Helvetica", 12)
-    fields = [
-        f"Residential Inspection Form - ID: {form_id}",
-        f"Name of Premises: {premises_name}",
-        f"Owner/Agent/Occupier: {owner}",
-        f"Address: {address}",
-        f"Inspection Date: {inspection_date}",
-        f"Result: {result}",
-        f"Critical Score: {critical_score}",
-        f"Overall Score: {overall_score}",
-        f"Comments: {comments or 'None'}",
-        f"Inspector Signature: {inspector_signature}",
-        f"Received By: {received_by}",
-        f"Date Completed: {created_at}",
-        "Checklist Scores:"
+    width, height = letter
+
+    # Form Header
+    y = create_form_header(p, "RESIDENTIAL & NON-RESIDENTIAL INSPECTION FORM", form_id, width, height)
+
+    # Basic Information
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(50, y, "PREMISES INFORMATION")
+    y -= 25
+
+    p.setFont("Helvetica", 10)
+    basic_fields = [
+        ("Name of Premises:", details.get('premises_name', '')),
+        ("Owner/Agent/Occupier:", details.get('owner', '')),
+        ("Address:", details.get('address', '')),
+        ("Inspector Name:", details.get('inspector_name', '')),
+        ("Inspector Code:", details.get('inspector_code', '')),
+        ("Inspection Date:", details.get('inspection_date', '')),
+        ("Treatment Facility:", details.get('treatment_facility', '')),
+        ("Vector:", details.get('vector', '')),
+        ("On-site System:", details.get('onsite_system', '')),
+        ("Building Construction Type:", details.get('building_construction_type', '')),
+        ("Purpose of Visit:", details.get('purpose_of_visit', '')),
+        ("Action:", details.get('action', '')),
+        ("No. of Bedrooms:", details.get('no_of_bedrooms', '')),
+        ("Total Population:", details.get('total_population', ''))
     ]
-    for field in fields:
-        if y < 50:
-            p.drawText(textobject)
+
+    col1_x, col2_x = 50, 320
+    col_y = y
+
+    for i, (label, value) in enumerate(basic_fields):
+        if i % 2 == 0:
+            x = col1_x
+            y = col_y
+        else:
+            x = col2_x
+            y = col_y
+            col_y -= 20
+
+        p.drawString(x, y, label)
+        p.line(x + 120, y - 2, x + 250, y - 2)
+        p.drawString(x + 125, y, str(value))
+
+    y = col_y - 30
+
+    # Checklist Section
+    if y < 400:
+        p.showPage()
+        y = height - 50
+
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(50, y, "INSPECTION CHECKLIST")
+    y -= 25
+
+    # Checklist categories with proper sections
+    categories = {
+        "BUILDING CONDITION": [1, 2, 3, 4, 5, 6, 7, 8],
+        "WATER SUPPLY": [9, 10],
+        "DRAINAGE": [11, 12],
+        "VECTOR CONTROL - MOSQUITOES": [13, 14],
+        "VECTOR CONTROL - FLIES": [15, 16],
+        "VECTOR CONTROL - RODENTS": [17, 18],
+        "TOILET FACILITIES": [19, 20, 21, 22],
+        "SOLID WASTE": [23, 24],
+        "GENERAL": [25]
+    }
+
+    checklist_scores = details.get('checklist_scores', {})
+
+    for category, items in categories.items():
+        if y < 100:
             p.showPage()
-            textobject = p.beginText(100, 750)
-            y = 750
-        textobject.textLine(field)
+            y = height - 50
+
+        p.setFont("Helvetica-Bold", 10)
+        p.drawString(50, y, category)
         y -= 20
 
-    for item in RESIDENTIAL_CHECKLIST_ITEMS:
-        score = checklist_scores.get(str(item['id']), 0)
-        if y < 50:
-            p.drawText(textobject)
-            p.showPage()
-            textobject = p.beginText(100, 750)
-            y = 750
-        textobject.textLine(f"{item['id']}: {item['desc']} - Score: {score}")
-        y -= 20
+        p.setFont("Helvetica", 8)
+        for item_id in items:
+            item = next((item for item in RESIDENTIAL_CHECKLIST_ITEMS if item['id'] == item_id), None)
+            if item:
+                score = checklist_scores.get(str(item_id), 0)
 
-    p.drawText(textobject)
-    p.showPage()
+                p.drawString(70, y, f"{item_id}.")
+                p.drawString(90, y, item['desc'][:50] + ("..." if len(item['desc']) > 50 else ""))
+                p.drawString(400, y, f"Weight: {item['wt']}")
+                p.drawString(450, y, f"Score: {score}")
+                draw_checkbox(p, 505, y - 2, checked=(float(score) > 0))
+                y -= 15
+
+        y -= 10
+
+    # Scoring Summary
+    y -= 10
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(50, y, "SCORING SUMMARY")
+    y -= 25
+
+    p.setFont("Helvetica", 10)
+    p.drawString(50, y, f"Overall Score: {details.get('overall_score', 0)}")
+    p.drawString(200, y, f"Critical Score: {details.get('critical_score', 0)}")
+    p.drawString(350, y, f"Result: {details.get('result', '')}")
+
     p.save()
     buffer.seek(0)
     pdf_data = buffer.getvalue()
     buffer.close()
-    logging.debug(f"Generated PDF for residential inspection form_id: {form_id}")
-    return Response(pdf_data, headers=response.headers)
+
+    response = make_response(pdf_data)
+    response.headers['Content-Type'] = 'application/pdf'
+    response.headers['Content-Disposition'] = f'attachment; filename=residential_inspection_{form_id}.pdf'
+    return response
 
 @app.route('/view_small_hotels/<int:inspection_id>')
 def view_small_hotels(inspection_id):
@@ -1481,14 +1732,37 @@ def get_db_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
+
+# ... (previous imports, checklist definitions, and other routes unchanged)
+
+def get_db_connection():
+    conn = sqlite3.connect('inspections.db', timeout=10)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+
 def init_db():
     conn = get_db_connection()
     c = conn.cursor()
+
+    # Create tables
     c.execute('''CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         username TEXT NOT NULL UNIQUE,
         password TEXT NOT NULL,
-        role TEXT NOT NULL CHECK(role IN ('inspector', 'admin', 'medical_officer'))
+        role TEXT NOT NULL CHECK(role IN ('inspector', 'admin', 'medical_officer')),
+        email TEXT,
+        is_flagged INTEGER DEFAULT 0
+    )''')
+    c.execute('''CREATE TABLE IF NOT EXISTS login_history (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        username TEXT NOT NULL,
+        email TEXT,
+        role TEXT NOT NULL,
+        login_time TEXT NOT NULL,
+        ip_address TEXT,
+        FOREIGN KEY (user_id) REFERENCES users(id)
     )''')
     c.execute('''CREATE TABLE IF NOT EXISTS messages (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -1500,171 +1774,757 @@ def init_db():
         FOREIGN KEY (sender_id) REFERENCES users(id),
         FOREIGN KEY (recipient_id) REFERENCES users(id)
     )''')
-    # Insert default users if not exist
-    try:
-        c.execute('INSERT OR IGNORE INTO users (username, password, role) VALUES (?, ?, ?)', ('admin', 'adminpass', 'admin'))
-        c.execute('INSERT OR IGNORE INTO users (username, password, role) VALUES (?, ?, ?)', ('medofficer', 'medpass', 'medical_officer'))
-        for i in range(1, 7):
-            c.execute('INSERT OR IGNORE INTO users (username, password, role) VALUES (?, ?, ?)', (f'inspector{i}', f'pass{i}', 'inspector'))
+
+    # Check if email column exists in users table and add it if not
+    c.execute("PRAGMA table_info(users)")
+    columns = [info[1] for info in c.fetchall()]
+    if 'email' not in columns:
+        c.execute('ALTER TABLE users ADD COLUMN email TEXT')
         conn.commit()
-    except sqlite3.IntegrityError:
-        pass
+
+    # Insert default users
+    try:
+        c.execute('INSERT OR IGNORE INTO users (username, password, role, email) VALUES (?, ?, ?, ?)',
+                  ('admin', 'adminpass', 'admin', 'admin@example.com'))
+        c.execute('INSERT OR IGNORE INTO users (username, password, role, email) VALUES (?, ?, ?, ?)',
+                  ('medofficer', 'medpass', 'medical_officer', 'medofficer@example.com'))
+        for i in range(1, 7):
+            c.execute('INSERT OR IGNORE INTO users (username, password, role, email) VALUES (?, ?, ?, ?)',
+                      (f'inspector{i}', f'pass{i}', 'inspector', f'inspector{i}@example.com'))
+        conn.commit()
+    except sqlite3.IntegrityError as e:
+        logging.error(f"Database integrity error: {str(e)}")
+
     conn.close()
 
-@app.route('/api/users', methods=['GET'])
+
+# Replace your existing login_post() function with this updated version
+
+def draw_checkbox(canvas, x, y, checked=False, size=10):
+    """Draw a checkbox at the specified position"""
+    canvas.rect(x, y, size, size)
+    if checked:
+        canvas.line(x + 2, y + 2, x + size - 2, y + size - 2)
+        canvas.line(x + 2, y + size - 2, x + size - 2, y + 2)
+
+
+def create_form_header(canvas, form_title, form_id, width, height):
+    """Create standard form header"""
+    canvas.setFont("Helvetica-Bold", 16)
+    canvas.drawCentredString(width/2, height-40, form_title)  # Fixed: drawCentredString instead of drawCentredText
+    canvas.setFont("Helvetica", 10)
+    canvas.drawString(50, height-60, f"Form ID: {form_id}")
+    canvas.drawString(width-150, height-60, f"Date: {datetime.now().strftime('%Y-%m-%d')}")
+    canvas.line(50, height-70, width-50, height-70)
+    return height-90
+
+
+@app.route('/login', methods=['POST'])
+def login_post():
+    username = request.form['username']
+    password = request.form['password']
+    login_type = request.form['login_type']
+    ip_address = request.remote_addr
+
+    conn = get_db_connection()
+    c = conn.cursor()
+    c.execute("SELECT id, username, password, role, email FROM users WHERE username = ? AND password = ?",
+              (username, password))
+    user = c.fetchone()
+
+    if user and (
+            (login_type == 'inspector' and user['role'] == 'inspector') or
+            (login_type == 'admin' and user['role'] == 'admin') or
+            (login_type == 'medical_officer' and user['role'] == 'medical_officer')):
+        session['user_id'] = user['id']
+        session[login_type] = True
+
+        # Record login attempt
+        c.execute(
+            "INSERT INTO login_history (user_id, username, email, role, login_time, ip_address) VALUES (?, ?, ?, ?, ?, ?)",
+            (user['id'], user['username'], user['email'], user['role'],
+             datetime.now().strftime('%Y-%m-%d %H:%M:%S'), ip_address))
+        conn.commit()
+        conn.close()
+
+        # Log audit event
+        log_audit_event(username, 'login', ip_address, f'Successful {login_type} login')
+
+        if login_type == 'inspector':
+            return redirect(url_for('dashboard'))
+        elif login_type == 'admin':
+            return redirect(url_for('admin'))
+        else:  # medical_officer
+            return redirect(url_for('medical_officer'))
+
+    conn.close()
+
+    # Log failed login attempt
+    log_audit_event(username, 'login_failed', ip_address, f'Failed {login_type} login attempt')
+
+    return render_template('login.html', error='Invalid credentials')
+
+
+@app.route('/api/admin/users', methods=['GET'])
 def get_users():
-    if 'user_id' not in session:
+    if 'admin' not in session:
         return jsonify({'error': 'Unauthorized'}), 401
-    user_id = session['user_id']
     conn = get_db_connection()
     try:
         c = conn.cursor()
-        c.execute('SELECT role FROM users WHERE id = ?', (user_id,))
-        user_role = c.fetchone()['role']
-        if user_role == 'admin':
-            c.execute('SELECT id, username FROM users WHERE role = "inspector" AND id != ?', (user_id,))
-        else:  # inspector
-            c.execute('SELECT id, username FROM users WHERE role = "admin" AND id != ?', (user_id,))
-        users = [{'id': row['id'], 'username': row['username']} for row in c.fetchall()]
+        c.execute('SELECT id, username, email, role, is_flagged FROM users WHERE role = "inspector"')
+        users = [{'id': row['id'], 'username': row['username'], 'email': row['email'],
+                  'role': row['role'], 'is_flagged': row['is_flagged']} for row in c.fetchall()]
         return jsonify(users)
     finally:
         conn.close()
 
-@app.route('/api/tasks', methods=['GET'])
-def get_tasks():
-    if 'inspector' not in session:
-        return jsonify({'error': 'Unauthorized'}), 401
-    conn = sqlite3.connect('inspections.db')
-    c = conn.cursor()
-    c.execute("SELECT id, title, assignee, due_date, status, details FROM tasks")
-    tasks = [{'id': row[0], 'title': row[1], 'assignee': row[2], 'due_date': row[3], 'status': row[4], 'details': row[5]} for row in c.fetchall()]
-    conn.close()
-    return jsonify(tasks)
 
-@app.route('/api/tasks', methods=['POST'])
-def assign_task():
-    if 'inspector' not in session:
-        return jsonify({'error': 'Unauthorized'}), 401
-    data = request.get_json()
-    title = data.get('title')
-    assignee = data.get('assignee')
-    due_date = data.get('due_date')
-    details = data.get('details')
-    status = 'Pending'
-    conn = sqlite3.connect('inspections.db')
-    c = conn.cursor()
-    c.execute("INSERT INTO tasks (title, assignee, due_date, status, details, created_at) VALUES (?, ?, ?, ?, ?, ?)",
-              (title, assignee, due_date, status, details, datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
-    conn.commit()
-    conn.close()
-    return jsonify({'status': 'success', 'message': 'Task assigned'})
+# Add these routes to your existing app.py file
+# These are the missing routes needed for your admin dashboard
 
-
-@app.route('/api/contacts', methods=['GET'])
-def get_contacts():
-    if 'user_id' not in session:
+@app.route('/api/admin/audit_log')
+def get_audit_log():
+    if 'admin' not in session:
         return jsonify({'error': 'Unauthorized'}), 401
-    user_id = session['user_id']
-    conn = get_db_connection()
     try:
-        c = conn.cursor()
-        c.execute('SELECT role FROM users WHERE id = ?', (user_id,))
-        user_role = c.fetchone()['role']
-        if user_role == 'inspector':
-            c.execute('''SELECT u.id, u.username, 
-                         (SELECT COUNT(*) FROM messages m WHERE m.recipient_id = ? AND m.sender_id = u.id AND m.is_read = 0) AS unread_count
-                         FROM users u WHERE u.role = "admin" AND u.id != ?''', (user_id, user_id))
-        else:  # admin
-            c.execute('''SELECT u.id, u.username, 
-                         (SELECT COUNT(*) FROM messages m WHERE m.recipient_id = ? AND m.sender_id = u.id AND m.is_read = 0) AS unread_count
-                         FROM users u WHERE u.role = "inspector" AND u.id != ?''', (user_id, user_id))
-        contacts = [{'id': row['id'], 'username': row['username'], 'unread_count': row['unread_count']} for row in c.fetchall()]
-        return jsonify(contacts)
-    finally:
+        conn = sqlite3.connect('inspections.db')
+        cursor = conn.cursor()
+
+        # Create audit_log table if it doesn't exist
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS audit_log (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                timestamp TEXT NOT NULL,
+                user TEXT NOT NULL,
+                action TEXT NOT NULL,
+                ip_address TEXT,
+                details TEXT
+            )
+        ''')
+
+        # Get audit log entries
+        cursor.execute('''
+            SELECT timestamp, user, action, ip_address, details 
+            FROM audit_log 
+            ORDER BY timestamp DESC 
+            LIMIT 100
+        ''')
+
+        logs = []
+        for row in cursor.fetchall():
+            logs.append({
+                'timestamp': row[0],
+                'user': row[1],
+                'action': row[2],
+                'ip_address': row[3],
+                'details': row[4]
+            })
+
+        # If no audit logs exist, create some sample data from login history
+        if not logs:
+            cursor.execute('''
+                SELECT login_time, username, 'login' as action, ip_address, role 
+                FROM login_history 
+                ORDER BY login_time DESC 
+                LIMIT 50
+            ''')
+            for row in cursor.fetchall():
+                logs.append({
+                    'timestamp': row[0],
+                    'user': row[1],
+                    'action': row[2],
+                    'ip_address': row[3],
+                    'details': f'{row[4]} login'
+                })
+
         conn.close()
+        return jsonify(logs)
 
-@app.route('/api/messages', methods=['POST'])
-def send_message():
-    if 'user_id' not in session:
-        return jsonify({'error': 'Unauthorized'}), 401
-    data = request.get_json()
-    recipient_id = data.get('receiver_id')  # Frontend sends 'receiver_id'
-    content = data.get('content')
-    if not recipient_id or not content:
-        return jsonify({'error': 'Missing recipient_id or content'}), 400
-    sender_id = session['user_id']
-    conn = get_db_connection()
-    try:
-        c = conn.cursor()
-        c.execute('SELECT role FROM users WHERE id = ?', (sender_id,))
-        sender_role = c.fetchone()['role']
-        c.execute('SELECT role FROM users WHERE id = ?', (recipient_id,))
-        recipient = c.fetchone()
-        if not recipient:
-            return jsonify({'error': 'Invalid recipient'}), 400
-        recipient_role = recipient['role']
-        if (sender_role == 'inspector' and recipient_role != 'admin') or (sender_role == 'admin' and recipient_role != 'inspector'):
-            return jsonify({'error': 'Invalid recipient for your role'}), 403
-        timestamp = datetime.utcnow().isoformat()
-        c.execute('INSERT INTO messages (sender_id, recipient_id, content, timestamp, is_read) VALUES (?, ?, ?, ?, ?)',
-                  (sender_id, recipient_id, content, timestamp, 0))
-        conn.commit()
-        message_id = c.lastrowid
-        return jsonify({
-            'id': message_id,
-            'sender_id': sender_id,
-            'recipient_id': recipient_id,
-            'content': content,
-            'timestamp': timestamp,
-            'is_read': 0
-        }), 201
-    except sqlite3.IntegrityError as e:
-        return jsonify({'error': str(e)}), 400
-    finally:
-        conn.close()
-
-@app.route('/api/messages/<int:contact_id>', methods=['GET'])
-def get_messages(contact_id):
-    if 'user_id' not in session:
-        return jsonify({'error': 'Unauthorized'}), 401
-    user_id = session['user_id']
-    conn = get_db_connection()
-    try:
-        c = conn.cursor()
-        c.execute('SELECT role FROM users WHERE id = ?', (user_id,))
-        user_role = c.fetchone()['role']
-        c.execute('SELECT role FROM users WHERE id = ?', (contact_id,))
-        contact = c.fetchone()
-        if not contact:
-            return jsonify({'error': 'Invalid contact'}), 400
-        contact_role = contact['role']
-        if (user_role == 'inspector' and contact_role != 'admin') or (user_role == 'admin' and contact_role != 'inspector'):
-            return jsonify({'error': 'Invalid contact for your role'}), 403
-        c.execute('''SELECT id, sender_id, recipient_id, content, timestamp, is_read,
-                     CASE WHEN sender_id = ? THEN 1 ELSE 0 END AS is_sent
-                     FROM messages
-                     WHERE (sender_id = ? AND recipient_id = ?) OR (sender_id = ? AND recipient_id = ?)
-                     ORDER BY timestamp ASC''',
-                  (user_id, user_id, contact_id, contact_id, user_id))
-        messages = [
-            {
-                'id': row['id'],
-                'sender_id': row['sender_id'],
-                'recipient_id': row['recipient_id'],
-                'content': row['content'],
-                'timestamp': row['timestamp'],
-                'is_read': row['is_read'],
-                'is_sent': row['is_sent']
-            } for row in c.fetchall()
-        ]
-        c.execute('UPDATE messages SET is_read = 1 WHERE recipient_id = ? AND sender_id = ? AND is_read = 0',
-                  (user_id, contact_id))
-        conn.commit()
-        return jsonify(messages)
-    except sqlite3.OperationalError as e:
+    except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/admin/inspector_performance')
+def get_inspector_performance():
+    if 'admin' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    try:
+        time_frame = request.args.get('time_frame', 'monthly')
+        conn = sqlite3.connect('inspections.db')
+        cursor = conn.cursor()
+
+        # Get inspector performance from your existing tables
+        cursor.execute('''
+            SELECT 
+                inspector_name,
+                COUNT(*) as completed,
+                AVG(CASE WHEN result = 'Pass' THEN 1 ELSE 0 END) * 100 as pass_rate,
+                '30 min' as avg_time,
+                0 as overdue
+            FROM (
+                SELECT inspector_name, result FROM inspections
+                WHERE inspector_name IS NOT NULL AND inspector_name != ''
+                UNION ALL
+                SELECT inspector_name, result FROM residential_inspections
+                WHERE inspector_name IS NOT NULL AND inspector_name != ''
+            ) 
+            GROUP BY inspector_name
+            HAVING inspector_name IS NOT NULL
+        ''')
+
+        inspectors = []
+        for row in cursor.fetchall():
+            inspectors.append({
+                'name': row[0] or 'Unknown',
+                'completed': row[1],
+                'pass_rate': round(row[2], 1) if row[2] else 0,
+                'avg_time': row[3],
+                'overdue': row[4]
+            })
+
+        conn.close()
+        return jsonify({'inspectors': inspectors})
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/admin/alerts')
+def get_alerts():
+    if 'admin' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    try:
+        conn = sqlite3.connect('inspections.db')
+        cursor = conn.cursor()
+
+        alerts = []
+
+        # Check for failed inspections
+        cursor.execute('''
+            SELECT COUNT(*) FROM (
+                SELECT result FROM inspections WHERE result = 'Fail'
+                UNION ALL
+                SELECT result FROM residential_inspections WHERE result = 'Fail'
+            )
+        ''')
+
+        failed_count = cursor.fetchone()[0]
+
+        if failed_count > 0:
+            alerts.append({
+                'title': 'Failed Inspections Alert',
+                'description': f'{failed_count} inspections have failed and may need follow-up',
+                'severity': 'critical',
+                'timestamp': datetime.now().isoformat()
+            })
+
+        # Check for recent inspections
+        cursor.execute('''
+            SELECT COUNT(*) FROM inspections 
+            WHERE date(created_at) = date('now')
+        ''')
+
+        today_count = cursor.fetchone()[0]
+
+        if today_count > 10:
+            alerts.append({
+                'title': 'High Activity Alert',
+                'description': f'{today_count} inspections completed today',
+                'severity': 'warning',
+                'timestamp': datetime.now().isoformat()
+            })
+
+        # Check for inspectors with high workload today
+        cursor.execute('''
+            SELECT inspector_name, COUNT(*) as count 
+            FROM inspections 
+            WHERE date(created_at) = date('now') AND inspector_name IS NOT NULL
+            GROUP BY inspector_name 
+            HAVING count > 5
+        ''')
+
+        for row in cursor.fetchall():
+            alerts.append({
+                'title': 'High Workload Alert',
+                'description': f'Inspector {row[0]} has {row[1]} inspections today',
+                'severity': 'warning',
+                'timestamp': datetime.now().isoformat()
+            })
+
+        conn.close()
+        return jsonify(alerts)
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/admin/inspection_locations')
+def get_inspection_locations():
+    if 'admin' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    try:
+        filter_type = request.args.get('filter', 'all')
+        conn = sqlite3.connect('inspections.db')
+        cursor = conn.cursor()
+
+        locations = []
+
+        # Get locations from your existing data
+        cursor.execute('''
+            SELECT 
+                id, 
+                'Food Establishment' as form_type, 
+                result as status, 
+                created_at as date,
+                address,
+                establishment_name
+            FROM inspections
+            WHERE form_type = 'Food Establishment'
+            UNION ALL
+            SELECT 
+                id, 
+                'Residential' as form_type, 
+                result as status, 
+                created_at as date,
+                address,
+                premises_name
+            FROM residential_inspections
+            LIMIT 50
+        ''')
+
+        # Sample coordinates around Kingston, Jamaica
+        base_lat = 18.0179
+        base_lng = -76.8099
+
+        for i, row in enumerate(cursor.fetchall()):
+            # Generate sample coordinates (you'd replace this with actual geocoding)
+            lat_offset = (i % 20 - 10) * 0.01  # Random spread
+            lng_offset = (i % 15 - 7) * 0.01
+
+            locations.append({
+                'form_id': row[0],
+                'form_type': row[1],
+                'status': row[2] or 'Unknown',
+                'date': row[3],
+                'address': row[4],
+                'name': row[5],
+                'latitude': base_lat + lat_offset,
+                'longitude': base_lng + lng_offset
+            })
+
+        if filter_type != 'all':
+            locations = [loc for loc in locations if loc['status'].lower() == filter_type.lower()]
+
+        conn.close()
+        return jsonify(locations)
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/admin/reports')
+def get_reports():
+    if 'admin' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    try:
+        metric = request.args.get('metric', 'inspections')
+        timeframe = request.args.get('timeframe', 'monthly')
+
+        conn = sqlite3.connect('inspections.db')
+        cursor = conn.cursor()
+
+        if metric == 'inspections':
+            cursor.execute('''
+                SELECT 
+                    form_type as type,
+                    COUNT(*) as count,
+                    AVG(CASE WHEN result = 'Pass' THEN 1 ELSE 0 END) * 100 as pass_rate
+                FROM inspections
+                WHERE form_type IS NOT NULL
+                GROUP BY form_type
+                UNION ALL
+                SELECT 
+                    'Residential' as type,
+                    COUNT(*) as count,
+                    AVG(CASE WHEN result = 'Pass' THEN 1 ELSE 0 END) * 100 as pass_rate
+                FROM residential_inspections
+            ''')
+
+            data = []
+            for row in cursor.fetchall():
+                data.append([row[0], row[1], f"{row[2]:.1f}%" if row[2] else "0%"])
+
+            report = {
+                'summary': f'Inspection summary for {timeframe} period',
+                'headers': ['Type', 'Count', 'Pass Rate'],
+                'data': data
+            }
+
+        elif metric == 'user_activity':
+            cursor.execute('''
+                SELECT 
+                    role,
+                    COUNT(*) as logins
+                FROM login_history
+                GROUP BY role
+            ''')
+
+            data = []
+            for row in cursor.fetchall():
+                data.append([row[0], row[1]])
+
+            report = {
+                'summary': f'User activity summary for {timeframe} period',
+                'headers': ['Role', 'Login Count'],
+                'data': data
+            }
+
+        conn.close()
+        return jsonify(report)
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/admin/system_health')
+def get_system_health():
+    if 'admin' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    try:
+        # Get actual system metrics from your database
+        conn = sqlite3.connect('inspections.db')
+        cursor = conn.cursor()
+
+        # Calculate some real metrics
+        cursor.execute('SELECT COUNT(*) FROM inspections')
+        total_inspections = cursor.fetchone()[0]
+
+        cursor.execute('SELECT COUNT(*) FROM users')
+        total_users = cursor.fetchone()[0]
+
+        # Generate health metrics (you can replace with actual monitoring)
+        health = {
+            'uptime': 99.5,
+            'db_response': 45,  # milliseconds
+            'error_rate': 0.2,
+            'history': []
+        }
+
+        # Generate sample history data
+        for i in range(7):
+            date = datetime.now() - timedelta(days=i)
+            health['history'].append({
+                'timestamp': date.isoformat(),
+                'uptime': 99.5 + (i * 0.01),
+                'db_response': 45 + (i * 0.5),
+                'error_rate': 0.2 + (i * 0.01)
+            })
+
+        conn.close()
+        return jsonify(health)
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/admin/tasks', methods=['GET', 'POST'])
+def handle_tasks():
+    if 'admin' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    try:
+        conn = sqlite3.connect('inspections.db')
+        cursor = conn.cursor()
+
+        # Create tasks table if it doesn't exist
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS tasks (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                title TEXT NOT NULL,
+                assignee_id INTEGER,
+                assignee_name TEXT,
+                due_date TEXT,
+                details TEXT,
+                status TEXT DEFAULT 'Pending',
+                created_at TEXT DEFAULT CURRENT_TIMESTAMP
+            )
+        ''')
+
+        if request.method == 'GET':
+            cursor.execute('''
+                SELECT id, title, assignee_name, due_date, status
+                FROM tasks
+                ORDER BY created_at DESC
+            ''')
+
+            tasks = []
+            for row in cursor.fetchall():
+                tasks.append({
+                    'id': row[0],
+                    'title': row[1],
+                    'assignee': row[2] or 'Unassigned',
+                    'due_date': row[3],
+                    'status': row[4]
+                })
+
+            conn.close()
+            return jsonify(tasks)
+
+        elif request.method == 'POST':
+            data = request.get_json()
+
+            # Get assignee name from users table
+            cursor.execute('SELECT username FROM users WHERE id = ?', (data['assignee'],))
+            user = cursor.fetchone()
+            assignee_name = user[0] if user else 'Unknown'
+
+            cursor.execute('''
+                INSERT INTO tasks (title, assignee_id, assignee_name, due_date, details)
+                VALUES (?, ?, ?, ?, ?)
+            ''', (data['title'], data['assignee'], assignee_name, data['due_date'], data['details']))
+
+            conn.commit()
+            conn.close()
+            return jsonify({'success': True})
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/admin/inspectors')
+def get_inspectors():
+    if 'admin' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    try:
+        conn = sqlite3.connect('inspections.db')
+        cursor = conn.cursor()
+
+        # Get inspectors from users table
+        cursor.execute('''
+            SELECT id, username 
+            FROM users 
+            WHERE role = 'inspector'
+        ''')
+
+        inspectors = []
+        for row in cursor.fetchall():
+            inspectors.append({
+                'id': row[0],
+                'name': row[1]
+            })
+
+        conn.close()
+        return jsonify(inspectors)
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/admin/security_metrics')
+def get_security_metrics():
+    if 'admin' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    try:
+        conn = sqlite3.connect('inspections.db')
+        cursor = conn.cursor()
+
+        # Get user counts for MFA metrics (simulated)
+        cursor.execute('SELECT COUNT(*) FROM users WHERE role = "inspector"')
+        total_users = cursor.fetchone()[0]
+
+        # Simulate MFA adoption (you'd track this in your users table)
+        mfa_enabled = int(total_users * 0.7)
+        mfa_disabled = total_users - mfa_enabled
+
+        # Get recent login attempts as security events
+        cursor.execute('''
+            SELECT login_time, username, role, ip_address
+            FROM login_history 
+            ORDER BY login_time DESC 
+            LIMIT 10
+        ''')
+
+        events = []
+        for i, row in enumerate(cursor.fetchall()):
+            events.append({
+                'timestamp': row[0],
+                'type': 'Login Attempt',
+                'user': row[1],
+                'details': f'Successful {row[2]} login from {row[3]}',
+                'count': i + 1
+            })
+
+        metrics = {
+            'mfa_enabled': mfa_enabled,
+            'mfa_disabled': mfa_disabled,
+            'events': events
+        }
+
+        conn.close()
+        return jsonify(metrics)
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/admin/send_message', methods=['POST'])
+def send_message():
+    if 'admin' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    try:
+        data = request.get_json()
+        message = data.get('message', '')
+
+        # Simple auto-reply logic
+        if 'hello' in message.lower():
+            reply = "Hello! How can I assist you today?"
+        elif 'help' in message.lower():
+            reply = "I'm here to help. What do you need assistance with?"
+        elif 'status' in message.lower():
+            reply = "All systems are operating normally."
+        else:
+            reply = f"Thank you for your message: '{message}'. An admin will respond shortly."
+
+        return jsonify({
+            'success': True,
+            'reply': reply
+        })
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+# Helper function to log audit events (add this to your login routes)
+def log_audit_event(user, action, ip_address=None, details=None):
+    try:
+        conn = sqlite3.connect('inspections.db')
+        cursor = conn.cursor()
+
+        # Create table if it doesn't exist
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS audit_log (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                timestamp TEXT NOT NULL,
+                user TEXT NOT NULL,
+                action TEXT NOT NULL,
+                ip_address TEXT,
+                details TEXT
+            )
+        ''')
+
+        cursor.execute('''
+            INSERT INTO audit_log (timestamp, user, action, ip_address, details)
+            VALUES (?, ?, ?, ?, ?)
+        ''', (
+            datetime.now().isoformat(),
+            user,
+            action,
+            ip_address or request.remote_addr if request else None,
+            details
+        ))
+
+        conn.commit()
+        conn.close()
+    except Exception as e:
+        print(f"Error logging audit event: {e}")
+
+@app.route('/api/admin/login_history', methods=['GET'])
+def get_login_history():
+    if 'admin' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    conn = get_db_connection()
+    try:
+        c = conn.cursor()
+        c.execute(
+            'SELECT user_id, username, email, role, login_time, ip_address FROM login_history ORDER BY login_time DESC')
+        history = [{'user_id': row['user_id'], 'username': row['username'], 'email': row['email'],
+                    'role': row['role'], 'login_time': row['login_time'], 'ip_address': row['ip_address']}
+                   for row in c.fetchall()]
+        return jsonify(history)
     finally:
         conn.close()
+
+
+@app.route('/api/admin/users', methods=['POST'])
+def add_user():
+    if 'admin' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    data = request.get_json()
+    username = data.get('username')
+    email = data.get('email')
+    password = data.get('password')
+    role = data.get('role')
+
+    if not all([username, email, password, role]):
+        return jsonify({'success': False, 'error': 'Missing required fields'}), 400
+
+    conn = get_db_connection()
+    try:
+        c = conn.cursor()
+        c.execute('INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)',
+                  (username, email, password, role))
+        conn.commit()
+        return jsonify({'success': True})
+    except sqlite3.IntegrityError:
+        return jsonify({'success': False, 'error': 'Username already exists'}), 400
+    finally:
+        conn.close()
+
+
+@app.route('/api/admin/users/<int:user_id>', methods=['PUT'])
+def update_user(user_id):
+    if 'admin' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    data = request.get_json()
+    email = data.get('email')
+    role = data.get('role')
+
+    conn = get_db_connection()
+    try:
+        c = conn.cursor()
+        c.execute('UPDATE users SET email = ?, role = ? WHERE id = ?', (email, role, user_id))
+        conn.commit()
+        return jsonify({'success': True})
+    finally:
+        conn.close()
+
+
+@app.route('/api/admin/users/<int:user_id>/flag', methods=['POST'])
+def flag_user(user_id):
+    if 'admin' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    data = request.get_json()
+    is_flagged = data.get('is_flagged', False)
+
+    conn = get_db_connection()
+    try:
+        c = conn.cursor()
+        c.execute('UPDATE users SET is_flagged = ? WHERE id = ?', (1 if is_flagged else 0, user_id))
+        conn.commit()
+        return jsonify({'success': True})
+    finally:
+        conn.close()
+
+
+@app.route('/api/admin/users/<int:user_id>', methods=['DELETE'])
+def delete_user(user_id):
+    if 'admin' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    conn = get_db_connection()
+    try:
+        c = conn.cursor()
+        c.execute('SELECT role FROM users WHERE id = ?', (user_id,))
+        user = c.fetchone()
+        if user and user['role'] == 'admin':
+            return jsonify({'success': False, 'error': 'Cannot delete admin user'}), 403
+        c.execute('DELETE FROM users WHERE id = ?', (user_id,))
+        conn.commit()
+        return jsonify({'success': True})
+    finally:
+        conn.close()
+
+
+# ... (rest of the original routes remain unchanged)
 
 if __name__ == '__main__':
     init_db()

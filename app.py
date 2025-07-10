@@ -1945,6 +1945,142 @@ def get_audit_log():
         return jsonify({'error': str(e)}), 500
 
 
+# Add these routes to your app.py file
+
+# Replace the existing backend routes in app.py with these fixed versions
+
+@app.route('/api/inspector/tasks', methods=['GET'])
+def get_inspector_tasks():
+    if 'inspector' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+
+    try:
+        user_id = session.get('user_id')
+        conn = sqlite3.connect('inspections.db')
+        cursor = conn.cursor()
+
+        # Get tasks assigned to this inspector
+        cursor.execute('''
+            SELECT id, title, due_date, details, status, created_at
+            FROM tasks 
+            WHERE assignee_id = ?
+            ORDER BY created_at DESC
+        ''', (user_id,))
+
+        tasks = []
+        for row in cursor.fetchall():
+            tasks.append({
+                'id': row[0],
+                'title': row[1],
+                'due_date': row[2],
+                'details': row[3],
+                'status': row[4],
+                'created_at': row[5]
+            })
+
+        conn.close()
+        return jsonify({'tasks': tasks})
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/inspector/tasks/<int:task_id>/update', methods=['POST'])
+def update_task_status(task_id):  # Fixed parameter name to match route
+    if 'inspector' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+
+    try:
+        data = request.get_json()
+        new_status = data.get('status')
+        user_id = session.get('user_id')
+
+        conn = sqlite3.connect('inspections.db')
+        cursor = conn.cursor()
+
+        # Update task status (only if assigned to this inspector)
+        cursor.execute('''
+            UPDATE tasks 
+            SET status = ?
+            WHERE id = ? AND assignee_id = ?
+        ''', (new_status, task_id, user_id))
+
+        if cursor.rowcount == 0:
+            conn.close()
+            return jsonify({'error': 'Task not found or not assigned to you'}), 404
+
+        conn.commit()
+        conn.close()
+        return jsonify({'success': True})
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/inspector/tasks/<int:task_id>/respond', methods=['POST'])
+def respond_to_task(task_id):
+    if 'inspector' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+
+    try:
+        data = request.get_json()
+        response = data.get('response')  # 'accept' or 'decline'
+        user_id = session.get('user_id')
+
+        conn = sqlite3.connect('inspections.db')
+        cursor = conn.cursor()
+
+        # Update task status based on response
+        if response == 'accept':
+            new_status = 'In Progress'
+        elif response == 'decline':
+            new_status = 'Declined'
+        else:
+            conn.close()
+            return jsonify({'error': 'Invalid response'}), 400
+
+        cursor.execute('''
+            UPDATE tasks 
+            SET status = ?
+            WHERE id = ? AND assignee_id = ?
+        ''', (new_status, task_id, user_id))
+
+        if cursor.rowcount == 0:
+            conn.close()
+            return jsonify({'error': 'Task not found or not assigned to you'}), 404
+
+        conn.commit()
+        conn.close()
+        return jsonify({'success': True, 'new_status': new_status})
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/inspector/tasks/unread_count', methods=['GET'])
+def get_unread_task_count():
+    if 'inspector' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+
+    try:
+        user_id = session.get('user_id')
+        conn = sqlite3.connect('inspections.db')
+        cursor = conn.cursor()
+
+        # Count unread tasks (status = 'Pending')
+        cursor.execute('''
+            SELECT COUNT(*) 
+            FROM tasks 
+            WHERE assignee_id = ? AND status = 'Pending'
+        ''', (user_id,))
+
+        count = cursor.fetchone()[0]
+        conn.close()
+        return jsonify({'count': count})
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/api/admin/inspector_performance')
 def get_inspector_performance():
     if 'admin' not in session:
@@ -2228,6 +2364,7 @@ def get_system_health():
         return jsonify({'error': str(e)}), 500
 
 
+# Modify the existing tasks route to include notifications
 @app.route('/api/admin/tasks', methods=['GET', 'POST'])
 def handle_tasks():
     if 'admin' not in session:
@@ -2236,7 +2373,7 @@ def handle_tasks():
         conn = sqlite3.connect('inspections.db')
         cursor = conn.cursor()
 
-        # Create tasks table if it doesn't exist
+        # Create tasks table if it doesn't exist - updated with notification field
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS tasks (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -2246,7 +2383,8 @@ def handle_tasks():
                 due_date TEXT,
                 details TEXT,
                 status TEXT DEFAULT 'Pending',
-                created_at TEXT DEFAULT CURRENT_TIMESTAMP
+                created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                is_notified INTEGER DEFAULT 0
             )
         ''')
 
@@ -2279,8 +2417,8 @@ def handle_tasks():
             assignee_name = user[0] if user else 'Unknown'
 
             cursor.execute('''
-                INSERT INTO tasks (title, assignee_id, assignee_name, due_date, details)
-                VALUES (?, ?, ?, ?, ?)
+                INSERT INTO tasks (title, assignee_id, assignee_name, due_date, details, status)
+                VALUES (?, ?, ?, ?, ?, 'Pending')
             ''', (data['title'], data['assignee'], assignee_name, data['due_date'], data['details']))
 
             conn.commit()

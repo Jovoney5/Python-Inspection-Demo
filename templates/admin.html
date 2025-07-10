@@ -2012,198 +2012,322 @@
         }
     }
 
-    async function loadTasks() {
-        const tbody = document.querySelector('#tasksTable tbody');
-        tbody.innerHTML = '';
-        const assigneeSelect = document.getElementById('taskAssignee');
-        assigneeSelect.innerHTML = '<option value="">Select Inspector</option>';
+    // Add this JavaScript to your admin dashboard to improve task assignment integration
 
-        try {
-            const [tasksResponse, inspectorsResponse] = await Promise.all([
-                fetch('/api/admin/tasks'),
-                fetch('/api/admin/inspectors')
-            ]);
-            const tasks = await tasksResponse.json();
-            const inspectors = await inspectorsResponse.json();
+// Enhanced task assignment functionality
+async function loadTasks() {
+    const tbody = document.querySelector('#tasksTable tbody');
+    tbody.innerHTML = '';
+    const assigneeSelect = document.getElementById('taskAssignee');
+    assigneeSelect.innerHTML = '<option value="">Select Inspector</option>';
 
-            inspectors.forEach(inspector => {
-                const option = document.createElement('option');
-                option.value = inspector.id;
-                option.textContent = inspector.name;
-                assigneeSelect.appendChild(option);
-            });
+    try {
+        const [tasksResponse, inspectorsResponse] = await Promise.all([
+            fetch('/api/admin/tasks'),
+            fetch('/api/admin/inspectors')
+        ]);
+        const tasks = await tasksResponse.json();
+        const inspectors = await inspectorsResponse.json();
 
-            tasks.forEach(task => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td class="px-6 py-4 whitespace-nowrap">${task.id}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">${task.title}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">${task.assignee}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">${task.due_date}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">${task.status}</td>
-                `;
-                tbody.appendChild(row);
-            });
+        // Populate inspector dropdown
+        inspectors.forEach(inspector => {
+            const option = document.createElement('option');
+            option.value = inspector.id;
+            option.textContent = inspector.name;
+            assigneeSelect.appendChild(option);
+        });
 
-            document.getElementById('assignTask').addEventListener('click', async () => {
-                const title = document.getElementById('taskTitle').value;
-                const assignee = document.getElementById('taskAssignee').value;
-                const dueDate = document.getElementById('taskDueDate').value;
-                const details = document.getElementById('taskDetails').value;
+        // Populate tasks table
+        tasks.forEach(task => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td class="px-6 py-4 whitespace-nowrap">${task.id}</td>
+                <td class="px-6 py-4 whitespace-nowrap">${task.title}</td>
+                <td class="px-6 py-4 whitespace-nowrap">${task.assignee}</td>
+                <td class="px-6 py-4 whitespace-nowrap">${task.due_date}</td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="px-2 py-1 text-xs rounded ${getStatusClass(task.status)}">
+                        ${task.status}
+                    </span>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
 
-                try {
-                    const response = await fetch('/api/admin/tasks', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ title, assignee, due_date: dueDate, details })
-                    });
-                    const result = await response.json();
-                    if (result.success) {
-                        loadTasks();
-                        document.getElementById('taskTitle').value = '';
-                        document.getElementById('taskAssignee').value = '';
-                        document.getElementById('taskDueDate').value = '';
-                        document.getElementById('taskDetails').value = '';
-                    }
-                } catch (error) {
-                    console.error('Error assigning task:', error);
-                    alert('Failed to assign task');
-                }
-            });
-        } catch (error) {
-            console.error('Error loading tasks:', error);
-            tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center">Error loading data</td></tr>';
-        }
-    }
+        // Enhanced task assignment
+        document.getElementById('assignTask').addEventListener('click', async () => {
+            const title = document.getElementById('taskTitle').value.trim();
+            const assignee = document.getElementById('taskAssignee').value;
+            const dueDate = document.getElementById('taskDueDate').value;
+            const details = document.getElementById('taskDetails').value.trim();
 
-    async function loadSecurityMetrics() {
-        const mfaCtx = document.getElementById('mfaChart').getContext('2d');
-        const securityEventsCtx = document.getElementById('securityEventsChart').getContext('2d');
-        const tbody = document.querySelector('#securityEventsTable tbody');
-        tbody.innerHTML = '';
-
-        try {
-            const response = await fetch('/api/admin/security_metrics');
-            const metrics = await response.json();
-
-            new Chart(mfaCtx, {
-                type: 'pie',
-                data: {
-                    labels: ['MFA Enabled', 'MFA Disabled'],
-                    datasets: [{
-                        data: [metrics.mfa_enabled, metrics.mfa_disabled],
-                        backgroundColor: ['#006400', '#FF0000']
-                    }]
-                },
-                options: { plugins: { legend: { labels: { color: '#000000' } } } }
-            });
-
-            new Chart(securityEventsCtx, {
-                type: 'line',
-                data: {
-                    labels: metrics.events.map(e => new Date(e.timestamp).toLocaleDateString()),
-                    datasets: [{
-                        label: 'Security Events',
-                        data: metrics.events.map(e => e.count),
-                        borderColor: '#0000FF',
-                        fill: false
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: { beginAtZero: true, ticks: { color: '#000000' } },
-                        x: { ticks: { color: '#000000' } }
-                    }
-                }
-            });
-
-            metrics.events.forEach(event => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td class="px-6 py-4 whitespace-nowrap">${new Date(event.timestamp).toLocaleString()}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">${event.type}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">${event.user}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">${event.details}</td>
-                `;
-                tbody.appendChild(row);
-            });
-        } catch (error) {
-            console.error('Error loading security metrics:', error);
-            tbody.innerHTML = '<tr><td colspan="4" class="px-6 py-4 text-center">Error loading data</td></tr>';
-        }
-    }
-
-    function updateAlertBadge(count) {
-        const badge = document.getElementById('alertBadge');
-        badge.textContent = count;
-        badge.style.display = count > 0 ? 'flex' : 'none';
-    }
-
-    function toggleChat() {
-        const chatWindow = document.getElementById('chatWindow');
-        chatWindow.classList.toggle('open');
-    }
-
-    function toggleContactList(show) {
-        const contactList = document.getElementById('contactList');
-        contactList.classList.toggle('open', show);
-    }
-
-    async function sendMessage() {
-        const input = document.getElementById('chatInput');
-        const message = input.value.trim();
-        if (!message) return;
-
-        const messageArea = document.getElementById('messageArea');
-        const messageDiv = document.createElement('div');
-        messageDiv.className = 'chat-message sent';
-        messageDiv.textContent = message;
-        messageArea.appendChild(messageDiv);
-        input.value = '';
-        messageArea.scrollTop = messageArea.scrollHeight;
-
-        try {
-            const response = await fetch('/api/admin/send_message', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message })
-            });
-            const result = await response.json();
-            if (result.success) {
-                const replyDiv = document.createElement('div');
-                replyDiv.className = 'chat-message received';
-                replyDiv.textContent = result.reply;
-                messageArea.appendChild(replyDiv);
-                messageArea.scrollTop = messageArea.scrollHeight;
+            if (!title || !assignee || !dueDate) {
+                alert('Please fill in all required fields (Title, Assignee, Due Date)');
+                return;
             }
+
+            try {
+                const response = await fetch('/api/admin/tasks', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        title,
+                        assignee: parseInt(assignee),
+                        due_date: dueDate,
+                        details
+                    })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    // Clear form
+                    document.getElementById('taskTitle').value = '';
+                    document.getElementById('taskAssignee').value = '';
+                    document.getElementById('taskDueDate').value = '';
+                    document.getElementById('taskDetails').value = '';
+
+                    // Reload tasks
+                    loadTasks();
+
+                    // Show success message
+                    showNotification('Task assigned successfully!', 'success');
+                } else {
+                    showNotification('Failed to assign task: ' + (result.error || 'Unknown error'), 'error');
+                }
+            } catch (error) {
+                console.error('Error assigning task:', error);
+                showNotification('Failed to assign task. Please try again.', 'error');
+            }
+        });
+
+    } catch (error) {
+        console.error('Error loading tasks:', error);
+        tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center">Error loading data</td></tr>';
+        showNotification('Error loading tasks data', 'error');
+    }
+}
+
+// Helper function to get status styling
+function getStatusClass(status) {
+    switch (status.toLowerCase()) {
+        case 'pending':
+            return 'bg-yellow-100 text-yellow-800';
+        case 'in progress':
+            return 'bg-blue-100 text-blue-800';
+        case 'completed':
+            return 'bg-green-100 text-green-800';
+        default:
+            return 'bg-gray-100 text-gray-800';
+    }
+}
+
+// Enhanced notification system
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `fixed top-4 right-4 z-50 px-4 py-2 rounded-md shadow-lg ${getNotificationClass(type)}`;
+    notification.textContent = message;
+
+    document.body.appendChild(notification);
+
+    // Auto remove after 3 seconds
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
+}
+
+function getNotificationClass(type) {
+    switch (type) {
+        case 'success':
+            return 'bg-green-500 text-white';
+        case 'error':
+            return 'bg-red-500 text-white';
+        case 'warning':
+            return 'bg-yellow-500 text-white';
+        default:
+            return 'bg-blue-500 text-white';
+    }
+}
+
+// Enhanced task monitoring with real-time updates
+function startTaskMonitoring() {
+    setInterval(async () => {
+        // Check for task status updates
+        try {
+            const response = await fetch('/api/admin/tasks');
+            const tasks = await response.json();
+
+            // Update task table if modal is open
+            const modal = document.getElementById('task_assignment_modal');
+            if (modal && modal.classList.contains('open')) {
+                updateTaskTable(tasks);
+            }
+
+            // Check for overdue tasks
+            const overdueTasks = tasks.filter(task => {
+                const dueDate = new Date(task.due_date);
+                const now = new Date();
+                return dueDate < now && task.status !== 'Completed';
+            });
+
+            if (overdueTasks.length > 0) {
+                updateOverdueTaskAlert(overdueTasks.length);
+            }
+
         } catch (error) {
-            console.error('Error sending message:', error);
+            console.error('Error monitoring tasks:', error);
+        }
+    }, 60000); // Check every minute
+}
+
+function updateTaskTable(tasks) {
+    const tbody = document.querySelector('#tasksTable tbody');
+    if (!tbody) return;
+
+    tbody.innerHTML = '';
+    tasks.forEach(task => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td class="px-6 py-4 whitespace-nowrap">${task.id}</td>
+            <td class="px-6 py-4 whitespace-nowrap">${task.title}</td>
+            <td class="px-6 py-4 whitespace-nowrap">${task.assignee}</td>
+            <td class="px-6 py-4 whitespace-nowrap">${task.due_date}</td>
+            <td class="px-6 py-4 whitespace-nowrap">
+                <span class="px-2 py-1 text-xs rounded ${getStatusClass(task.status)}">
+                    ${task.status}
+                </span>
+            </td>
+        `;
+        tbody.appendChild(row);
+    });
+}
+
+function updateOverdueTaskAlert(count) {
+    const alertBadge = document.getElementById('alertBadge');
+    if (alertBadge) {
+        const currentCount = parseInt(alertBadge.textContent) || 0;
+        alertBadge.textContent = currentCount + count;
+        alertBadge.style.display = 'flex';
+    }
+}
+
+// Initialize task management when DOM loads
+document.addEventListener('DOMContentLoaded', () => {
+    startTaskMonitoring();
+
+    // Set default due date to tomorrow
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const taskDueDateInput = document.getElementById('taskDueDate');
+    if (taskDueDateInput) {
+        taskDueDateInput.value = tomorrow.toISOString().split('T')[0];
+    }
+});
+
+// Enhanced form validation
+function validateTaskForm() {
+    const title = document.getElementById('taskTitle').value.trim();
+    const assignee = document.getElementById('taskAssignee').value;
+    const dueDate = document.getElementById('taskDueDate').value;
+
+    if (!title) {
+        showNotification('Task title is required', 'error');
+        return false;
+    }
+
+    if (!assignee) {
+        showNotification('Please select an inspector', 'error');
+        return false;
+    }
+
+    if (!dueDate) {
+        showNotification('Due date is required', 'error');
+        return false;
+    }
+
+    const dueDateObj = new Date(dueDate);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (dueDateObj < today) {
+        showNotification('Due date cannot be in the past', 'error');
+        return false;
+    }
+
+    return true;
+}
+
+// Add keyboard shortcuts for task management
+document.addEventListener('keydown', (e) => {
+    // Ctrl+Shift+T to open task assignment modal
+    if (e.ctrlKey && e.shiftKey && e.key === 'T') {
+        const taskModal = document.getElementById('task_assignment_modal');
+        if (taskModal) {
+            openModal('task_assignment');
         }
     }
 
-    document.getElementById('chatInput').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') sendMessage();
-    });
+    // Escape to close modals
+    if (e.key === 'Escape') {
+        const openModals = document.querySelectorAll('.modal.open');
+        openModals.forEach(modal => {
+            modal.classList.remove('open');
+        });
+    }
+});
 
-    document.querySelectorAll('#chart-type, #time-frame').forEach(select => {
-        select.addEventListener('change', () => loadMetrics('overview'));
-    });
+// Quick task assignment from inspection forms
+function quickAssignTask(inspectionId, inspectionType) {
+    const title = `Follow-up on ${inspectionType} Inspection #${inspectionId}`;
+    const details = `Please review and follow up on the ${inspectionType.toLowerCase()} inspection (ID: ${inspectionId}).`;
 
-    document.getElementById('alertBell').addEventListener('click', (e) => {
-        e.stopPropagation();
-        document.getElementById('alertDropdown').classList.toggle('open');
-    });
+    // Pre-fill task form
+    document.getElementById('taskTitle').value = title;
+    document.getElementById('taskDetails').value = details;
 
-    document.addEventListener('click', (e) => {
-        if (!document.getElementById('alertDropdown').contains(e.target) && e.target !== document.getElementById('alertBell')) {
-            document.getElementById('alertDropdown').classList.remove('open');
-        }
-    });
+    // Open task assignment modal
+    openModal('task_assignment');
+}
 
-    window.addEventListener('load', () => {
-        loadMetrics('overview');
-        loadAlerts();
-    });
+// Export task data
+function exportTasks() {
+    fetch('/api/admin/tasks')
+        .then(response => response.json())
+        .then(tasks => {
+            const csv = convertToCSV(tasks);
+            downloadCSV(csv, 'tasks_export.csv');
+        })
+        .catch(error => {
+            console.error('Error exporting tasks:', error);
+            showNotification('Failed to export tasks', 'error');
+        });
+}
+
+function convertToCSV(data) {
+    if (data.length === 0) return '';
+
+    const headers = Object.keys(data[0]);
+    const csvContent = [
+        headers.join(','),
+        ...data.map(row => headers.map(header => `"${row[header] || ''}"`).join(','))
+    ].join('\n');
+
+    return csvContent;
+}
+
+function downloadCSV(csvContent, filename) {
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+
+    if (link.download !== undefined) {
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', filename);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+}
     </script>
 </body>
 </html>

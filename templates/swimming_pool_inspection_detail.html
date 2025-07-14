@@ -87,6 +87,18 @@
             align-items: center;
             font-size: 14px;
         }
+        .score-display {
+            font-weight: bold;
+            color: #009b3a;
+        }
+        .score-yes {
+            color: #009b3a;
+            font-weight: bold;
+        }
+        .score-no {
+            color: #d32f2f;
+            font-weight: bold;
+        }
         .comments {
             width: 100%;
             padding: 10px;
@@ -109,6 +121,8 @@
             cursor: pointer;
             color: #fff;
             transition: background 0.3s;
+            text-decoration: none;
+            display: inline-block;
         }
         .btn:hover {
             opacity: 0.9;
@@ -119,6 +133,13 @@
         #back-btn:hover {
             background: #5a6268;
         }
+        #print-btn {
+            background: #ffd200;
+            color: #000;
+        }
+        #print-btn:hover {
+            background: #e6b800;
+        }
     </style>
 </head>
 <body>
@@ -128,15 +149,15 @@
         <table>
             <tr>
                 <td>Operator</td>
-                <td><span class="input-field">{{ inspection.establishment_name|default('') }}</span></td>
+                <td><span class="input-field">{{ inspection.operator|default(inspection.establishment_name|default('')) }}</span></td>
                 <td>Date Inspection</td>
-                <td><span class="input-field">{{ inspection.inspection_date|default('') }}</span></td>
+                <td><span class="input-field">{{ inspection.date_inspection|default(inspection.inspection_date|default('')) }}</span></td>
                 <td>Inspector's Id</td>
-                <td><span class="input-field">{{ inspection.inspector_name|default('') }}</span></td>
+                <td><span class="input-field">{{ inspection.inspector_id|default(inspection.inspector_name|default('')) }}</span></td>
             </tr>
             <tr>
                 <td>Pool Class</td>
-                <td><span class="input-field">{{ inspection.type_of_establishment|default('') }}</span></td>
+                <td><span class="input-field">{{ inspection.pool_class|default(inspection.type_of_establishment|default('')) }}</span></td>
                 <td>Address</td>
                 <td colspan="3"><span class="input-field">{{ inspection.address|default('') }}</span></td>
             </tr>
@@ -151,42 +172,82 @@
             <tr class="critical">
                 <td>A</td>
                 <td>Written procedures for microbiological monitoring of pool water implemented</td>
-                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('1a')|float > 0 else 'No' }}</div></td>
+                <td><div class="checkbox-group">
+                    <span class="{{ 'score-yes' if inspection.score_1A|default(0)|float > 0 else 'score-no' }}">
+                        {{ 'Yes' if inspection.score_1A|default(0)|float > 0 else 'No' }}
+                    </span>
+                    <span class="score-display">({{ inspection.score_1A|default(0) }} pts)</span>
+                </div></td>
             </tr>
             <tr>
                 <td>B</td>
                 <td>Microbiological results</td>
-                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('1b')|float > 0 else 'No' }}</div></td>
+                <td><div class="checkbox-group">
+                    <span class="{{ 'score-yes' if inspection.score_1B|default(0)|float > 0 else 'score-no' }}">
+                        {{ 'Yes' if inspection.score_1B|default(0)|float > 0 else 'No' }}
+                    </span>
+                    <span class="score-display">({{ inspection.score_1B|default(0) }} pts)</span>
+                </div></td>
             </tr>
             <tr>
                 <td>C</td>
                 <td>Date of last testing within required frequency</td>
-                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('1c')|float > 0 else 'No' }}</div></td>
+                <td><div class="checkbox-group">
+                    <span class="{{ 'score-yes' if inspection.score_1C|default(0)|float > 0 else 'score-no' }}">
+                        {{ 'Yes' if inspection.score_1C|default(0)|float > 0 else 'No' }}
+                    </span>
+                    <span class="score-display">({{ inspection.score_1C|default(0) }} pts)</span>
+                </div></td>
             </tr>
             <tr class="critical">
                 <td>D</td>
                 <td>Acceptable monitoring procedures</td>
-                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('1d')|float > 0 else 'No' }}</div></td>
+                <td><div class="checkbox-group">
+                    <span class="{{ 'score-yes' if inspection.score_1D|default(0)|float > 0 else 'score-no' }}">
+                        {{ 'Yes' if inspection.score_1D|default(0)|float > 0 else 'No' }}
+                    </span>
+                    <span class="score-display">({{ inspection.score_1D|default(0) }} pts)</span>
+                </div></td>
             </tr>
             <tr class="critical">
                 <td>E</td>
                 <td>Daily log books and records up-to-date</td>
-                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('1e')|float > 0 else 'No' }}</div></td>
+                <td><div class="checkbox-group">
+                    <span class="{{ 'score-yes' if inspection.score_1E|default(0)|float > 0 else 'score-no' }}">
+                        {{ 'Yes' if inspection.score_1E|default(0)|float > 0 else 'No' }}
+                    </span>
+                    <span class="score-display">({{ inspection.score_1E|default(0) }} pts)</span>
+                </div></td>
             </tr>
             <tr class="critical">
                 <td>F</td>
                 <td>Written emergency procedures established and implemented</td>
-                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('1f')|float > 0 else 'No' }}</div></td>
+                <td><div class="checkbox-group">
+                    <span class="{{ 'score-yes' if inspection.score_1F|default(0)|float > 0 else 'score-no' }}">
+                        {{ 'Yes' if inspection.score_1F|default(0)|float > 0 else 'No' }}
+                    </span>
+                    <span class="score-display">({{ inspection.score_1F|default(0) }} pts)</span>
+                </div></td>
             </tr>
             <tr class="critical">
                 <td>G</td>
                 <td>Personal liability and accident insurance</td>
-                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('1g')|float > 0 else 'No' }}</div></td>
+                <td><div class="checkbox-group">
+                    <span class="{{ 'score-yes' if inspection.score_1G|default(0)|float > 0 else 'score-no' }}">
+                        {{ 'Yes' if inspection.score_1G|default(0)|float > 0 else 'No' }}
+                    </span>
+                    <span class="score-display">({{ inspection.score_1G|default(0) }} pts)</span>
+                </div></td>
             </tr>
             <tr class="critical">
                 <td>H</td>
                 <td>Lifeguard/Lifesaver certification</td>
-                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('1h')|float > 0 else 'No' }}</div></td>
+                <td><div class="checkbox-group">
+                    <span class="{{ 'score-yes' if inspection.score_1H|default(0)|float > 0 else 'score-no' }}">
+                        {{ 'Yes' if inspection.score_1H|default(0)|float > 0 else 'No' }}
+                    </span>
+                    <span class="score-display">({{ inspection.score_1H|default(0) }} pts)</span>
+                </div></td>
             </tr>
         </table>
 
@@ -195,52 +256,102 @@
             <tr>
                 <td>A</td>
                 <td>Defects in pool construction</td>
-                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('2a')|float > 0 else 'No' }}</div></td>
+                <td><div class="checkbox-group">
+                    <span class="{{ 'score-yes' if inspection.score_2A|default(0)|float > 0 else 'score-no' }}">
+                        {{ 'Yes' if inspection.score_2A|default(0)|float > 0 else 'No' }}
+                    </span>
+                    <span class="score-display">({{ inspection.score_2A|default(0) }} pts)</span>
+                </div></td>
             </tr>
             <tr>
                 <td>B</td>
                 <td>Evidence of flaking paint and/or mould growth</td>
-                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('2b')|float > 0 else 'No' }}</div></td>
+                <td><div class="checkbox-group">
+                    <span class="{{ 'score-yes' if inspection.score_2B|default(0)|float > 0 else 'score-no' }}">
+                        {{ 'Yes' if inspection.score_2B|default(0)|float > 0 else 'No' }}
+                    </span>
+                    <span class="score-display">({{ inspection.score_2B|default(0) }} pts)</span>
+                </div></td>
             </tr>
             <tr class="critical">
                 <td>C</td>
                 <td>All surfaces of the deck and pool free from</td>
-                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('2c')|float > 0 else 'No' }}</div></td>
+                <td><div class="checkbox-group">
+                    <span class="{{ 'score-yes' if inspection.score_2C|default(0)|float > 0 else 'score-no' }}">
+                        {{ 'Yes' if inspection.score_2C|default(0)|float > 0 else 'No' }}
+                    </span>
+                    <span class="score-display">({{ inspection.score_2C|default(0) }} pts)</span>
+                </div></td>
             </tr>
             <tr>
                 <td>D</td>
                 <td>Exposed piping: - identified/colour coded</td>
-                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('2d')|float > 0 else 'No' }}</div></td>
+                <td><div class="checkbox-group">
+                    <span class="{{ 'score-yes' if inspection.score_2D|default(0)|float > 0 else 'score-no' }}">
+                        {{ 'Yes' if inspection.score_2D|default(0)|float > 0 else 'No' }}
+                    </span>
+                    <span class="score-display">({{ inspection.score_2D|default(0) }} pts)</span>
+                </div></td>
             </tr>
             <tr>
                 <td>E</td>
                 <td>In good repair</td>
-                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('2e')|float > 0 else 'No' }}</div></td>
+                <td><div class="checkbox-group">
+                    <span class="{{ 'score-yes' if inspection.score_2E|default(0)|float > 0 else 'score-no' }}">
+                        {{ 'Yes' if inspection.score_2E|default(0)|float > 0 else 'No' }}
+                    </span>
+                    <span class="score-display">({{ inspection.score_2E|default(0) }} pts)</span>
+                </div></td>
             </tr>
             <tr>
                 <td>F</td>
                 <td>Suction fittings/inlets: - in good repair</td>
-                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('2f')|float > 0 else 'No' }}</div></td>
+                <td><div class="checkbox-group">
+                    <span class="{{ 'score-yes' if inspection.score_2F|default(0)|float > 0 else 'score-no' }}">
+                        {{ 'Yes' if inspection.score_2F|default(0)|float > 0 else 'No' }}
+                    </span>
+                    <span class="score-display">({{ inspection.score_2F|default(0) }} pts)</span>
+                </div></td>
             </tr>
             <tr class="critical">
                 <td>G</td>
                 <td>At least two suction orifices equipped with anti-</td>
-                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('2g')|float > 0 else 'No' }}</div></td>
+                <td><div class="checkbox-group">
+                    <span class="{{ 'score-yes' if inspection.score_2G|default(0)|float > 0 else 'score-no' }}">
+                        {{ 'Yes' if inspection.score_2G|default(0)|float > 0 else 'No' }}
+                    </span>
+                    <span class="score-display">({{ inspection.score_2G|default(0) }} pts)</span>
+                </div></td>
             </tr>
             <tr>
                 <td>H</td>
                 <td>Perimeter drains free of debris</td>
-                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('2h')|float > 0 else 'No' }}</div></td>
+                <td><div class="checkbox-group">
+                    <span class="{{ 'score-yes' if inspection.score_2H|default(0)|float > 0 else 'score-no' }}">
+                        {{ 'Yes' if inspection.score_2H|default(0)|float > 0 else 'No' }}
+                    </span>
+                    <span class="score-display">({{ inspection.score_2H|default(0) }} pts)</span>
+                </div></td>
             </tr>
             <tr>
                 <td>I</td>
                 <td>Pool walls and floor clean</td>
-                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('2i')|float > 0 else 'No' }}</div></td>
+                <td><div class="checkbox-group">
+                    <span class="{{ 'score-yes' if inspection.score_2I|default(0)|float > 0 else 'score-no' }}">
+                        {{ 'Yes' if inspection.score_2I|default(0)|float > 0 else 'No' }}
+                    </span>
+                    <span class="score-display">({{ inspection.score_2I|default(0) }} pts)</span>
+                </div></td>
             </tr>
             <tr>
                 <td>J</td>
                 <td>Components of the re-circulating system maintained</td>
-                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('2j')|float > 0 else 'No' }}</div></td>
+                <td><div class="checkbox-group">
+                    <span class="{{ 'score-yes' if inspection.score_2J|default(0)|float > 0 else 'score-no' }}">
+                        {{ 'Yes' if inspection.score_2J|default(0)|float > 0 else 'No' }}
+                    </span>
+                    <span class="score-display">({{ inspection.score_2J|default(0) }} pts)</span>
+                </div></td>
             </tr>
         </table>
 
@@ -249,22 +360,42 @@
             <tr class="critical">
                 <td>A</td>
                 <td>Clarity</td>
-                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('3a')|float > 0 else 'No' }}</div></td>
+                <td><div class="checkbox-group">
+                    <span class="{{ 'score-yes' if inspection.score_3A|default(0)|float > 0 else 'score-no' }}">
+                        {{ 'Yes' if inspection.score_3A|default(0)|float > 0 else 'No' }}
+                    </span>
+                    <span class="score-display">({{ inspection.score_3A|default(0) }} pts)</span>
+                </div></td>
             </tr>
             <tr class="critical">
                 <td>B</td>
                 <td>Chlorine residual > 0.5 mg/l. Level</td>
-                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('3b')|float > 0 else 'No' }}</div></td>
+                <td><div class="checkbox-group">
+                    <span class="{{ 'score-yes' if inspection.score_3B|default(0)|float > 0 else 'score-no' }}">
+                        {{ 'Yes' if inspection.score_3B|default(0)|float > 0 else 'No' }}
+                    </span>
+                    <span class="score-display">({{ inspection.score_3B|default(0) }} pts)</span>
+                </div></td>
             </tr>
             <tr class="critical">
                 <td>C</td>
                 <td>pH value within range of 7.5 and 7.8</td>
-                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('3c')|float > 0 else 'No' }}</div></td>
+                <td><div class="checkbox-group">
+                    <span class="{{ 'score-yes' if inspection.score_3C|default(0)|float > 0 else 'score-no' }}">
+                        {{ 'Yes' if inspection.score_3C|default(0)|float > 0 else 'No' }}
+                    </span>
+                    <span class="score-display">({{ inspection.score_3C|default(0) }} pts)</span>
+                </div></td>
             </tr>
             <tr>
                 <td>D</td>
                 <td>Well supplied and equipped</td>
-                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('3d')|float > 0 else 'No' }}</div></td>
+                <td><div class="checkbox-group">
+                    <span class="{{ 'score-yes' if inspection.score_3D|default(0)|float > 0 else 'score-no' }}">
+                        {{ 'Yes' if inspection.score_3D|default(0)|float > 0 else 'No' }}
+                    </span>
+                    <span class="score-display">({{ inspection.score_3D|default(0) }} pts)</span>
+                </div></td>
             </tr>
         </table>
 
@@ -273,12 +404,22 @@
             <tr class="critical">
                 <td>A</td>
                 <td>Pool chemicals - stored safely</td>
-                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('4a')|float > 0 else 'No' }}</div></td>
+                <td><div class="checkbox-group">
+                    <span class="{{ 'score-yes' if inspection.score_4A|default(0)|float > 0 else 'score-no' }}">
+                        {{ 'Yes' if inspection.score_4A|default(0)|float > 0 else 'No' }}
+                    </span>
+                    <span class="score-display">({{ inspection.score_4A|default(0) }} pts)</span>
+                </div></td>
             </tr>
             <tr>
                 <td>B</td>
                 <td>Dispensed automatically or in a safe manner</td>
-                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('4b')|float > 0 else 'No' }}</div></td>
+                <td><div class="checkbox-group">
+                    <span class="{{ 'score-yes' if inspection.score_4B|default(0)|float > 0 else 'score-no' }}">
+                        {{ 'Yes' if inspection.score_4B|default(0)|float > 0 else 'No' }}
+                    </span>
+                    <span class="score-display">({{ inspection.score_4B|default(0) }} pts)</span>
+                </div></td>
             </tr>
         </table>
 
@@ -287,12 +428,22 @@
             <tr>
                 <td>A</td>
                 <td>Depth markings clearly visible</td>
-                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('5a')|float > 0 else 'No' }}</div></td>
+                <td><div class="checkbox-group">
+                    <span class="{{ 'score-yes' if inspection.score_5A|default(0)|float > 0 else 'score-no' }}">
+                        {{ 'Yes' if inspection.score_5A|default(0)|float > 0 else 'No' }}
+                    </span>
+                    <span class="score-display">({{ inspection.score_5A|default(0) }} pts)</span>
+                </div></td>
             </tr>
             <tr>
                 <td>B</td>
                 <td>Working emergency phone</td>
-                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('5b')|float > 0 else 'No' }}</div></td>
+                <td><div class="checkbox-group">
+                    <span class="{{ 'score-yes' if inspection.score_5B|default(0)|float > 0 else 'score-no' }}">
+                        {{ 'Yes' if inspection.score_5B|default(0)|float > 0 else 'No' }}
+                    </span>
+                    <span class="score-display">({{ inspection.score_5B|default(0) }} pts)</span>
+                </div></td>
             </tr>
         </table>
 
@@ -301,22 +452,42 @@
             <tr>
                 <td>A</td>
                 <td>Reaching poles with hook</td>
-                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('6a')|float > 0 else 'No' }}</div></td>
+                <td><div class="checkbox-group">
+                    <span class="{{ 'score-yes' if inspection.score_6A|default(0)|float > 0 else 'score-no' }}">
+                        {{ 'Yes' if inspection.score_6A|default(0)|float > 0 else 'No' }}
+                    </span>
+                    <span class="score-display">({{ inspection.score_6A|default(0) }} pts)</span>
+                </div></td>
             </tr>
             <tr>
                 <td>B</td>
                 <td>Two throwing aids</td>
-                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('6b')|float > 0 else 'No' }}</div></td>
+                <td><div class="checkbox-group">
+                    <span class="{{ 'score-yes' if inspection.score_6B|default(0)|float > 0 else 'score-no' }}">
+                        {{ 'Yes' if inspection.score_6B|default(0)|float > 0 else 'No' }}
+                    </span>
+                    <span class="score-display">({{ inspection.score_6B|default(0) }} pts)</span>
+                </div></td>
             </tr>
             <tr>
                 <td>C</td>
                 <td>Spine board with cervical collar</td>
-                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('6c')|float > 0 else 'No' }}</div></td>
+                <td><div class="checkbox-group">
+                    <span class="{{ 'score-yes' if inspection.score_6C|default(0)|float > 0 else 'score-no' }}">
+                        {{ 'Yes' if inspection.score_6C|default(0)|float > 0 else 'No' }}
+                    </span>
+                    <span class="score-display">({{ inspection.score_6C|default(0) }} pts)</span>
+                </div></td>
             </tr>
             <tr>
                 <td>D</td>
                 <td>Well equipped first aid kit</td>
-                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('6d')|float > 0 else 'No' }}</div></td>
+                <td><div class="checkbox-group">
+                    <span class="{{ 'score-yes' if inspection.score_6D|default(0)|float > 0 else 'score-no' }}">
+                        {{ 'Yes' if inspection.score_6D|default(0)|float > 0 else 'No' }}
+                    </span>
+                    <span class="score-display">({{ inspection.score_6D|default(0) }} pts)</span>
+                </div></td>
             </tr>
         </table>
 
@@ -325,27 +496,52 @@
             <tr>
                 <td>A</td>
                 <td>Caution notices: - pool depth indications</td>
-                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('7a')|float > 0 else 'No' }}</div></td>
+                <td><div class="checkbox-group">
+                    <span class="{{ 'score-yes' if inspection.score_7A|default(0)|float > 0 else 'score-no' }}">
+                        {{ 'Yes' if inspection.score_7A|default(0)|float > 0 else 'No' }}
+                    </span>
+                    <span class="score-display">({{ inspection.score_7A|default(0) }} pts)</span>
+                </div></td>
             </tr>
             <tr>
                 <td>B</td>
                 <td>Public health notices</td>
-                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('7b')|float > 0 else 'No' }}</div></td>
+                <td><div class="checkbox-group">
+                    <span class="{{ 'score-yes' if inspection.score_7B|default(0)|float > 0 else 'score-no' }}">
+                        {{ 'Yes' if inspection.score_7B|default(0)|float > 0 else 'No' }}
+                    </span>
+                    <span class="score-display">({{ inspection.score_7B|default(0) }} pts)</span>
+                </div></td>
             </tr>
             <tr>
                 <td>C</td>
                 <td>Emergency procedures</td>
-                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('7c')|float > 0 else 'No' }}</div></td>
+                <td><div class="checkbox-group">
+                    <span class="{{ 'score-yes' if inspection.score_7C|default(0)|float > 0 else 'score-no' }}">
+                        {{ 'Yes' if inspection.score_7C|default(0)|float > 0 else 'No' }}
+                    </span>
+                    <span class="score-display">({{ inspection.score_7C|default(0) }} pts)</span>
+                </div></td>
             </tr>
             <tr>
                 <td>D</td>
                 <td>Maximum bathing load</td>
-                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('7d')|float > 0 else 'No' }}</div></td>
+                <td><div class="checkbox-group">
+                    <span class="{{ 'score-yes' if inspection.score_7D|default(0)|float > 0 else 'score-no' }}">
+                        {{ 'Yes' if inspection.score_7D|default(0)|float > 0 else 'No' }}
+                    </span>
+                    <span class="score-display">({{ inspection.score_7D|default(0) }} pts)</span>
+                </div></td>
             </tr>
             <tr>
                 <td>E</td>
                 <td>Lifeguard on duty"/bathe at your own risk" signs</td>
-                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('7e')|float > 0 else 'No' }}</div></td>
+                <td><div class="checkbox-group">
+                    <span class="{{ 'score-yes' if inspection.score_7E|default(0)|float > 0 else 'score-no' }}">
+                        {{ 'Yes' if inspection.score_7E|default(0)|float > 0 else 'No' }}
+                    </span>
+                    <span class="score-display">({{ inspection.score_7E|default(0) }} pts)</span>
+                </div></td>
             </tr>
         </table>
 
@@ -354,17 +550,32 @@
             <tr>
                 <td>A</td>
                 <td>Licensed Lifeguards always on duty during pool opening hours [N/A]</td>
-                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('8a')|float > 0 else 'No' }}</div></td>
+                <td><div class="checkbox-group">
+                    <span class="{{ 'score-yes' if inspection.score_8A|default(0)|float > 0 else 'score-no' }}">
+                        {{ 'Yes' if inspection.score_8A|default(0)|float > 0 else 'No' }}
+                    </span>
+                    <span class="score-display">({{ inspection.score_8A|default(0) }} pts)</span>
+                </div></td>
             </tr>
             <tr class="critical">
                 <td>B</td>
                 <td>If N/A are trained lifesavers readily available</td>
-                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('8b')|float > 0 else 'No' }}</div></td>
+                <td><div class="checkbox-group">
+                    <span class="{{ 'score-yes' if inspection.score_8B|default(0)|float > 0 else 'score-no' }}">
+                        {{ 'Yes' if inspection.score_8B|default(0)|float > 0 else 'No' }}
+                    </span>
+                    <span class="score-display">({{ inspection.score_8B|default(0) }} pts)</span>
+                </div></td>
             </tr>
             <tr>
                 <td>C</td>
                 <td>Number of lifeguard/lifesavers</td>
-                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('8c')|float > 0 else 'No' }}</div></td>
+                <td><div class="checkbox-group">
+                    <span class="{{ 'score-yes' if inspection.score_8C|default(0)|float > 0 else 'score-no' }}">
+                        {{ 'Yes' if inspection.score_8C|default(0)|float > 0 else 'No' }}
+                    </span>
+                    <span class="score-display">({{ inspection.score_8C|default(0) }} pts)</span>
+                </div></td>
             </tr>
         </table>
 
@@ -373,39 +584,55 @@
             <tr class="critical">
                 <td>A</td>
                 <td>Shower, toilet and dressing rooms: - clean and disinfected as required</td>
-                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('9a')|float > 0 else 'No' }}</div></td>
+                <td><div class="checkbox-group">
+                    <span class="{{ 'score-yes' if inspection.score_9A|default(0)|float > 0 else 'score-no' }}">
+                        {{ 'Yes' if inspection.score_9A|default(0)|float > 0 else 'No' }}
+                    </span>
+                    <span class="score-display">({{ inspection.score_9A|default(0) }} pts)</span>
+                </div></td>
             </tr>
             <tr>
                 <td>B</td>
                 <td>Vented</td>
-                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('9b')|float > 0 else 'No' }}</div></td>
+                <td><div class="checkbox-group">
+                    <span class="{{ 'score-yes' if inspection.score_9B|default(0)|float > 0 else 'score-no' }}">
+                        {{ 'Yes' if inspection.score_9B|default(0)|float > 0 else 'No' }}
+                    </span>
+                    <span class="score-display">({{ inspection.score_9B|default(0) }} pts)</span>
+                </div></td>
             </tr>
             <tr>
                 <td>C</td>
                 <td>Well supplied and equipped</td>
-                <td><div class="checkbox-group">{{ 'Yes' if inspection.checklist_scores.get('9c')|float > 0 else 'No' }}</div></td>
+                <td><div class="checkbox-group">
+                    <span class="{{ 'score-yes' if inspection.score_9C|default(0)|float > 0 else 'score-no' }}">
+                        {{ 'Yes' if inspection.score_9C|default(0)|float > 0 else 'No' }}
+                    </span>
+                    <span class="score-display">({{ inspection.score_9C|default(0) }} pts)</span>
+                </div></td>
             </tr>
         </table>
 
         <div class="form-header">Inspector's Comments</div>
-        <div class="comments">{{ inspection.comments|default('') }}</div>
+        <div class="comments">{{ inspection.inspector_comments|default(inspection.comments|default('')) }}</div>
 
         <table>
             <tr>
                 <td>Inspector's Signature</td>
                 <td><span class="input-field">{{ inspection.inspector_signature|default('') }}</span></td>
                 <td>Date</td>
-                <td><span class="input-field">{{ inspection.created_at|default('')|truncate(10, True, '') }}</span></td>
+                <td><span class="input-field">{{ inspection.inspector_date|default(inspection.created_at|default('')|truncate(10, True, '')) }}</span></td>
             </tr>
             <tr>
                 <td>Manager's Signature</td>
-                <td><span class="input-field">{{ inspection.received_by|default('') }}</span></td>
+                <td><span class="input-field">{{ inspection.manager_signature|default(inspection.received_by|default('')) }}</span></td>
                 <td>Date</td>
                 <td><span class="input-field">{{ inspection.manager_date|default('') }}</span></td>
             </tr>
         </table>
 
         <div class="buttons">
+            <button id="print-btn" class="btn" type="button" onclick="window.print()">Print</button>
             <a href="{{ url_for('dashboard') }}" id="back-btn" class="btn">Back to Dashboard</a>
         </div>
     </div>

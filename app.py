@@ -148,49 +148,49 @@ SPIRIT_LICENCE_CHECKLIST_ITEMS = [
     {'id': 34, 'description': 'Premises free of rodents, insects and vermins', 'wt': 5}
 ]
 
-# Swimming Pool Checklist
+# Swimming Pool Checklist - CORRECTED WEIGHTS
 SWIMMING_POOL_CHECKLIST_ITEMS = [
-    {"id": "1a", "desc": "Written procedures for microbiological monitoring of pool water implemented", "wt": 5, "category": "Documentation"},
-    {"id": "1b", "desc": "Microbiological results", "wt": 5, "category": "Documentation"},
-    {"id": "1c", "desc": "Date of last testing within required frequency", "wt": 5, "category": "Documentation"},
-    {"id": "1d", "desc": "Acceptable monitoring procedures", "wt": 5, "category": "Documentation"},
-    {"id": "1e", "desc": "Daily log books and records up-to-date", "wt": 5, "category": "Documentation"},
-    {"id": "1f", "desc": "Written emergency procedures established and implemented", "wt": 5, "category": "Documentation"},
-    {"id": "1g", "desc": "Personal liability and accident insurance", "wt": 5, "category": "Documentation"},
-    {"id": "1h", "desc": "Lifeguard/Lifesaver certification", "wt": 5, "category": "Documentation"},
-    {"id": "2a", "desc": "Defects in pool construction", "wt": 5, "category": "Physical Condition"},
-    {"id": "2b", "desc": "Evidence of flaking paint and/or mould growth", "wt": 5, "category": "Physical Condition"},
-    {"id": "2c", "desc": "All surfaces of the deck and pool free from obstruction that can cause accident/injury", "wt": 5, "category": "Physical Condition"},
-    {"id": "2d", "desc": "Exposed piping: - identified/colour coded", "wt": 5, "category": "Physical Condition"},
-    {"id": "2e", "desc": "In good repair", "wt": 5, "category": "Physical Condition"},
-    {"id": "2f", "desc": "Suction fittings/inlets: - in good repair", "wt": 5, "category": "Physical Condition"},
-    {"id": "2g", "desc": "At least two suction orifices equipped with anti-entrapment devices", "wt": 5, "category": "Physical Condition"},
-    {"id": "2h", "desc": "Perimeter drains free of debris", "wt": 5, "category": "Physical Condition"},
-    {"id": "2i", "desc": "Pool walls and floor clean", "wt": 5, "category": "Physical Condition"},
-    {"id": "2j", "desc": "Components of the re-circulating system maintained", "wt": 5, "category": "Physical Condition"},
-    {"id": "3a", "desc": "Clarity", "wt": 5, "category": "Pool Chemistry"},
-    {"id": "3b", "desc": "Chlorine residual > 0.5 mg/l", "wt": 5, "category": "Pool Chemistry"},
-    {"id": "3c", "desc": "pH value within range of 7.5 and 7.8", "wt": 5, "category": "Pool Chemistry"},
-    {"id": "3d", "desc": "Well supplied and equipped", "wt": 5, "category": "Pool Chemistry"},
-    {"id": "4a", "desc": "Pool chemicals - stored safely", "wt": 5, "category": "Pool Chemicals"},
-    {"id": "4b", "desc": "Dispensed automatically or in a safe manner", "wt": 5, "category": "Pool Chemicals"},
-    {"id": "5a", "desc": "Depth markings clearly visible", "wt": 5, "category": "Safety"},
-    {"id": "5b", "desc": "Working emergency phone", "wt": 5, "category": "Safety"},
-    {"id": "6a", "desc": "Reaching poles with hook", "wt": 5, "category": "Safety Aids"},
-    {"id": "6b", "desc": "Two throwing aids", "wt": 5, "category": "Safety Aids"},
-    {"id": "6c", "desc": "Spine board with cervical collar", "wt": 5, "category": "Safety Aids"},
-    {"id": "6d", "desc": "Well equipped first aid kit", "wt": 5, "category": "Safety Aids"},
-    {"id": "7a", "desc": "Caution notices: - pool depth indications", "wt": 5, "category": "Signs and Notices"},
-    {"id": "7b", "desc": "Public health notices", "wt": 5, "category": "Signs and Notices"},
-    {"id": "7c", "desc": "Emergency procedures", "wt": 5, "category": "Signs and Notices"},
-    {"id": "7d", "desc": "Maximum bathing load", "wt": 5, "category": "Signs and Notices"},
-    {"id": "7e", "desc": "Lifeguard on duty/bathe at your own risk signs", "wt": 5, "category": "Signs and Notices"},
-    {"id": "8a", "desc": "Licensed Lifeguards always on duty during pool opening hours", "wt": 5, "category": "Lifeguards/Lifesavers"},
-    {"id": "8b", "desc": "If N/A, trained lifesavers readily available", "wt": 5, "category": "Lifeguards/Lifesavers"},
-    {"id": "8c", "desc": "Number of lifeguard/lifesavers", "wt": 5, "category": "Lifeguards/Lifesavers"},
-    {"id": "9a", "desc": "Shower, toilet and dressing rooms: - clean and disinfected as required", "wt": 5, "category": "Sanitary Facilities"},
-    {"id": "9b", "desc": "Vented", "wt": 5, "category": "Sanitary Facilities"},
-    {"id": "9c", "desc": "Well supplied and equipped", "wt": 5, "category": "Sanitary Facilities"},
+    {"id": "1A", "desc": "Written procedures for microbiological monitoring of pool water implemented", "wt": 5, "category": "Documentation"},
+    {"id": "1B", "desc": "Microbiological results", "wt": 2.5, "category": "Documentation"},
+    {"id": "1C", "desc": "Date of last testing within required frequency", "wt": 2.5, "category": "Documentation"},
+    {"id": "1D", "desc": "Acceptable monitoring procedures", "wt": 5, "category": "Documentation"},
+    {"id": "1E", "desc": "Daily log books and records up-to-date", "wt": 5, "category": "Documentation"},
+    {"id": "1F", "desc": "Written emergency procedures established and implemented", "wt": 5, "category": "Documentation"},
+    {"id": "1G", "desc": "Personal liability and accident insurance", "wt": 5, "category": "Documentation"},
+    {"id": "1H", "desc": "Lifeguard/Lifesaver certification", "wt": 5, "category": "Documentation"},
+    {"id": "2A", "desc": "Defects in pool construction", "wt": 2.5, "category": "Physical Condition"},
+    {"id": "2B", "desc": "Evidence of flaking paint and/or mould growth", "wt": 2.5, "category": "Physical Condition"},
+    {"id": "2C", "desc": "All surfaces of the deck and pool free from obstruction that can cause accident/injury", "wt": 5, "category": "Physical Condition"},
+    {"id": "2D", "desc": "Exposed piping: - identified/colour coded", "wt": 2.5, "category": "Physical Condition"},
+    {"id": "2E", "desc": "In good repair", "wt": 2.5, "category": "Physical Condition"},
+    {"id": "2F", "desc": "Suction fittings/inlets: - in good repair", "wt": 2.5, "category": "Physical Condition"},
+    {"id": "2G", "desc": "At least two suction orifices equipped with anti-entrapment devices", "wt": 5, "category": "Physical Condition"},
+    {"id": "2H", "desc": "Perimeter drains free of debris", "wt": 2.5, "category": "Physical Condition"},
+    {"id": "2I", "desc": "Pool walls and floor clean", "wt": 2.5, "category": "Physical Condition"},
+    {"id": "2J", "desc": "Components of the re-circulating system maintained", "wt": 2.5, "category": "Physical Condition"},
+    {"id": "3A", "desc": "Clarity", "wt": 5, "category": "Pool Chemistry"},
+    {"id": "3B", "desc": "Chlorine residual > 0.5 mg/l", "wt": 5, "category": "Pool Chemistry"},
+    {"id": "3C", "desc": "pH value within range of 7.5 and 7.8", "wt": 5, "category": "Pool Chemistry"},
+    {"id": "3D", "desc": "Well supplied and equipped", "wt": 2.5, "category": "Pool Chemistry"},
+    {"id": "4A", "desc": "Pool chemicals - stored safely", "wt": 5, "category": "Pool Chemicals"},
+    {"id": "4B", "desc": "Dispensed automatically or in a safe manner", "wt": 2.5, "category": "Pool Chemicals"},
+    {"id": "5A", "desc": "Depth markings clearly visible", "wt": 5, "category": "Safety"},
+    {"id": "5B", "desc": "Working emergency phone", "wt": 5, "category": "Safety"},
+    {"id": "6A", "desc": "Reaching poles with hook", "wt": 2.5, "category": "Safety Aids"},
+    {"id": "6B", "desc": "Two throwing aids", "wt": 2.5, "category": "Safety Aids"},
+    {"id": "6C", "desc": "Spine board with cervical collar", "wt": 2.5, "category": "Safety Aids"},
+    {"id": "6D", "desc": "Well equipped first aid kit", "wt": 2.5, "category": "Safety Aids"},
+    {"id": "7A", "desc": "Caution notices: - pool depth indications", "wt": 1, "category": "Signs and Notices"},
+    {"id": "7B", "desc": "Public health notices", "wt": 1, "category": "Signs and Notices"},
+    {"id": "7C", "desc": "Emergency procedures", "wt": 1, "category": "Signs and Notices"},
+    {"id": "7D", "desc": "Maximum bathing load", "wt": 1, "category": "Signs and Notices"},
+    {"id": "7E", "desc": "Lifeguard on duty/bathe at your own risk signs", "wt": 1, "category": "Signs and Notices"},
+    {"id": "8A", "desc": "Licensed Lifeguards always on duty during pool opening hours", "wt": 2.5, "category": "Lifeguards/Lifesavers"},
+    {"id": "8B", "desc": "If N/A, trained lifesavers readily available", "wt": 5, "category": "Lifeguards/Lifesavers"},
+    {"id": "8C", "desc": "Number of lifeguard/lifesavers", "wt": 2.5, "category": "Lifeguards/Lifesavers"},
+    {"id": "9A", "desc": "Shower, toilet and dressing rooms: - clean and disinfected as required", "wt": 5, "category": "Sanitary Facilities"},
+    {"id": "9B", "desc": "Vented", "wt": 2.5, "category": "Sanitary Facilities"},
+    {"id": "9C", "desc": "Well supplied and equipped", "wt": 2.5, "category": "Sanitary Facilities"},
 ]
 
 # Define checklist items (40 items, 28 critical)
@@ -705,10 +705,28 @@ def submit_burial():
     inspection_id = save_burial_inspection(data)
     return jsonify({'message': 'Submit successfully'})
 
+
 @app.route('/submit_swimming_pools', methods=['POST'])
 def submit_swimming_pools():
+    if 'inspector' not in session:
+        return jsonify({'status': 'error', 'message': 'Please log in.'}), 401
+
     conn = sqlite3.connect('inspections.db')
     cursor = conn.cursor()
+
+    # Auto-fix database columns if needed
+    try:
+        cursor.execute("SELECT score_1A FROM inspections LIMIT 1")
+    except sqlite3.OperationalError:
+        # Columns don't exist, add them
+        print("Adding missing swimming pool score columns...")
+        for item in SWIMMING_POOL_CHECKLIST_ITEMS:
+            try:
+                cursor.execute(f'ALTER TABLE inspections ADD COLUMN score_{item["id"]} REAL DEFAULT 0')
+                print(f"Added column score_{item['id']}")
+            except sqlite3.OperationalError:
+                pass  # Column already exists
+        conn.commit()
 
     # Extract form data
     operator = request.form.get('operator')
@@ -723,51 +741,136 @@ def submit_swimming_pools():
     manager_signature = request.form.get('manager_signature')
     manager_date = request.form.get('manager_date')
 
-    # Collect checklist scores
+    # DEBUG: Print what we're receiving
+    print("=== DEBUG: Form data received ===")
+    for key, value in request.form.items():
+        if key.startswith('score_'):
+            print(f"{key}: {value}")
+
+    # Collect checklist scores with correct field names
     scores = []
-    checklist_scores = {}
     total_score = 0
-    critical_score = 0
+    max_possible_score = 0
+
+    # Prepare individual score updates
+    score_updates = {}
+
     for item in SWIMMING_POOL_CHECKLIST_ITEMS:
-        score_key = f"score_{item['id'].upper()}"
+        # The form sends field names like score_1A, score_1B, etc.
+        score_key = f"score_{item['id']}"
         score = float(request.form.get(score_key, 0))
-        checklist_scores[item['id'].lower()] = score
+
+        # Store for individual column updates
+        score_updates[score_key] = score
+
         scores.append(str(score))
         total_score += score
-        if item['wt'] == 5:
-            critical_score += score
+        max_possible_score += item['wt']
 
-    # Calculate overall score
-    max_score = sum(item['wt'] for item in SWIMMING_POOL_CHECKLIST_ITEMS)
-    overall_score = min((total_score / max_score) * 100, 100)
+        print(f"Item {item['id']}: looking for {score_key}, got {score}, weight {item['wt']}")
+
+    # Calculate overall score as percentage - rounded to 1 decimal place
+    overall_score = (total_score / max_possible_score) * 100 if max_possible_score > 0 else 0
+    overall_score = round(min(overall_score, 100), 1)  # Round to 1 decimal place
+
+    # Calculate critical score (items with weight 5 are critical)
+    critical_score = sum(float(request.form.get(f"score_{item['id']}", 0))
+                         for item in SWIMMING_POOL_CHECKLIST_ITEMS if item['wt'] == 5)
+
     result = 'Pass' if overall_score >= 70 else 'Fail'
 
-    # Insert inspection
-    cursor.execute('''
-        INSERT INTO inspections (establishment_name, owner, address, physical_location, 
-        type_of_establishment, inspector_name, inspection_date, form_type, result, 
-        created_at, comments, scores, overall_score, critical_score, inspector_signature, 
-        received_by, manager_date)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    ''', (
+    print(f"=== SCORING DEBUG ===")
+    print(f"Total Score: {total_score}")
+    print(f"Max Possible: {max_possible_score}")
+    print(f"Overall Score: {overall_score}%")
+    print(f"Critical Score: {critical_score}")
+    print(f"Result: {result}")
+
+    # Build the INSERT query dynamically to include all score columns
+    base_columns = '''establishment_name, owner, address, physical_location, 
+                     type_of_establishment, inspector_name, inspection_date, form_type, result, 
+                     created_at, comments, scores, overall_score, critical_score, inspector_signature, 
+                     received_by, manager_date'''
+
+    score_columns = ', '.join([f"score_{item['id']}" for item in SWIMMING_POOL_CHECKLIST_ITEMS])
+    all_columns = f"{base_columns}, {score_columns}"
+
+    base_placeholders = '?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?'
+    score_placeholders = ', '.join(['?' for _ in SWIMMING_POOL_CHECKLIST_ITEMS])
+    all_placeholders = f"{base_placeholders}, {score_placeholders}"
+
+    base_values = (
         operator, operator, address, physical_location, pool_class, inspector_id,
         date_inspection, 'Swimming Pool', result, datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
         inspector_comments, ','.join(scores), overall_score, critical_score,
         inspector_signature, manager_signature, manager_date
-    ))
+    )
 
-    inspection_id = cursor.lastrowid
+    score_values = tuple(score_updates[f"score_{item['id']}"] for item in SWIMMING_POOL_CHECKLIST_ITEMS)
+    all_values = base_values + score_values
+
+    # Insert inspection into main table with all scores
+    try:
+        cursor.execute(f'''
+            INSERT INTO inspections ({all_columns})
+            VALUES ({all_placeholders})
+        ''', all_values)
+
+        inspection_id = cursor.lastrowid
+        print(f"=== SUCCESS: Inspection {inspection_id} saved with all scores ===")
+
+    except sqlite3.OperationalError as e:
+        print(f"Error inserting with score columns: {e}")
+        # Fallback to basic insert
+        cursor.execute('''
+            INSERT INTO inspections (establishment_name, owner, address, physical_location, 
+            type_of_establishment, inspector_name, inspection_date, form_type, result, 
+            created_at, comments, scores, overall_score, critical_score, inspector_signature, 
+            received_by, manager_date)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''', base_values)
+
+        inspection_id = cursor.lastrowid
 
     # Insert inspection items
     for item in SWIMMING_POOL_CHECKLIST_ITEMS:
+        score_key = f"score_{item['id']}"
+        score = float(request.form.get(score_key, 0))
         cursor.execute('''
             INSERT INTO inspection_items (inspection_id, item_id, details)
             VALUES (?, ?, ?)
-        ''', (inspection_id, item['id'].lower(), str(checklist_scores[item['id'].lower()])))
+        ''', (inspection_id, item['id'], str(score)))
 
     conn.commit()
     conn.close()
+
+    print(f"=== FINAL SUCCESS: Inspection {inspection_id} completely saved ===")
     return jsonify({'status': 'success', 'message': 'Inspection submitted successfully'})
+
+
+@app.route('/fix_swimming_pool_db')
+def fix_swimming_pool_db():
+    """Run this once to add missing columns to the inspections table"""
+    if 'admin' not in session:
+        return "Admin access required"
+
+    conn = sqlite3.connect('inspections.db')
+    cursor = conn.cursor()
+
+    # Add score columns for each checklist item
+    columns_added = 0
+    for item in SWIMMING_POOL_CHECKLIST_ITEMS:
+        try:
+            cursor.execute(f'ALTER TABLE inspections ADD COLUMN score_{item["id"]} REAL DEFAULT 0')
+            columns_added += 1
+            print(f"Added column score_{item['id']}")
+        except sqlite3.OperationalError as e:
+            if "duplicate column name" not in str(e):
+                print(f"Error adding score_{item['id']}: {e}")
+
+    conn.commit()
+    conn.close()
+    return f"Database updated! Added {columns_added} new columns."
 
 
 @app.route('/submit_small_hotels', methods=['POST'])
@@ -1677,49 +1780,82 @@ def spirit_licence_inspection_detail(id):
         return render_template('spirit_licence_inspection_detail.html', checklist=[], inspection=inspection_data)
     return "Not Found", 404
 
+
 @app.route('/swimming_pool/inspection/<int:id>')
 def swimming_pool_inspection_detail(id):
     if 'inspector' not in session and 'admin' not in session:
         return redirect(url_for('login'))
+
     conn = sqlite3.connect('inspections.db')
-    c = conn.cursor()
-    c.execute("""
-        SELECT id, establishment_name, owner, address, inspector_name, inspection_date, inspection_time, 
-               type_of_establishment, physical_location, result, scores, comments, inspector_signature, 
-               received_by, created_at, overall_score, critical_score, manager_date
-        FROM inspections WHERE id = ? AND form_type = 'Swimming Pool'
-    """, (id,))
-    inspection = c.fetchone()
-    c.execute("SELECT item_id, details FROM inspection_items WHERE inspection_id = ?", (id,))
-    checklist_scores = {row[0].lower(): float(row[1]) if row[1].replace('.', '', 1).isdigit() else 0.0 for row in c.fetchall()}
+    conn.row_factory = sqlite3.Row  # This allows access by column name
+    cursor = conn.cursor()
+
+    # Select ALL columns including the individual score columns
+    cursor.execute("SELECT * FROM inspections WHERE id = ? AND form_type = 'Swimming Pool'", (id,))
+    inspection = cursor.fetchone()
+
+    if not inspection:
+        conn.close()
+        return "Inspection not found", 404
+
+    # Convert to dictionary for easier template access
+    inspection_dict = dict(inspection)
+
+    # Fix the overall score - round to 1 decimal place
+    if inspection_dict.get('overall_score'):
+        inspection_dict['overall_score'] = round(float(inspection_dict['overall_score']), 1)
+
+    # Fix the critical score - round to 1 decimal place
+    if inspection_dict.get('critical_score'):
+        inspection_dict['critical_score'] = round(float(inspection_dict['critical_score']), 1)
+
+    # Fix manager signature field mapping
+    # Check different possible field names for manager signature
+    manager_signature = (
+            inspection_dict.get('manager_signature') or
+            inspection_dict.get('received_by') or
+            inspection_dict.get('manager_name') or
+            ''
+    )
+    inspection_dict['manager_signature'] = manager_signature
+
+    # Debug: Print what scores we have
+    print(f"=== DEBUG: Swimming Pool Inspection {id} ===")
+    print(f"Overall Score: {inspection_dict.get('overall_score')}")
+    print(f"Manager Signature: '{manager_signature}'")
+    print(f"Received By: '{inspection_dict.get('received_by')}'")
+
+    for item in SWIMMING_POOL_CHECKLIST_ITEMS:
+        score_field = f"score_{item['id']}"
+        score_value = inspection_dict.get(score_field, 0)
+        print(f"{score_field}: {score_value}")
+
+    # Ensure all score fields exist with proper values
+    for item in SWIMMING_POOL_CHECKLIST_ITEMS:
+        score_field = f"score_{item['id']}"
+        if score_field not in inspection_dict or inspection_dict[score_field] is None:
+            inspection_dict[score_field] = 0.0
+        else:
+            # Ensure it's a float
+            inspection_dict[score_field] = float(inspection_dict[score_field])
+
+    # Also get backup scores from inspection_items table
+    cursor.execute("SELECT item_id, details FROM inspection_items WHERE inspection_id = ?", (id,))
+    item_scores = {row[0]: float(row[1]) if row[1] and str(row[1]).replace('.', '', 1).isdigit() else 0.0
+                   for row in cursor.fetchall()}
+
     conn.close()
-    if inspection:
-        scores = [float(x) for x in inspection[10].split(',')] if inspection[10] else [0] * len(SWIMMING_POOL_CHECKLIST_ITEMS)
-        inspection_data = {
-            'id': inspection[0],
-            'establishment_name': inspection[1] or '',
-            'owner': inspection[2] or '',
-            'address': inspection[3] or '',
-            'inspector_name': inspection[4] or '',
-            'inspection_date': inspection[5] or '',
-            'inspection_time': inspection[6] or '',
-            'type_of_establishment': inspection[7] or '',
-            'physical_location': inspection[8] or '',
-            'result': inspection[9] or '',
-            'scores': dict(zip([item['id'].lower() for item in SWIMMING_POOL_CHECKLIST_ITEMS], scores)),
-            'comments': inspection[11] or '',
-            'inspector_signature': inspection[12] or '',
-            'received_by': inspection[13] or '',
-            'created_at': inspection[14] or '',
-            'overall_score': float(inspection[15]) if inspection[15] else 0.0,
-            'critical_score': float(inspection[16]) if inspection[16] else 0.0,
-            'manager_date': inspection[17] or '',
-            'checklist_scores': checklist_scores
-        }
-        return render_template('swimming_pool_inspection_detail.html',
-                              inspection=inspection_data,
-                              checklist=SWIMMING_POOL_CHECKLIST_ITEMS)
-    return "Inspection not found", 404
+
+    # If individual columns don't exist, use item_scores as fallback
+    for item in SWIMMING_POOL_CHECKLIST_ITEMS:
+        score_field = f"score_{item['id']}"
+        if inspection_dict[score_field] == 0.0 and item['id'] in item_scores:
+            inspection_dict[score_field] = item_scores[item['id']]
+            print(f"Using fallback for {score_field}: {item_scores[item['id']]}")
+
+    return render_template('swimming_pool_inspection_detail.html',
+                           inspection=inspection_dict,
+                           checklist=SWIMMING_POOL_CHECKLIST_ITEMS)
 
 # Debug route for session verification
 @app.route('/debug_session')

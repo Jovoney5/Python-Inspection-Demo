@@ -1092,6 +1092,288 @@
         let pollingInterval = null;
         let isContactListOpen = false;
 
+        // Global cache for all form data
+        let allFormsData = {
+            food: [],
+            residential: [],
+            burial: [],
+            spirit_licence: [],
+            swimming_pool: [],
+            small_hotels: []
+        };
+
+        // Enhanced Search System - Load all data once and filter locally
+        async function loadAllFormsData() {
+            const formTypes = ['food', 'residential', 'burial', 'spirit_licence', 'swimming_pool', 'small_hotels'];
+
+            for (const formType of formTypes) {
+                try {
+                    const response = await fetch(`/search_forms?query=&type=${formType}`);
+                    const data = await response.json();
+                    allFormsData[formType] = data.forms || [];
+                } catch (error) {
+                    console.error(`Error loading ${formType} forms:`, error);
+                    allFormsData[formType] = [];
+                }
+            }
+        }
+
+        // Predictive search function with fuzzy matching
+        function predictiveSearch(query, formType) {
+            if (!query || query.length < 1) {
+                return allFormsData[formType];
+            }
+
+            const searchTerm = query.toLowerCase().trim();
+            const forms = allFormsData[formType];
+
+            return forms.filter(form => {
+                // Create searchable text based on form type
+                let searchableText = '';
+
+                switch (formType) {
+                    case 'food':
+                        searchableText = `${form.establishment_name || ''} ${form.id || ''} ${form.result || ''} ${form.status || ''}`.toLowerCase();
+                        break;
+                    case 'residential':
+                        searchableText = `${form.premises_name || ''} ${form.owner || ''} ${form.id || ''} ${form.result || ''}`.toLowerCase();
+                        break;
+                    case 'burial':
+                        searchableText = `${form.applicant_name || ''} ${form.deceased_name || ''} ${form.id || ''} ${form.status || ''}`.toLowerCase();
+                        break;
+                    case 'spirit_licence':
+                        searchableText = `${form.establishment_name || ''} ${form.id || ''} ${form.result || ''} ${form.status || ''}`.toLowerCase();
+                        break;
+                    case 'swimming_pool':
+                        searchableText = `${form.establishment_name || ''} ${form.id || ''} ${form.result || ''} ${form.status || ''}`.toLowerCase();
+                        break;
+                    case 'small_hotels':
+                        searchableText = `${form.establishment_name || ''} ${form.id || ''} ${form.result || ''} ${form.status || ''}`.toLowerCase();
+                        break;
+                }
+
+                // Exact match gets highest priority
+                if (searchableText.includes(searchTerm)) {
+                    return true;
+                }
+
+                // Fuzzy matching for typos and partial matches
+                const words = searchTerm.split(' ').filter(word => word.length > 0);
+                return words.some(word => {
+                    // Check if any word in searchableText starts with the search word
+                    const searchableWords = searchableText.split(' ');
+                    return searchableWords.some(searchWord =>
+                        searchWord.startsWith(word) ||
+                        // Allow for one character difference (simple fuzzy matching)
+                        (word.length > 2 && searchWord.length > 2 && levenshteinDistance(word, searchWord.substring(0, word.length + 1)) <= 1)
+                    );
+                });
+            }).sort((a, b) => {
+                // Sort by relevance - exact matches first, then partial matches
+                const aText = getSearchableText(a, formType).toLowerCase();
+                const bText = getSearchableText(b, formType).toLowerCase();
+
+                const aExact = aText.includes(searchTerm);
+                const bExact = bText.includes(searchTerm);
+
+                if (aExact && !bExact) return -1;
+                if (!aExact && bExact) return 1;
+
+                // If both are exact or both are partial, sort alphabetically
+                return aText.localeCompare(bText);
+            });
+        }
+
+        // Helper function to get searchable text
+        function getSearchableText(form, formType) {
+            switch (formType) {
+                case 'food':
+                    return form.establishment_name || '';
+                case 'residential':
+                    return `${form.premises_name || ''} ${form.owner || ''}`;
+                case 'burial':
+                    return `${form.applicant_name || ''} ${form.deceased_name || ''}`;
+                case 'spirit_licence':
+                case 'swimming_pool':
+                case 'small_hotels':
+                    return form.establishment_name || '';
+                default:
+                    return '';
+            }
+        }
+
+        // Simple Levenshtein distance for fuzzy matching
+        function levenshteinDistance(str1, str2) {
+            const matrix = [];
+            for (let i = 0; i <= str2.length; i++) {
+                matrix[i] = [i];
+            }
+            for (let j = 0; j <= str1.length; j++) {
+                matrix[0][j] = j;
+            }
+            for (let i = 1; i <= str2.length; i++) {
+                for (let j = 1; j <= str1.length; j++) {
+                    if (str2.charAt(i - 1) === str1.charAt(j - 1)) {
+                        matrix[i][j] = matrix[i - 1][j - 1];
+                    } else {
+                        matrix[i][j] = Math.min(
+                            matrix[i - 1][j - 1] + 1,
+                            matrix[i][j - 1] + 1,
+                            matrix[i - 1][j] + 1
+                        );
+                    }
+                }
+            }
+            return matrix[str2.length][str1.length];
+        }
+
+        // Enhanced search event listeners with predictive functionality
+        function setupSearchListeners() {
+            // Food search
+            document.querySelector('#search').addEventListener('input', function() {
+                const query = this.value.trim();
+                const filteredForms = predictiveSearch(query, 'food');
+                displaySearchResults(filteredForms, 'food');
+            });
+
+            // Residential search
+            document.querySelector('#residential-search').addEventListener('input', function() {
+                const query = this.value.trim();
+                const filteredForms = predictiveSearch(query, 'residential');
+                displaySearchResults(filteredForms, 'residential');
+            });
+
+            // Burial search
+            document.querySelector('#burial-search').addEventListener('input', function() {
+                const query = this.value.trim();
+                const filteredForms = predictiveSearch(query, 'burial');
+                displaySearchResults(filteredForms, 'burial');
+            });
+
+            // Spirit licence search
+            document.querySelector('#spirit-licence-search').addEventListener('input', function() {
+                const query = this.value.trim();
+                const filteredForms = predictiveSearch(query, 'spirit_licence');
+                displaySearchResults(filteredForms, 'spirit_licence');
+            });
+
+            // Swimming pool search
+            document.querySelector('#swimming-pool-search').addEventListener('input', function() {
+                const query = this.value.trim();
+                const filteredForms = predictiveSearch(query, 'swimming_pool');
+                displaySearchResults(filteredForms, 'swimming_pool');
+            });
+
+            // Small hotels search
+            document.querySelector('#small-hotels-search').addEventListener('input', function() {
+                const query = this.value.trim();
+                const filteredForms = predictiveSearch(query, 'small_hotels');
+                displaySearchResults(filteredForms, 'small_hotels');
+            });
+        }
+
+        // Display search results function
+        function displaySearchResults(forms, formType) {
+            let tbody;
+            switch (formType) {
+                case 'food':
+                    tbody = document.querySelector('#food-results-body');
+                    break;
+                case 'residential':
+                    tbody = document.querySelector('#residential-results-body');
+                    break;
+                case 'burial':
+                    tbody = document.querySelector('#burial-results-body');
+                    break;
+                case 'spirit_licence':
+                    tbody = document.querySelector('#spirit-licence-results-body');
+                    break;
+                case 'swimming_pool':
+                    tbody = document.querySelector('#swimming-pool-results-body');
+                    break;
+                case 'small_hotels':
+                    tbody = document.querySelector('#small-hotels-results-body');
+                    break;
+                default:
+                    return;
+            }
+
+            tbody.innerHTML = '';
+
+            if (forms && forms.length > 0) {
+                forms.forEach(form => {
+                    const row = document.createElement('tr');
+
+                    if (formType === 'burial') {
+                        row.innerHTML = `
+                            <td>${form.id}</td>
+                            <td>${form.applicant_name || 'N/A'}</td>
+                            <td>${form.deceased_name || 'N/A'}</td>
+                            <td>${form.created_at || 'N/A'}</td>
+                            <td>${form.status || 'N/A'}</td>
+                        `;
+                        row.addEventListener('click', () => {
+                            window.location.href = `/burial/inspection/${form.id}`;
+                        });
+                    } else if (formType === 'residential') {
+                        row.innerHTML = `
+                            <td>${form.id}</td>
+                            <td>${form.premises_name || 'N/A'}</td>
+                            <td>${form.owner || 'N/A'}</td>
+                            <td>${form.created_at || 'N/A'}</td>
+                            <td>${form.result || 'N/A'}</td>
+                        `;
+                        row.addEventListener('click', () => {
+                            window.location.href = `/residential/inspection/${form.id}`;
+                        });
+                    } else if (formType === 'swimming_pool') {
+                        row.innerHTML = `
+                            <td>${form.id}</td>
+                            <td>${form.establishment_name || 'N/A'}</td>
+                            <td>${form.created_at || 'N/A'}</td>
+                            <td>${form.result || 'N/A'}</td>
+                        `;
+                        row.addEventListener('click', () => {
+                            window.location.href = `/swimming_pool/inspection/${form.id}`;
+                        });
+                    } else if (formType === 'spirit_licence') {
+                        row.innerHTML = `
+                            <td>${form.id}</td>
+                            <td>${form.establishment_name || 'N/A'}</td>
+                            <td>${form.created_at || 'N/A'}</td>
+                            <td>${form.result || 'N/A'}</td>
+                        `;
+                        row.addEventListener('click', () => {
+                            window.location.href = `/spirit_licence/inspection/${form.id}`;
+                        });
+                    } else if (formType === 'small_hotels') {
+                        row.innerHTML = `
+                            <td>${form.id}</td>
+                            <td>${form.establishment_name || 'N/A'}</td>
+                            <td>${form.created_at || 'N/A'}</td>
+                            <td>${form.result || 'N/A'}</td>
+                        `;
+                        row.addEventListener('click', () => {
+                            window.location.href = `/view_small_hotels/${form.id}`;
+                        });
+                    } else {
+                        row.innerHTML = `
+                            <td>${form.id}</td>
+                            <td>${form.establishment_name || 'N/A'}</td>
+                            <td>${form.created_at || 'N/A'}</td>
+                            <td>${form.result || 'N/A'}</td>
+                        `;
+                        row.addEventListener('click', () => {
+                            window.location.href = `/inspection/${form.id}`;
+                        });
+                    }
+                    tbody.appendChild(row);
+                });
+            } else {
+                tbody.innerHTML = '<tr><td colspan="5">No results found</td></tr>';
+            }
+        }
+
         // Chat Functions
         function toggleChat() {
             const chatWindow = document.getElementById('chatWindow');
@@ -1444,6 +1726,12 @@
                     isContactListOpen = false;
                 }
             });
+
+            // Initialize search functionality and load data
+            loadAllFormsData().then(() => {
+                setupSearchListeners();
+                console.log('Search system initialized with predictive capabilities');
+            });
         });
 
         // Task-related functions
@@ -1702,161 +1990,50 @@
         }
 
         async function loadForms(tab) {
-            let tbody;
-            switch (tab) {
-                case 'food':
-                    tbody = document.querySelector('#food-results-body');
-                    break;
-                case 'residential':
-                    tbody = document.querySelector('#residential-results-body');
-                    break;
-                case 'burial':
-                    tbody = document.querySelector('#burial-results-body');
-                    break;
-                case 'spirit_licence':
-                    tbody = document.querySelector('#spirit-licence-results-body');
-                    break;
-                case 'swimming_pool':
-                    tbody = document.querySelector('#swimming-pool-results-body');
-                    break;
-                case 'small_hotels':
-                    tbody = document.querySelector('#small-hotels-results-body');
-                    break;
-                default:
-                    return;
+            if (tab === 'overview') {
+                return; // No need to load forms for overview tab
             }
-            tbody.innerHTML = '<tr><td colspan="5">Loading...</td></tr>';
-            try {
-                const response = await fetch(`/search_forms?query=&type=${tab}`);
-                const data = await response.json();
-                tbody.innerHTML = '';
-                if (data.forms && data.forms.length) {
-                    data.forms.sort((a, b) => {
-                        const aName = a.establishment_name || a.premises_name || a.applicant_name || a.deceased_name || '';
-                        const bName = b.establishment_name || b.premises_name || b.applicant_name || b.deceased_name || '';
-                        return aName.localeCompare(bName);
-                    });
-                    data.forms.forEach(form => {
-                        const row = document.createElement('tr');
-                        if (tab === 'burial') {
-                            row.innerHTML = `
-                                <td>${form.id}</td>
-                                <td>${form.applicant_name || 'N/A'}</td>
-                                <td>${form.deceased_name || 'N/A'}</td>
-                                <td>${form.created_at || 'N/A'}</td>
-                                <td>${form.status || 'N/A'}</td>
-                            `;
-                            row.addEventListener('click', () => {
-                                window.location.href = `/burial/inspection/${form.id}`;
-                            });
-                        } else if (tab === 'residential') {
-                            row.innerHTML = `
-                                <td>${form.id}</td>
-                                <td>${form.premises_name || 'N/A'}</td>
-                                <td>${form.owner || 'N/A'}</td>
-                                <td>${form.created_at || 'N/A'}</td>
-                                <td>${form.result || 'N/A'}</td>
-                            `;
-                            row.addEventListener('click', () => {
-                                window.location.href = `/residential/inspection/${form.id}`;
-                            });
-                        } else if (tab === 'swimming_pool') {
-                            row.innerHTML = `
-                                <td>${form.id}</td>
-                                <td>${form.establishment_name || 'N/A'}</td>
-                                <td>${form.created_at || 'N/A'}</td>
-                                <td>${form.result || 'N/A'}</td>
-                            `;
-                            row.addEventListener('click', () => {
-                                window.location.href = `/swimming_pool/inspection/${form.id}`;
-                            });
-                        } else if (tab === 'spirit_licence') {
-                            row.innerHTML = `
-                                <td>${form.id}</td>
-                                <td>${form.establishment_name || 'N/A'}</td>
-                                <td>${form.created_at || 'N/A'}</td>
-                                <td>${form.result || 'N/A'}</td>
-                            `;
-                            row.addEventListener('click', () => {
-                                window.location.href = `/spirit_licence/inspection/${form.id}`;
-                            });
-                        } else if (tab === 'small_hotels') {
-                            row.innerHTML = `
-                                <td>${form.id}</td>
-                                <td>${form.establishment_name || 'N/A'}</td>
-                                <td>${form.created_at || 'N/A'}</td>
-                                <td>${form.result || 'N/A'}</td>
-                            `;
-                            row.addEventListener('click', () => {
-                                window.location.href = `/view_small_hotels/${form.id}`;
-                            });
-                        } else {
-                            row.innerHTML = `
-                                <td>${form.id}</td>
-                                <td>${form.establishment_name || 'N/A'}</td>
-                                <td>${form.created_at || 'N/A'}</td>
-                                <td>${form.result || 'N/A'}</td>
-                            `;
-                            row.addEventListener('click', () => {
-                                window.location.href = `/inspection/${form.id}`;
-                            });
-                        }
-                        tbody.appendChild(row);
-                    });
-                } else {
-                    tbody.innerHTML = '<tr><td colspan="5">No results found</td></tr>';
+
+            // Use cached data if available, otherwise load from server
+            if (allFormsData[tab] && allFormsData[tab].length > 0) {
+                displaySearchResults(allFormsData[tab], tab);
+            } else {
+                // Fallback to server call if cache is empty
+                let tbody;
+                switch (tab) {
+                    case 'food':
+                        tbody = document.querySelector('#food-results-body');
+                        break;
+                    case 'residential':
+                        tbody = document.querySelector('#residential-results-body');
+                        break;
+                    case 'burial':
+                        tbody = document.querySelector('#burial-results-body');
+                        break;
+                    case 'spirit_licence':
+                        tbody = document.querySelector('#spirit-licence-results-body');
+                        break;
+                    case 'swimming_pool':
+                        tbody = document.querySelector('#swimming-pool-results-body');
+                        break;
+                    case 'small_hotels':
+                        tbody = document.querySelector('#small-hotels-results-body');
+                        break;
+                    default:
+                        return;
                 }
-            } catch (error) {
-                console.error(`Error loading ${tab} forms:`, error);
-                tbody.innerHTML = '<tr><td colspan="5">Error loading results</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="5">Loading...</td></tr>';
+                try {
+                    const response = await fetch(`/search_forms?query=&type=${tab}`);
+                    const data = await response.json();
+                    allFormsData[tab] = data.forms || [];
+                    displaySearchResults(allFormsData[tab], tab);
+                } catch (error) {
+                    console.error(`Error loading ${tab} forms:`, error);
+                    tbody.innerHTML = '<tr><td colspan="5">Error loading results</td></tr>';
+                }
             }
         }
-
-        // Enhanced search functions with proper delete handling
-        let searchTimeout;
-
-        document.querySelector('#search').addEventListener('input', async () => {
-            const query = document.querySelector('#search').value.trim();
-            const tbody = document.querySelector('#food-results-body');
-
-            clearTimeout(searchTimeout);
-
-            searchTimeout = setTimeout(async () => {
-                if (query.length === 0) {
-                    loadForms('food');
-                    return;
-                }
-
-                try {
-                    tbody.innerHTML = '<tr><td colspan="4">Searching...</td></tr>';
-                    const response = await fetch(`/search_forms?query=${encodeURIComponent(query)}&type=food`);
-                    const data = await response.json();
-                    tbody.innerHTML = '';
-
-                    if (data.forms && data.forms.length) {
-                        data.forms.sort((a, b) => a.establishment_name.localeCompare(b.establishment_name));
-                        data.forms.forEach(form => {
-                            const row = document.createElement('tr');
-                            row.innerHTML = `
-                                <td>${form.id}</td>
-                                <td>${form.establishment_name || 'N/A'}</td>
-                                <td>${form.created_at || 'N/A'}</td>
-                                <td>${form.result || 'N/A'}</td>
-                            `;
-                            row.addEventListener('click', () => {
-                                window.location.href = `/inspection/${form.id}`;
-                            });
-                            tbody.appendChild(row);
-                        });
-                    } else {
-                        tbody.innerHTML = '<tr><td colspan="4">No results found</td></tr>';
-                    }
-                } catch (error) {
-                    console.error('Error searching food forms:', error);
-                    tbody.innerHTML = '<tr><td colspan="4">Error loading results</td></tr>';
-                }
-            }, 300);
-        });
 
         // Close modal when clicking outside
         window.onclick = function(event) {

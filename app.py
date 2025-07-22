@@ -1753,7 +1753,8 @@ def spirit_licence_inspection_detail(id):
     inspection = c.fetchone()
     conn.close()
     if inspection:
-        scores = [int(x) for x in inspection[12].split(',')] if inspection[12] else [0] * 34
+        # Parse scores - now creating string keys for template compatibility
+        scores = [int(x) for x in inspection[12].split(',')] if inspection[12] else [0] * 25  # Changed to 25 items
         inspection_data = {
             'id': inspection[0],
             'establishment_name': inspection[1] or '',
@@ -1767,7 +1768,7 @@ def spirit_licence_inspection_detail(id):
             'purpose_of_visit': inspection[9] or '',
             'action': inspection[10] or '',
             'result': inspection[11] or '',
-            'scores': dict(zip(range(1, 35), scores)),
+            'scores': dict(zip([str(i) for i in range(1, 26)], scores)),  # String keys for items 1-25
             'comments': inspection[13] or '',
             'inspector_signature': inspection[5] or '',
             'received_by': inspection[2] or '',

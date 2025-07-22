@@ -1,685 +1,604 @@
 <!DOCTYPE html>
-   <html>
-   <head>
-       <title>Spirit Licence Premises Inspection Form</title>
-       <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-       <style>
-           body {
-               font-family: Arial, sans-serif;
-               margin: 50px;
-               font-size: 14px;
-               background: #f4f4f4;
-           }
-           .form-container {
-               background: white;
-               padding: 40px;
-               width: 600px;
-               margin: 0 auto;
-               box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-           }
-           h1 {
-               font-size: 18px;
-               text-align: center;
-               margin-bottom: 30px;
-           }
-           p {
-               margin: 10px 0;
-           }
-           table {
-               width: 100%;
-               border-collapse: collapse;
-               margin: 20px 0;
-           }
-           th, td {
-               border: 1px solid #ccc;
-               padding: 8px;
-               text-align: left;
-           }
-           th {
-               background: #f4f4f4;
-           }
-           tr.critical {
-               background: #e6e6e6;
-           }
-           .header-row {
-               font-weight: bold;
-               background: #f0f0f0;
-           }
-           select, textarea, input[type="text"], input[type="date"], input[type="number"] {
-               width: 100%;
-               padding: 8px;
-               font-size: 14px;
-               border: 1px solid #ccc;
-               border-radius: 4px;
-               resize: vertical;
-           }
-           .buttons {
-               margin-top: 20px;
-               text-align: center;
-           }
-           .btn {
-               padding: 10px 20px;
-               margin: 0 10px;
-               font-size: 14px;
-               border: none;
-               border-radius: 4px;
-               cursor: pointer;
-               color: white;
-           }
-           .btn:hover {
-               opacity: 0.9;
-           }
-           #submit-btn { background-color: #ff9900; }
-           #submit-btn:hover { background-color: #e68a00; }
-           #print-btn { background-color: #007bff; }
-           #print-btn:hover { background-color: #0069d9; }
-           #save-btn { background-color: #28a745; }
-           #save-btn:hover { background-color: #218838; }
-           #share-btn { background-color: #17a2b8; }
-           #share-btn:hover { background-color: #138496; }
-           #back-btn { background-color: #6c757d; }
-           #back-btn:hover { background-color: #5a6268; }
-           .modal {
-               display: none;
-               position: fixed;
-               top: 0;
-               left: 0;
-               width: 100%;
-               height: 100%;
-               background: rgba(0, 0, 0, 0.5);
-               justify-content: center;
-               align-items: center;
-               z-index: 1000;
-           }
-           .modal-content {
-               background: white;
-               padding: 20px;
-               width: 300px;
-               text-align: center;
-               border-radius: 4px;
-               box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-           }
-           .modal-content p {
-               color: green;
-               font-size: 16px;
-               margin-bottom: 20px;
-           }
-           .modal-content .btn {
-               background-color: #6c757d;
-           }
-           .modal-content .btn:hover {
-               background-color: #5a6268;
-           }
-       </style>
-   </head>
-   <body>
-       <form id="spirit-licence-form" method="POST" action="{{ url_for('submit_spirit_licence') }}">
-           <div class="form-container">
-               <h1>Spirit Licence Premises Inspection Form</h1>
-               <table>
-                   <tr>
-                       <td style="width: 50%; vertical-align: top;">
-                           <table>
-                               <tr>
-                                   <td>Name of Establishment:</td>
-                                   <td><input type="text" name="establishment_name" required></td>
-                               </tr>
-                               <tr>
-                                   <td>Owner/Operator:</td>
-                                   <td><input type="text" name="owner_operator" required></td>
-                               </tr>
-                               <tr>
-                                   <td>Address of Establishment:</td>
-                                   <td><input type="text" name="address" required></td>
-                               </tr>
-                               <tr>
-                                   <td>Purpose of Visit:</td>
-                                   <td><input type="text" name="purpose_of_visit" required></td>
-                               </tr>
-                           </table>
-                       </td>
-                       <td style="width: 50%; vertical-align: top;">
-                           <table>
-                               <tr>
-                                   <td>Type of Establishment:</td>
-                                   <td><input type="text" name="type_of_establishment" required></td>
-                               </tr>
-                               <tr>
-                                   <td>Inspector Name:</td>
-                                   <td><input type="text" name="inspector_name" required></td>
-                               </tr>
-                               <tr>
-                                   <td>Inspection Date:</td>
-                                   <td><input type="date" name="inspection_date" required></td>
-                               </tr>
-                               <tr>
-                                   <td>Critical Score:</td>
-                                   <td><input type="text" id="critical_score" name="critical_score" readonly value="0"></td>
-                               </tr>
-                               <tr>
-                                   <td>Overall Score:</td>
-                                   <td><input type="text" id="overall_score" name="overall_score" readonly value="0"></td>
-                               </tr>
-                               <tr>
-                                   <td>Status:</td>
-                                   <td>
-                                       <select name="status" required>
-                                           <option value="Satisfactory">Satisfactory</option>
-                                           <option value="Unsatisfactory">Unsatisfactory</option>
-                                       </select>
-                                   </td>
-                               </tr>
-                               <tr>
-                                   <td>No. of Employees:</td>
-                                   <td><input type="number" name="no_of_employees" required></td>
-                               </tr>
-                               <tr>
-                                   <td>No. with FHC:</td>
-                                   <td><input type="number" name="no_with_fhc" required></td>
-                               </tr>
-                               <tr>
-                                   <td>No. W/O FHC:</td>
-                                   <td><input type="number" name="no_wo_fhc" required></td>
-                               </tr>
-                           </table>
-                       </td>
-                   </tr>
-               </table>
-               <h2>Inspection Checklist</h2>
-               <table>
-                   <thead>
-                       <tr>
-                           <th>Item</th>
-                           <th>Wt.</th>
-                           <th>Score</th>
-                           <th>Inspector's Comments</th>
-                       </tr>
-                   </thead>
-                   <tbody>
-                       <tr class="header-row">
-                           <td colspan="4">Building</td>
-                       </tr>
-                       <tr>
-                           <td>Sound, clean and in good repair</td>
-                           <td>3</td>
-                           <td>
-                               <select name="score_1" class="score-input">
-                                   <option value="0">0</option>
-                                   <option value="3">3</option>
-                               </select>
-                           </td>
-                           <td><input type="text" name="comment_1"></td>
-                       </tr>
-                       <tr>
-                           <td>No smoking sign displayed at entrance to premises</td>
-                           <td>3</td>
-                           <td>
-                               <select name="score_2" class="score-input">
-                                   <option value="0">0</option>
-                                   <option value="3">3</option>
-                               </select>
-                           </td>
-                           <td><input type="text" name="comment_2"></td>
-                       </tr>
-                       <tr class="header-row">
-                           <td colspan="4">Walls</td>
-                       </tr>
-                       <tr>
-                           <td>Sound, clean and in good repair</td>
-                           <td>3</td>
-                           <td>
-                               <select name="score_3" class="score-input">
-                                   <option value="0">0</option>
-                                   <option value="3">3</option>
-                               </select>
-                           </td>
-                           <td><input type="text" name="comment_3"></td>
-                       </tr>
-                       <tr>
-                           <td>Free of cracks and crevices</td>
-                           <td>3</td>
-                           <td>
-                               <select name="score_4" class="score-input">
-                                   <option value="0">0</option>
-                                   <option value="3">3</option>
-                               </select>
-                           </td>
-                           <td><input type="text" name="comment_4"></td>
-                       </tr>
-                       <tr class="header-row">
-                           <td colspan="4">Floors</td>
-                       </tr>
-                       <tr>
-                           <td>Constructed of impervious, non-slip material</td>
-                           <td>3</td>
-                           <td>
-                               <select name="score_5" class="score-input">
-                                   <option value="0">0</option>
-                                   <option value="3">3</option>
-                               </select>
-                           </td>
-                           <td><input type="text" name="comment_5"></td>
-                       </tr>
-                       <tr>
-                           <td>Clean, drained and in good repair</td>
-                           <td>3</td>
-                           <td>
-                               <select name="score_6" class="score-input">
-                                   <option value="0">0</option>
-                                   <option value="3">3</option>
-                               </select>
-                           </td>
-                           <td><input type="text" name="comment_6"></td>
-                       </tr>
-                       <tr class="header-row">
-                           <td colspan="4">Service Counter</td>
-                       </tr>
-                       <tr>
-                           <td>Constructed of impervious material</td>
-                           <td>3</td>
-                           <td>
-                               <select name="score_7" class="score-input">
-                                   <option value="0">0</option>
-                                   <option value="3">3</option>
-                               </select>
-                           </td>
-                           <td><input type="text" name="comment_7"></td>
-                       </tr>
-                       <tr>
-                           <td>Designed, clean and in good repair</td>
-                           <td>3</td>
-                           <td>
-                               <select name="score_8" class="score-input">
-                                   <option value="0">0</option>
-                                   <option value="3">3</option>
-                               </select>
-                           </td>
-                           <td><input type="text" name="comment_8"></td>
-                       </tr>
-                       <tr>
-                           <td>Smooth and free of cracks</td>
-                           <td>3</td>
-                           <td>
-                               <select name="score_9" class="score-input">
-                                   <option value="0">0</option>
-                                   <option value="3">3</option>
-                               </select>
-                           </td>
-                           <td><input type="text" name="comment_9"></td>
-                       </tr>
-                       <tr class="header-row">
-                           <td colspan="4">Lighting</td>
-                       </tr>
-                       <tr>
-                           <td>Lighting provided as required</td>
-                           <td>3</td>
-                           <td>
-                               <select name="score_10" class="score-input">
-                                   <option value="0">0</option>
-                                   <option value="3">3</option>
-                               </select>
-                           </td>
-                           <td><input type="text" name="comment_10"></td>
-                       </tr>
-                       <tr>
-                           <td>Fixtures clean and in good repair</td>
-                           <td>3</td>
-                           <td>
-                               <select name="score_11" class="score-input">
-                                   <option value="0">0</option>
-                                   <option value="3">3</option>
-                               </select>
-                           </td>
-                           <td><input type="text" name="comment_11"></td>
-                       </tr>
-                       <tr class="header-row">
-                           <td colspan="4">Washing and Sanitization Facilities</td>
-                       </tr>
-                       <tr class="critical">
-                           <td>Provided as required</td>
-                           <td>5</td>
-                           <td>
-                               <select name="score_12" class="score-input critical-item">
-                                   <option value="0">0</option>
-                                   <option value="5">5</option>
-                               </select>
-                           </td>
-                           <td><input type="text" name="comment_12"></td>
-                       </tr>
-                       <tr class="critical">
-                           <td>Fitted with at least double compartment sink</td>
-                           <td>5</td>
-                           <td>
-                               <select name="score_13" class="score-input critical-item">
-                                   <option value="0">0</option>
-                                   <option value="5">5</option>
-                               </select>
-                           </td>
-                           <td><input type="text" name="comment_13"></td>
-                       </tr>
-                       <tr class="critical">
-                           <td>Soap and sanitizer provided</td>
-                           <td>5</td>
-                           <td>
-                               <select name="score_14" class="score-input critical-item">
-                                   <option value="0">0</option>
-                                   <option value="5">5</option>
-                               </select>
-                           </td>
-                           <td><input type="text" name="comment_14"></td>
-                       </tr>
-                       <tr class="critical">
-                           <td>Equipped handwashing facility provided</td>
-                           <td>5</td>
-                           <td>
-                               <select name="score_15" class="score-input critical-item">
-                                   <option value="0">0</option>
-                                   <option value="5">5</option>
-                               </select>
-                           </td>
-                           <td><input type="text" name="comment_15"></td>
-                       </tr>
-                       <tr class="header-row">
-                           <td colspan="4">Water Supply</td>
-                       </tr>
-                       <tr class="critical">
-                           <td>Hot and cold running water provided</td>
-                           <td>5</td>
-                           <td>
-                               <select name="score_16" class="score-input critical-item">
-                                   <option value="0">0</option>
-                                   <option value="5">5</option>
-                               </select>
-                           </td>
-                           <td><input type="text" name="comment_16"></td>
-                       </tr>
-                       <tr class="critical">
-                           <td>Potable</td>
-                           <td>5</td>
-                           <td>
-                               <select name="score_17" class="score-input critical-item">
-                                   <option value="0">0</option>
-                                   <option value="5">5</option>
-                               </select>
-                           </td>
-                           <td><input type="text" name="comment_17"></td>
-                       </tr>
-                       <tr class="critical">
-                           <td>Piped</td>
-                           <td>5</td>
-                           <td>
-                               <select name="score_18" class="score-input critical-item">
-                                   <option value="0">0</option>
-                                   <option value="5">5</option>
-                               </select>
-                           </td>
-                           <td><input type="text" name="comment_18"></td>
-                       </tr>
-                       <tr class="header-row">
-                           <td colspan="4">Storage Facilities</td>
-                       </tr>
-                       <tr class="critical">
-                           <td>Adequate and appropriate</td>
-                           <td>5</td>
-                           <td>
-                               <select name="score_19" class="score-input critical-item">
-                                   <option value="0">0</option>
-                                   <option value="5">5</option>
-                               </select>
-                           </td>
-                           <td><input type="text" name="comment_19"></td>
-                       </tr>
-                       <tr class="critical">
-                           <td>Clean and adequate storage of glasses & utensils</td>
-                           <td>5</td>
-                           <td>
-                               <select name="score_20" class="score-input critical-item">
-                                   <option value="0">0</option>
-                                   <option value="5">5</option>
-                               </select>
-                           </td>
-                           <td><input type="text" name="comment_20"></td>
-                       </tr>
-                       <tr class="critical">
-                           <td>Free of insects and other vermins</td>
-                           <td>5</td>
-                           <td>
-                               <select name="score_21" class="score-input critical-item">
-                                   <option value="0">0</option>
-                                   <option value="5">5</option>
-                               </select>
-                           </td>
-                           <td><input type="text" name="comment_21"></td>
-                       </tr>
-                       <tr class="critical">
-                           <td>Being used for its intended purpose</td>
-                           <td>5</td>
-                           <td>
-                               <select name="score_22" class="score-input critical-item">
-                                   <option value="0">0</option>
-                                   <option value="5">5</option>
-                               </select>
-                           </td>
-                           <td><input type="text" name="comment_22"></td>
-                       </tr>
-                       <tr class="header-row">
-                           <td colspan="4">Sanitary Facilities</td>
-                       </tr>
-                       <tr class="critical">
-                           <td>Provided as required</td>
-                           <td>5</td>
-                           <td>
-                               <select name="score_23" class="score-input critical-item">
-                                   <option value="0">0</option>
-                                   <option value="5">5</option>
-                               </select>
-                           </td>
-                           <td><input type="text" name="comment_23"></td>
-                       </tr>
-                       <tr class="critical">
-                           <td>Toilet facility provided</td>
-                           <td>5</td>
-                           <td>
-                               <select name="score_24" class="score-input critical-item">
-                                   <option value="0">0</option>
-                                   <option value="5">5</option>
-                               </select>
-                           </td>
-                           <td><input type="text" name="comment_24"></td>
-                       </tr>
-                       <tr class="critical">
-                           <td>Adequate, accessible with lavatory basin and soap</td>
-                           <td>5</td>
-                           <td>
-                               <select name="score_25" class="score-input critical-item">
-                                   <option value="0">0</option>
-                                   <option value="5">5</option>
-                               </select>
-                           </td>
-                           <td><input type="text" name="comment_25"></td>
-                       </tr>
-                       <tr class="critical">
-                           <td>Satisfactory</td>
-                           <td>5</td>
-                           <td>
-                               <select name="score_26" class="score-input critical-item">
-                                   <option value="0">0</option>
-                                   <option value="5">5</option>
-                               </select>
-                           </td>
-                           <td><input type="text" name="comment_26"></td>
-                       </tr>
-                       <tr>
-                           <td>Urinal(s) provided</td>
-                           <td>3</td>
-                           <td>
-                               <select name="score_27" class="score-input">
-                                   <option value="0">0</option>
-                                   <option value="3">3</option>
-                               </select>
-                           </td>
-                           <td><input type="text" name="comment_27"></td>
-                       </tr>
-                       <tr>
-                           <td>Satisfactory</td>
-                           <td>3</td>
-                           <td>
-                               <select name="score_28" class="score-input">
-                                   <option value="0">0</option>
-                                   <option value="3">3</option>
-                               </select>
-                           </td>
-                           <td><input type="text" name="comment_28"></td>
-                       </tr>
-                       <tr class="header-row">
-                           <td colspan="4">Solid Waste Management</td>
-                       </tr>
-                       <tr>
-                           <td>Receptacles provided</td>
-                           <td>4</td>
-                           <td>
-                               <select name="score_29" class="score-input">
-                                   <option value="0">0</option>
-                                   <option value="4">4</option>
-                               </select>
-                           </td>
-                           <td><input type="text" name="comment_29"></td>
-                       </tr>
-                       <tr>
-                           <td>Covered, adequate, pest proof and clean receptacles</td>
-                           <td>4</td>
-                           <td>
-                               <select name="score_30" class="score-input">
-                                   <option value="0">0</option>
-                                   <option value="4">4</option>
-                               </select>
-                           </td>
-                           <td><input type="text" name="comment_30"></td>
-                       </tr>
-                       <tr>
-                           <td>Provision made for satisfactory disposal of waste</td>
-                           <td>3</td>
-                           <td>
-                               <select name="score_31" class="score-input">
-                                   <option value="0">0</option>
-                                   <option value="3">3</option>
-                               </select>
-                           </td>
-                           <td><input type="text" name="comment_31"></td>
-                       </tr>
-                       <tr>
-                           <td>Premises free of litter and unnecessary articles</td>
-                           <td>3</td>
-                           <td>
-                               <select name="score_32" class="score-input">
-                                   <option value="0">0</option>
-                                   <option value="3">3</option>
-                               </select>
-                           </td>
-                           <td><input type="text" name="comment_32"></td>
-                       </tr>
-                       <tr class="header-row">
-                           <td colspan="4">Pest Control</td>
-                       </tr>
-                       <tr class="critical">
-                           <td>Effective pest control measures in place</td>
-                           <td>5</td>
-                           <td>
-                               <select name="score_33" class="score-input critical-item">
-                                   <option value="0">0</option>
-                                   <option value="5">5</option>
-                               </select>
-                           </td>
-                           <td><input type="text" name="comment_33"></td>
-                       </tr>
-                       <tr class="critical">
-                           <td>Premises free of rodents, insects and vermins</td>
-                           <td>5</td>
-                           <td>
-                               <select name="score_34" class="score-input critical-item">
-                                   <option value="0">0</option>
-                                   <option value="5">5</option>
-                               </select>
-                           </td>
-                           <td><input type="text" name="comment_34"></td>
-                       </tr>
-                   </tbody>
-               </table>
-               <table>
-                   <tr>
-                       <td>Inspector's Signature:</td>
-                       <td><input type="text" name="inspector_signature" required></td>
-                   </tr>
-                   <tr>
-                       <td>Rec'd By:</td>
-                       <td><input type="text" name="received_by" required></td>
-                   </tr>
-               </table>
-               <div class="buttons">
-                   <button id="submit-btn" class="btn" type="submit">Submit</button>
-                   <button id="print-btn" class="btn" type="button" onclick="window.print()">Print</button>
-                   <button id="save-btn" class="btn" type="button" onclick="alert('Save functionality not implemented yet.')">Save</button>
-                   <button id="share-btn" class="btn" type="button" onclick="alert('Share functionality not implemented yet.')">Share</button>
-                   <a href="{{ url_for('dashboard') }}" id="back-btn" class="btn">Back to Dashboard</a>
-               </div>
-           </div>
-       </form>
-       <!-- Success Modal -->
-       <div id="success-modal" class="modal">
-           <div class="modal-content">
-               <p>Submission successful!</p>
-               <a href="{{ url_for('dashboard') }}" class="btn">Back to Dashboard</a>
-           </div>
-       </div>
-       <script>
-           // Real-time score calculation
-           const scoreInputs = document.querySelectorAll('.score-input');
-           const criticalScoreInput = document.getElementById('critical_score');
-           const overallScoreInput = document.getElementById('overall_score');
+<html>
+<head>
+    <title>Spirit Licence Premises Inspection Form</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            font-size: 16px;
+            background: #f4f4f4;
+            line-height: 1.5;
+        }
+        .form-container {
+            background: white;
+            padding: 40px;
+            width: 8.5in;
+            max-width: 8.5in;
+            margin: 0 auto;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            min-height: 11in;
+        }
+        h1 {
+            font-size: 22px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        p {
+            margin: 10px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+            font-size: 15px;
+        }
+        th {
+            background: #f4f4f4;
+        }
+        tr.critical {
+            background: #e6e6e6;
+        }
+        .header-row {
+            font-weight: bold;
+            background: #f0f0f0;
+        }
+        select, textarea, input[type="text"], input[type="date"], input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            font-size: 15px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            resize: vertical;
+        }
 
-           function updateScores() {
-               let overallScore = 0;
-               let criticalScore = 0;
+        /* Score column specific styling */
+        th:nth-child(3), td:nth-child(3) {
+            width: 80px;
+            min-width: 80px;
+        }
 
-               scoreInputs.forEach(input => {
-                   const score = parseInt(input.value) || 0;
-                   if (score > 0) {
-                       overallScore += score;
-                       if (input.classList.contains('critical-item')) {
-                           criticalScore += score;
-                       }
-                   }
-               });
+        /* Make score dropdowns wider and more visible */
+        .score-input {
+            width: 70px !important;
+            min-width: 70px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 16px;
+            padding: 8px 5px !important;
+        }
+        .buttons {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .btn {
+            padding: 10px 20px;
+            margin: 0 10px;
+            font-size: 14px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            color: white;
+        }
+        .btn:hover {
+            opacity: 0.9;
+        }
+        #submit-btn { background-color: #ff9900; }
+        #submit-btn:hover { background-color: #e68a00; }
+        #print-btn { background-color: #007bff; }
+        #print-btn:hover { background-color: #0069d9; }
+        #save-btn { background-color: #28a745; }
+        #save-btn:hover { background-color: #218838; }
+        #share-btn { background-color: #17a2b8; }
+        #share-btn:hover { background-color: #138496; }
+        #back-btn { background-color: #6c757d; }
+        #back-btn:hover { background-color: #5a6268; }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: white;
+            padding: 20px;
+            width: 300px;
+            text-align: center;
+            border-radius: 4px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+        .modal-content p {
+            color: green;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        .modal-content .btn {
+            background-color: #6c757d;
+        }
+        .modal-content .btn:hover {
+            background-color: #5a6268;
+        }
+    </style>
+</head>
+<body>
+    <form id="spirit-licence-form" method="POST" action="{{ url_for('submit_spirit_licence') }}">
+        <div class="form-container">
+            <h1>Spirit Licence Premises Inspection Form</h1>
+            <table>
+                <tr>
+                    <td style="width: 50%; vertical-align: top;">
+                        <table>
+                            <tr>
+                                <td>Name of Establishment:</td>
+                                <td><input type="text" name="establishment_name" required></td>
+                            </tr>
+                            <tr>
+                                <td>Owner/Operator:</td>
+                                <td><input type="text" name="owner_operator" required></td>
+                            </tr>
+                            <tr>
+                                <td>Address of Establishment:</td>
+                                <td><input type="text" name="address" required></td>
+                            </tr>
+                            <tr>
+                                <td>Purpose of Visit:</td>
+                                <td><input type="text" name="purpose_of_visit" required></td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td style="width: 50%; vertical-align: top;">
+                        <table>
+                            <tr>
+                                <td>Type of Establishment:</td>
+                                <td><input type="text" name="type_of_establishment" required></td>
+                            </tr>
+                            <tr>
+                                <td>Inspector Name:</td>
+                                <td><input type="text" name="inspector_name" required></td>
+                            </tr>
+                            <tr>
+                                <td>Inspection Date:</td>
+                                <td><input type="date" name="inspection_date" required></td>
+                            </tr>
+                            <tr>
+                                <td>Critical Score:</td>
+                                <td><input type="text" id="critical_score" name="critical_score" readonly value="0"></td>
+                            </tr>
+                            <tr>
+                                <td>Overall Score:</td>
+                                <td><input type="text" id="overall_score" name="overall_score" readonly value="0"></td>
+                            </tr>
+                            <tr>
+                                <td>Status:</td>
+                                <td>
+                                    <select name="status" required>
+                                        <option value="Satisfactory">Satisfactory</option>
+                                        <option value="Unsatisfactory">Unsatisfactory</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>No. of Employees:</td>
+                                <td><input type="number" name="no_of_employees" required></td>
+                            </tr>
+                            <tr>
+                                <td>No. with FHC:</td>
+                                <td><input type="number" name="no_with_fhc" required></td>
+                            </tr>
+                            <tr>
+                                <td>No. W/O FHC:</td>
+                                <td><input type="number" name="no_wo_fhc" required></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+            <h2>Inspection Checklist</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Wt.</th>
+                        <th>Score</th>
+                        <th>Inspector's Comments</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="header-row">
+                        <td colspan="4">Building</td>
+                    </tr>
+                    <tr>
+                        <td>Sound, clean and in good repair</td>
+                        <td>3</td>
+                        <td>
+                            <select name="score_1" class="score-input">
+                                <option value="0">0</option>
+                                <option value="3">3</option>
+                            </select>
+                        </td>
+                        <td><input type="text" name="comment_1"></td>
+                    </tr>
+                    <tr>
+                        <td>No smoking sign displayed at entrance to premises</td>
+                        <td>3</td>
+                        <td>
+                            <select name="score_2" class="score-input">
+                                <option value="0">0</option>
+                                <option value="3">3</option>
+                            </select>
+                        </td>
+                        <td><input type="text" name="comment_2"></td>
+                    </tr>
+                    <tr class="header-row">
+                        <td colspan="4">Walls</td>
+                    </tr>
+                    <tr>
+                        <td>Sound, clean and in good repair</td>
+                        <td>3</td>
+                        <td>
+                            <select name="score_3" class="score-input">
+                                <option value="0">0</option>
+                                <option value="3">3</option>
+                            </select>
+                        </td>
+                        <td><input type="text" name="comment_3"></td>
+                    </tr>
+                    <tr class="header-row">
+                        <td colspan="4">Floors</td>
+                    </tr>
+                    <tr>
+                        <td>Constructed of impervious, non-slip material</td>
+                        <td>3</td>
+                        <td>
+                            <select name="score_4" class="score-input">
+                                <option value="0">0</option>
+                                <option value="3">3</option>
+                            </select>
+                        </td>
+                        <td><input type="text" name="comment_4"></td>
+                    </tr>
+                    <tr>
+                        <td>Clean, drained and in good repair</td>
+                        <td>3</td>
+                        <td>
+                            <select name="score_5" class="score-input">
+                                <option value="0">0</option>
+                                <option value="3">3</option>
+                            </select>
+                        </td>
+                        <td><input type="text" name="comment_5"></td>
+                    </tr>
+                    <tr class="header-row">
+                        <td colspan="4">Service Counter</td>
+                    </tr>
+                    <tr>
+                        <td>Constructed of impervious material</td>
+                        <td>3</td>
+                        <td>
+                            <select name="score_6" class="score-input">
+                                <option value="0">0</option>
+                                <option value="3">3</option>
+                            </select>
+                        </td>
+                        <td><input type="text" name="comment_6"></td>
+                    </tr>
+                    <tr>
+                        <td>Designed, clean and in good repair</td>
+                        <td>3</td>
+                        <td>
+                            <select name="score_7" class="score-input">
+                                <option value="0">0</option>
+                                <option value="3">3</option>
+                            </select>
+                        </td>
+                        <td><input type="text" name="comment_7"></td>
+                    </tr>
+                    <tr class="header-row">
+                        <td colspan="4">Lighting</td>
+                    </tr>
+                    <tr>
+                        <td>Lighting provided as required</td>
+                        <td>3</td>
+                        <td>
+                            <select name="score_8" class="score-input">
+                                <option value="0">0</option>
+                                <option value="3">3</option>
+                            </select>
+                        </td>
+                        <td><input type="text" name="comment_8"></td>
+                    </tr>
+                    <tr class="header-row">
+                        <td colspan="4">Washing and Sanitization Facilities</td>
+                    </tr>
+                    <tr class="critical">
+                        <td>Fitted with at least double compartment sink</td>
+                        <td>5</td>
+                        <td>
+                            <select name="score_9" class="score-input critical-item">
+                                <option value="0">0</option>
+                                <option value="5">5</option>
+                            </select>
+                        </td>
+                        <td><input type="text" name="comment_9"></td>
+                    </tr>
+                    <tr class="critical">
+                        <td>Soap and sanitizer provided</td>
+                        <td>5</td>
+                        <td>
+                            <select name="score_10" class="score-input critical-item">
+                                <option value="0">0</option>
+                                <option value="5">5</option>
+                            </select>
+                        </td>
+                        <td><input type="text" name="comment_10"></td>
+                    </tr>
+                    <tr class="critical">
+                        <td>Equipped handwashing facility provided</td>
+                        <td>5</td>
+                        <td>
+                            <select name="score_11" class="score-input critical-item">
+                                <option value="0">0</option>
+                                <option value="5">5</option>
+                            </select>
+                        </td>
+                        <td><input type="text" name="comment_11"></td>
+                    </tr>
+                    <tr class="header-row">
+                        <td colspan="4">Water Supply</td>
+                    </tr>
+                    <tr class="critical">
+                        <td>Potable</td>
+                        <td>5</td>
+                        <td>
+                            <select name="score_12" class="score-input critical-item">
+                                <option value="0">0</option>
+                                <option value="5">5</option>
+                            </select>
+                        </td>
+                        <td><input type="text" name="comment_12"></td>
+                    </tr>
+                    <tr class="critical">
+                        <td>Piped</td>
+                        <td>5</td>
+                        <td>
+                            <select name="score_13" class="score-input critical-item">
+                                <option value="0">0</option>
+                                <option value="5">5</option>
+                            </select>
+                        </td>
+                        <td><input type="text" name="comment_13"></td>
+                    </tr>
+                    <tr class="header-row">
+                        <td colspan="4">Storage Facilities</td>
+                    </tr>
+                    <tr class="critical">
+                        <td>Clean and adequate storage of glasses & utensils</td>
+                        <td>5</td>
+                        <td>
+                            <select name="score_14" class="score-input critical-item">
+                                <option value="0">0</option>
+                                <option value="5">5</option>
+                            </select>
+                        </td>
+                        <td><input type="text" name="comment_14"></td>
+                    </tr>
+                    <tr class="critical">
+                        <td>Free of insects and other vermins</td>
+                        <td>5</td>
+                        <td>
+                            <select name="score_15" class="score-input critical-item">
+                                <option value="0">0</option>
+                                <option value="5">5</option>
+                            </select>
+                        </td>
+                        <td><input type="text" name="comment_15"></td>
+                    </tr>
+                    <tr class="critical">
+                        <td>Being used for its intended purpose</td>
+                        <td>5</td>
+                        <td>
+                            <select name="score_16" class="score-input critical-item">
+                                <option value="0">0</option>
+                                <option value="5">5</option>
+                            </select>
+                        </td>
+                        <td><input type="text" name="comment_16"></td>
+                    </tr>
+                    <tr class="header-row">
+                        <td colspan="4">Sanitary Facilities</td>
+                    </tr>
+                    <tr class="critical">
+                        <td>Toilet facility provided</td>
+                        <td>5</td>
+                        <td>
+                            <select name="score_17" class="score-input critical-item">
+                                <option value="0">0</option>
+                                <option value="5">5</option>
+                            </select>
+                        </td>
+                        <td><input type="text" name="comment_17"></td>
+                    </tr>
+                    <tr class="critical">
+                        <td>Adequate, accessible with lavatory basin and soap</td>
+                        <td>5</td>
+                        <td>
+                            <select name="score_18" class="score-input critical-item">
+                                <option value="0">0</option>
+                                <option value="5">5</option>
+                            </select>
+                        </td>
+                        <td><input type="text" name="comment_18"></td>
+                    </tr>
+                    <tr class="critical">
+                        <td>Satisfactory</td>
+                        <td>5</td>
+                        <td>
+                            <select name="score_19" class="score-input critical-item">
+                                <option value="0">0</option>
+                                <option value="5">5</option>
+                            </select>
+                        </td>
+                        <td><input type="text" name="comment_19"></td>
+                    </tr>
+                    <tr>
+                        <td>Urinal(s) provided</td>
+                        <td>3</td>
+                        <td>
+                            <select name="score_20" class="score-input">
+                                <option value="0">0</option>
+                                <option value="3">3</option>
+                            </select>
+                        </td>
+                        <td><input type="text" name="comment_20"></td>
+                    </tr>
+                    <tr>
+                        <td>Satisfactory</td>
+                        <td>3</td>
+                        <td>
+                            <select name="score_21" class="score-input">
+                                <option value="0">0</option>
+                                <option value="3">3</option>
+                            </select>
+                        </td>
+                        <td><input type="text" name="comment_21"></td>
+                    </tr>
+                    <tr class="header-row">
+                        <td colspan="4">Solid Waste Management</td>
+                    </tr>
+                    <tr>
+                        <td>Covered, adequate, pest proof and clean receptacles</td>
+                        <td>4</td>
+                        <td>
+                            <select name="score_22" class="score-input">
+                                <option value="0">0</option>
+                                <option value="4">4</option>
+                            </select>
+                        </td>
+                        <td><input type="text" name="comment_22"></td>
+                    </tr>
+                    <tr>
+                        <td>Provision made for satisfactory disposal of waste</td>
+                        <td>3</td>
+                        <td>
+                            <select name="score_23" class="score-input">
+                                <option value="0">0</option>
+                                <option value="3">3</option>
+                            </select>
+                        </td>
+                        <td><input type="text" name="comment_23"></td>
+                    </tr>
+                    <tr>
+                        <td>Premises free of litter and unnecessary articles</td>
+                        <td>3</td>
+                        <td>
+                            <select name="score_24" class="score-input">
+                                <option value="0">0</option>
+                                <option value="3">3</option>
+                            </select>
+                        </td>
+                        <td><input type="text" name="comment_24"></td>
+                    </tr>
+                    <tr class="header-row">
+                        <td colspan="4">Pest Control</td>
+                    </tr>
+                    <tr class="critical">
+                        <td>Premises free of rodents, insects and vermins</td>
+                        <td>5</td>
+                        <td>
+                            <select name="score_25" class="score-input critical-item">
+                                <option value="0">0</option>
+                                <option value="5">5</option>
+                            </select>
+                        </td>
+                        <td><input type="text" name="comment_25"></td>
+                    </tr>
+                </tbody>
+            </table>
+            <table>
+                <tr>
+                    <td>Inspector's Signature:</td>
+                    <td><input type="text" name="inspector_signature" required></td>
+                </tr>
+                <tr>
+                    <td>Rec'd By:</td>
+                    <td><input type="text" name="received_by" required></td>
+                </tr>
+            </table>
+            <div class="buttons">
+                <button id="submit-btn" class="btn" type="submit">Submit</button>
+                <button id="print-btn" class="btn" type="button" onclick="window.print()">Print</button>
+                <button id="save-btn" class="btn" type="button" onclick="alert('Save functionality not implemented yet.')">Save</button>
+                <button id="share-btn" class="btn" type="button" onclick="alert('Share functionality not implemented yet.')">Share</button>
+                <a href="{{ url_for('dashboard') }}" id="back-btn" class="btn">Back to Dashboard</a>
+            </div>
+        </div>
+    </form>
+    <!-- Success Modal -->
+    <div id="success-modal" class="modal">
+        <div class="modal-content">
+            <p>Submission successful!</p>
+            <a href="{{ url_for('dashboard') }}" class="btn">Back to Dashboard</a>
+        </div>
+    </div>
+    <script>
+        // Real-time score calculation
+        const scoreInputs = document.querySelectorAll('.score-input');
+        const criticalScoreInput = document.getElementById('critical_score');
+        const overallScoreInput = document.getElementById('overall_score');
 
-               criticalScoreInput.value = criticalScore;
-               overallScoreInput.value = overallScore;
-           }
+        function updateScores() {
+            let overallScore = 0;
+            let criticalScore = 0;
 
-           scoreInputs.forEach(input => {
-               input.addEventListener('change', updateScores);
-           });
+            scoreInputs.forEach(input => {
+                const score = parseInt(input.value) || 0;
+                overallScore += score;
+                if (input.classList.contains('critical-item')) {
+                    criticalScore += score;
+                }
+            });
 
-           // Initial score calculation
-           updateScores();
+            criticalScoreInput.value = criticalScore;
+            overallScoreInput.value = overallScore;
+        }
 
-           // AJAX form submission
-           $('#spirit-licence-form').on('submit', function(e) {
-               e.preventDefault();
-               $.ajax({
-                   url: $(this).attr('action'),
-                   type: 'POST',
-                   data: $(this).serialize(),
-                   success: function(response) {
-                       $('#success-modal').css('display', 'flex');
-                       setTimeout(() => {
-                           window.location.href = "{{ url_for('dashboard') }}";
-                       }, 2000);
-                   },
-                   error: function(xhr) {
-                       alert('Submission failed: ' + xhr.responseJSON?.message || xhr.statusText);
-                   }
-               });
-           });
-       </script>
-   </body>
-   </html>
+        scoreInputs.forEach(input => {
+            input.addEventListener('change', updateScores);
+        });
+
+        // Initial score calculation
+        updateScores();
+
+        // AJAX form submission
+        $('#spirit-licence-form').on('submit', function(e) {
+            e.preventDefault();
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function(response) {
+                    $('#success-modal').css('display', 'flex');
+                    setTimeout(() => {
+                        window.location.href = "{{ url_for('dashboard') }}";
+                    }, 2000);
+                },
+                error: function(xhr) {
+                    alert('Submission failed: ' + xhr.responseJSON?.message || xhr.statusText);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ 'Edit Form' if is_edit else 'Create Form' }} - Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: url('{{ url_for("static", filename="heart2.jpg") }}') no-repeat center center fixed;
+            background-size: cover;
+            letter-spacing: -0.025em;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        .form-item {
+            background: linear-gradient(145deg, #ffffff, #f8fafc);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            border-radius: 16px;
+            padding: 20px;
+            margin: 12px 0;
+            cursor: move;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+        }
+
+        .form-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        .form-item.critical {
+            border-left: 5px solid #ef4444;
+            background: linear-gradient(145deg, #fef2f2, #ffffff);
+        }
+
+        .drag-handle {
+            cursor: grab;
+            color: #6b7280;
+            transition: color 0.2s;
+        }
+
+        .drag-handle:hover {
+            color: #3b82f6;
+        }
+
+        .drag-handle:active {
+            cursor: grabbing;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+            margin: 4px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+            letter-spacing: -0.01em;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 14px rgba(0, 0, 0, 0.18), 0 5px 5px rgba(0, 0, 0, 0.12);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #2563eb, #1e40af);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+        .btn-success:hover {
+            background: linear-gradient(135deg, #059669, #047857);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+        .btn-danger:hover {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6b7280, #4b5563);
+            color: white;
+        }
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #4b5563, #374151);
+        }
+
+        .sortable-ghost {
+            opacity: 0.4;
+            transform: rotate(2deg);
+        }
+
+        .bg-white {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .rounded-lg {
+            border-radius: 16px;
+        }
+
+        .shadow {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        input, textarea, select {
+            border-radius: 10px;
+            border: 1.5px solid #e2e8f0;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            outline: none;
+        }
+
+        .text-3xl {
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .tag {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .tag.critical {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+
+        .tag.weight {
+            background: linear-gradient(135deg, #6b7280, #4b5563);
+        }
+
+        .edit-form {
+            background: linear-gradient(145deg, #f1f5f9, #ffffff);
+            border-radius: 12px;
+            border: 1px solid rgba(226, 232, 240, 0.6);
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto p-6">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-3xl font-bold text-white">
+                {{ 'Edit Form: ' + form_template[1] if is_edit else 'Create New Form' }}
+            </h1>
+            <div class="space-x-4">
+                <a href="/admin/forms" class="btn btn-secondary">← Back to Forms</a>
+                <button onclick="saveForm()" class="btn btn-success">💾 Save Form</button>
+                {% if is_edit %}
+                <a href="/admin/forms/preview/{{ form_template[0] }}" class="btn btn-primary">👁️ Preview</a>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Form Settings Panel -->
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-lg p-6 shadow mb-6">
+                    <h3 class="text-lg font-bold mb-4">Form Settings</h3>
+
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Form Name</label>
+                        <input type="text" id="formName"
+                               value="{{ form_template[1] if is_edit else '' }}"
+                               class="w-full p-2 border border-gray-300 rounded-md"
+                               placeholder="Enter form name...">
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                        <textarea id="formDescription" rows="3"
+                                  class="w-full p-2 border border-gray-300 rounded-md"
+                                  placeholder="Enter form description...">{{ form_template[2] if is_edit else '' }}</textarea>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Form Type</label>
+                        <select id="formType" class="w-full p-2 border border-gray-300 rounded-md">
+                            <option value="Food Establishment" {{ 'selected' if is_edit and form_template[3] == 'Food Establishment' else '' }}>Food Establishment</option>
+                            <option value="Residential" {{ 'selected' if is_edit and form_template[3] == 'Residential' else '' }}>Residential</option>
+                            <option value="Burial" {{ 'selected' if is_edit and form_template[3] == 'Burial' else '' }}>Burial</option>
+                            <option value="Spirit Licence Premises" {{ 'selected' if is_edit and form_template[3] == 'Spirit Licence Premises' else '' }}>Spirit Licence Premises</option>
+                            <option value="Swimming Pool" {{ 'selected' if is_edit and form_template[3] == 'Swimming Pool' else '' }}>Swimming Pool</option>
+                            <option value="Small Hotel" {{ 'selected' if is_edit and form_template[3] == 'Small Hotel' else '' }}>Small Hotel</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Add Item Panel -->
+                <div class="bg-white rounded-lg p-6 shadow">
+                    <h3 class="text-lg font-bold mb-4">Add New Item</h3>
+
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                        <select id="newItemCategory" class="w-full p-2 border border-gray-300 rounded-md">
+                            {% for category in categories %}
+                            <option value="{{ category }}">{{ category }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                        <textarea id="newItemDescription" rows="3"
+                                  class="w-full p-2 border border-gray-300 rounded-md"
+                                  placeholder="Enter item description..."></textarea>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Weight</label>
+                        <input type="number" id="newItemWeight" min="1" max="10" value="1"
+                               class="w-full p-2 border border-gray-300 rounded-md">
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="flex items-center">
+                            <input type="checkbox" id="newItemCritical" class="mr-2">
+                            <span class="text-sm font-medium text-gray-700">Critical Item</span>
+                        </label>
+                    </div>
+
+                    <button onclick="addItem()" class="btn btn-primary w-full">+ Add Item</button>
+                </div>
+            </div>
+
+            <!-- Form Items Panel -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-lg p-6 shadow">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-bold">Form Items</h3>
+                        <span id="itemCount" class="text-sm text-gray-500">{{ items|length }} items</span>
+                    </div>
+
+                    <div id="formItems" class="sortable-container">
+                        {% for item in items %}
+                        <div class="form-item {{ 'critical' if item[5] else '' }}" data-order="{{ item[1] }}">
+                            <div class="flex items-start justify-between">
+                                <div class="flex items-start space-x-3 flex-1">
+                                    <div class="drag-handle mt-1">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="flex items-center space-x-2 mb-2">
+                                            <span class="tag">{{ item[2] }}</span>
+                                            <span class="tag weight">Weight: {{ item[4] }}</span>
+                                            {% if item[5] %}
+                                            <span class="tag critical">Critical</span>
+                                            {% endif %}
+                                        </div>
+                                        <p class="text-sm text-gray-700">{{ item[3] }}</p>
+                                    </div>
+                                </div>
+                                <div class="flex space-x-2 ml-4">
+                                    <button onclick="editItem(this)" class="text-blue-600 hover:text-blue-800">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                                        </svg>
+                                    </button>
+                                    <button onclick="deleteItem(this)" class="text-red-600 hover:text-red-800">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Hidden form for editing -->
+                            <div class="edit-form hidden mt-4 p-4 bg-gray-50 rounded">
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                                        <select class="edit-category w-full p-2 border border-gray-300 rounded">
+                                            {% for category in categories %}
+                                            <option value="{{ category }}" {{ 'selected' if category == item[2] else '' }}>{{ category }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Weight</label>
+                                        <input type="number" class="edit-weight w-full p-2 border border-gray-300 rounded"
+                                               min="1" max="10" value="{{ item[4] }}">
+                                    </div>
+                                    <div class="flex items-center">
+                                        <label class="flex items-center">
+                                            <input type="checkbox" class="edit-critical mr-2" {{ 'checked' if item[5] else '' }}>
+                                            <span class="text-sm font-medium text-gray-700">Critical</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                                    <textarea class="edit-description w-full p-2 border border-gray-300 rounded" rows="2">{{ item[3] }}</textarea>
+                                </div>
+                                <div class="flex space-x-2">
+                                    <button onclick="saveItemEdit(this)" class="btn btn-success text-sm">Save</button>
+                                    <button onclick="cancelItemEdit(this)" class="btn btn-secondary text-sm">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    {% if not items %}
+                    <div class="text-center py-8 text-gray-500">
+                        <p>No items added yet. Use the panel on the left to add items.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let itemCounter = {{ items|length }};
+
+        // Initialize sortable
+        document.addEventListener('DOMContentLoaded', function() {
+            const formItems = document.getElementById('formItems');
+            if (formItems) {
+                Sortable.create(formItems, {
+                    handle: '.drag-handle',
+                    animation: 150,
+                    ghostClass: 'sortable-ghost',
+                    onEnd: function() {
+                        updateItemOrders();
+                    }
+                });
+            }
+        });
+
+        function addItem() {
+            const category = document.getElementById('newItemCategory').value;
+            const description = document.getElementById('newItemDescription').value.trim();
+            const weight = document.getElementById('newItemWeight').value;
+            const critical = document.getElementById('newItemCritical').checked;
+
+            if (!description) {
+                alert('Please enter a description for the item.');
+                return;
+            }
+
+            itemCounter++;
+
+            const itemHtml = `
+                <div class="form-item ${critical ? 'critical' : ''}" data-order="${itemCounter}">
+                    <div class="flex items-start justify-between">
+                        <div class="flex items-start space-x-3 flex-1">
+                            <div class="drag-handle mt-1">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                                </svg>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center space-x-2 mb-2">
+                                    <span class="tag">${category}</span>
+                                    <span class="tag weight">Weight: ${weight}</span>
+                                    ${critical ? '<span class="tag critical">Critical</span>' : ''}
+                                </div>
+                                <p class="text-sm text-gray-700">${description}</p>
+                            </div>
+                        </div>
+                        <div class="flex space-x-2 ml-4">
+                            <button onclick="editItem(this)" class="text-blue-600 hover:text-blue-800">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                                </svg>
+                            </button>
+                            <button onclick="deleteItem(this)" class="text-red-600 hover:text-red-800">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('formItems').insertAdjacentHTML('beforeend', itemHtml);
+
+            // Clear form
+            document.getElementById('newItemDescription').value = '';
+            document.getElementById('newItemWeight').value = '1';
+            document.getElementById('newItemCritical').checked = false;
+
+            updateItemCount();
+        }
+
+        function editItem(button) {
+            const item = button.closest('.form-item');
+            const editForm = item.querySelector('.edit-form');
+            editForm.classList.remove('hidden');
+        }
+
+        function saveItemEdit(button) {
+            const item = button.closest('.form-item');
+            const editForm = item.querySelector('.edit-form');
+
+            const category = editForm.querySelector('.edit-category').value;
+            const weight = editForm.querySelector('.edit-weight').value;
+            const critical = editForm.querySelector('.edit-critical').checked;
+            const description = editForm.querySelector('.edit-description').value.trim();
+
+            if (!description) {
+                alert('Please enter a description for the item.');
+                return;
+            }
+
+            // Update display
+            const categorySpan = item.querySelector('.form-item > div > div:nth-child(2) > div > div > span:nth-child(1)');
+            const weightSpan = item.querySelector('.form-item > div > div:nth-child(2) > div > div > span:nth-child(2)');
+            const descriptionP = item.querySelector('.form-item > div > div:nth-child(2) > div > p');
+
+            categorySpan.textContent = category;
+            weightSpan.textContent = `Weight: ${weight}`;
+            descriptionP.textContent = description;
+
+            // Update critical styling
+            if (critical) {
+                item.classList.add('critical');
+                if (!item.querySelector('.form-item > div > div:nth-child(2) > div > div > span:nth-child(3)')) {
+                    weightSpan.insertAdjacentHTML('afterend', '<span class="px-2 py-1 text-xs bg-red-100 text-red-800 rounded">Critical</span>');
+                }
+            } else {
+                item.classList.remove('critical');
+                const criticalSpan = item.querySelector('.form-item > div > div:nth-child(2) > div > div > span:nth-child(3)');
+                if (criticalSpan && criticalSpan.textContent === 'Critical') {
+                    criticalSpan.remove();
+                }
+            }
+
+            editForm.classList.add('hidden');
+        }
+
+        function cancelItemEdit(button) {
+            const editForm = button.closest('.edit-form');
+            editForm.classList.add('hidden');
+        }
+
+        function deleteItem(button) {
+            if (confirm('Are you sure you want to delete this item?')) {
+                button.closest('.form-item').remove();
+                updateItemCount();
+            }
+        }
+
+        function updateItemOrders() {
+            const items = document.querySelectorAll('.form-item');
+            items.forEach((item, index) => {
+                item.setAttribute('data-order', index + 1);
+            });
+        }
+
+        function updateItemCount() {
+            const count = document.querySelectorAll('.form-item').length;
+            document.getElementById('itemCount').textContent = `${count} items`;
+        }
+
+        async function saveForm() {
+            const formName = document.getElementById('formName').value.trim();
+            const formDescription = document.getElementById('formDescription').value.trim();
+            const formType = document.getElementById('formType').value;
+
+            if (!formName) {
+                alert('Please enter a form name.');
+                return;
+            }
+
+            const items = [];
+            document.querySelectorAll('.form-item').forEach((item, index) => {
+                const categorySpan = item.querySelector('.form-item > div > div:nth-child(2) > div > div > span:nth-child(1)');
+                const weightSpan = item.querySelector('.form-item > div > div:nth-child(2) > div > div > span:nth-child(2)');
+                const descriptionP = item.querySelector('.form-item > div > div:nth-child(2) > div > p');
+                const criticalSpan = item.querySelector('.form-item > div > div:nth-child(2) > div > div > span:nth-child(3)');
+
+                items.push({
+                    order: index + 1,
+                    category: categorySpan.textContent,
+                    description: descriptionP.textContent,
+                    weight: parseInt(weightSpan.textContent.replace('Weight: ', '')),
+                    critical: criticalSpan && criticalSpan.textContent === 'Critical'
+                });
+            });
+
+            if (items.length === 0) {
+                alert('Please add at least one item to the form.');
+                return;
+            }
+
+            const data = {
+                form_id: {{ form_template[0] if is_edit else 'null' }},
+                form_name: formName,
+                form_description: formDescription,
+                form_type: formType,
+                items: items
+            };
+
+            try {
+                const response = await fetch('/admin/forms/save', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    alert('Form saved successfully!');
+                    window.location.href = '/admin/forms';
+                } else {
+                    alert('Error saving form: ' + result.error);
+                }
+            } catch (error) {
+                alert('Error saving form: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>

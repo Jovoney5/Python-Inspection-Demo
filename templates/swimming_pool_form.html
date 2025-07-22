@@ -189,7 +189,7 @@
     <div class="form-container">
         <div class="form-header">Swimming Pool Inspection Form</div>
         <div class="score-box">Score: <span id="percentageScore">0%</span></div>
-        <form id="inspectionForm" method="POST" action="{{ url_for('submit_swimming_pools') }}">
+        <form id="inspectionForm" method="POST" action="/submit_swimming_pools">
             <table>
                 <tr>
                     <td>Operator</td>
@@ -269,7 +269,7 @@
                 </tr>
                 <tr class="critical">
                     <td>C</td>
-                    <td>All surfaces of the deck and pool free from</td>
+                    <td>All surfaces of the deck and pool free from obstruction</td>
                     <td><div class="checkbox-group"><input type="radio" name="score_2C" value="5"> Yes <input type="radio" name="score_2C" value="0"> No</div></td>
                 </tr>
                 <tr>
@@ -289,7 +289,7 @@
                 </tr>
                 <tr class="critical">
                     <td>G</td>
-                    <td>At least two suction orifices equipped with anti-</td>
+                    <td>At least two suction orifices equipped with anti-entrapment devices</td>
                     <td><div class="checkbox-group"><input type="radio" name="score_2G" value="5"> Yes <input type="radio" name="score_2G" value="0"> No</div></td>
                 </tr>
                 <tr>
@@ -318,7 +318,7 @@
                 </tr>
                 <tr class="critical">
                     <td>B</td>
-                    <td>Chlorine residual > 0.5 mg/l. Level</td>
+                    <td>Chlorine residual > 0.5 mg/l</td>
                     <td><div class="checkbox-group"><input type="radio" name="score_3B" value="5"> Yes <input type="radio" name="score_3B" value="0"> No</div></td>
                 </tr>
                 <tr class="critical">
@@ -371,7 +371,7 @@
                 <tr>
                     <td>B</td>
                     <td>Two throwing aids</td>
-                    <td><div class="checkbox-group"><input type="radio" name="score_6B" value="2.5"> Yes <input.kl="checkbox-group"><input type="radio" name="score_6B" value="0"> No</div></td>
+                    <td><div class="checkbox-group"><input type="radio" name="score_6B" value="2.5"> Yes <input type="radio" name="score_6B" value="0"> No</div></td>
                 </tr>
                 <tr>
                     <td>C</td>
@@ -409,7 +409,7 @@
                 </tr>
                 <tr>
                     <td>E</td>
-                    <td>Lifeguard on duty"/bathe at your own risk" signs</td>
+                    <td>Lifeguard on duty/bathe at your own risk signs</td>
                     <td><div class="checkbox-group"><input type="radio" name="score_7E" value="1"> Yes <input type="radio" name="score_7E" value="0"> No</div></td>
                 </tr>
             </table>
@@ -475,7 +475,7 @@
                 <button id="print-btn" class="btn" type="button" onclick="window.print()">Print</button>
                 <button id="save-btn" class="btn" type="button" onclick="alert('Save functionality not implemented yet.')">Save</button>
                 <button id="share-btn" class="btn" type="button" onclick="alert('Share functionality not implemented yet.')">Share</button>
-                <a href="{{ url_for('dashboard') }}" id="back-btn" class="btn">Back to Dashboard</a>
+                <button id="back-btn" class="btn" type="button">Back to Dashboard</button>
             </div>
         </form>
     </div>
@@ -483,27 +483,29 @@
         <div class="modal-content">
             <div class="success-circle">✓</div>
             <p>Saved Successfully</p>
-            <a href="{{ url_for('dashboard') }}" class="btn">Back to Dashboard</a>
+            <button class="btn" onclick="window.location.reload()">Back to Dashboard</button>
         </div>
     </div>
     <script>
         const form = document.getElementById('inspectionForm');
         const radios = document.querySelectorAll('input[type="radio"]');
         const percentageScore = document.getElementById('percentageScore');
-        const totalItems = 41;
-        const criticalItems = document.querySelectorAll('.critical').length;
         const successModal = document.getElementById('successModal');
+
+        // FIXED: Use actual weights from your checklist instead of simplified calculation
+        const actualMaxScore = 135; // Total of all weights: 16×5 + 20×2.5 + 5×1 = 80+50+5 = 135
 
         function updateScore() {
             let totalScore = 0;
-            const maxScore = (totalItems - criticalItems) * 2.5 + criticalItems * 5;
 
             radios.forEach(radio => {
                 if (radio.checked && radio.value !== '0') {
                     totalScore += parseFloat(radio.value);
                 }
             });
-            const percentage = Math.min(((totalScore / maxScore) * 100).toFixed(1), 100);
+
+            // FIXED: Now uses the correct maximum score
+            const percentage = Math.min(((totalScore / actualMaxScore) * 100).toFixed(1), 100);
             percentageScore.textContent = `${percentage}%`;
         }
 

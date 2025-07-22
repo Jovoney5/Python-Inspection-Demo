@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Form Management - Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: url('{{ url_for("static", filename="heart2.jpg") }}') no-repeat center center fixed;
+            background-size: cover;
+            letter-spacing: -0.025em;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        .form-card {
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.95));
+            border-radius: 20px;
+            padding: 24px;
+            margin: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .form-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+            margin: 4px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+            letter-spacing: -0.01em;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 14px rgba(0, 0, 0, 0.18), 0 5px 5px rgba(0, 0, 0, 0.12);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #2563eb, #1e40af);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+        .btn-success:hover {
+            background: linear-gradient(135deg, #059669, #047857);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+        }
+        .btn-warning:hover {
+            background: linear-gradient(135deg, #d97706, #b45309);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+        .btn-danger:hover {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6b7280, #4b5563);
+            color: white;
+        }
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #4b5563, #374151);
+        }
+
+        .bg-white {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .rounded-lg {
+            border-radius: 16px;
+        }
+
+        .shadow {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .text-3xl {
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .status-active {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .status-inactive {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto p-6">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-3xl font-bold text-white">Form Management</h1>
+            <div class="space-x-4">
+                <a href="/admin" class="btn btn-secondary">← Back to Admin</a>
+                <a href="/admin/forms/create" class="btn btn-success">+ Create New Form</a>
+            </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <div class="bg-white rounded-lg p-4 shadow">
+                <h3 class="text-lg font-semibold text-gray-700">Total Forms</h3>
+                <p class="text-2xl font-bold text-blue-600">{{ forms|length }}</p>
+            </div>
+            <div class="bg-white rounded-lg p-4 shadow">
+                <h3 class="text-lg font-semibold text-gray-700">Active Forms</h3>
+                <p class="text-2xl font-bold text-green-600">{{ forms|selectattr('4', 'equalto', 1)|list|length }}</p>
+            </div>
+            <div class="bg-white rounded-lg p-4 shadow">
+                <h3 class="text-lg font-semibold text-gray-700">Total Items</h3>
+                <p class="text-2xl font-bold text-purple-600">{{ forms|sum(attribute='6') }}</p>
+            </div>
+            <div class="bg-white rounded-lg p-4 shadow">
+                <h3 class="text-lg font-semibold text-gray-700">Form Types</h3>
+                <p class="text-2xl font-bold text-orange-600">{{ forms|map(attribute='3')|unique|list|length }}</p>
+            </div>
+        </div>
+
+        <!-- Forms Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for form in forms %}
+            <div class="form-card">
+                <div class="flex justify-between items-start mb-3">
+                    <h3 class="text-xl font-bold text-gray-800">{{ form[1] }}</h3>
+                    <span class="status-badge {{ 'status-active' if form[4] else 'status-inactive' }}">
+                        {{ 'Active' if form[4] else 'Inactive' }}
+                    </span>
+                </div>
+
+                <p class="text-gray-600 mb-3">{{ form[2] or 'No description' }}</p>
+
+                <div class="mb-4">
+                    <span class="text-sm text-gray-500">Type:</span>
+                    <span class="text-sm font-medium">{{ form[3] }}</span>
+                </div>
+
+                <div class="mb-4">
+                    <span class="text-sm text-gray-500">Items:</span>
+                    <span class="text-sm font-medium">{{ form[6] }} items</span>
+                </div>
+
+                <div class="mb-4">
+                    <span class="text-sm text-gray-500">Version:</span>
+                    <span class="text-sm font-medium">{{ form[5] }}</span>
+                </div>
+
+                <div class="flex flex-wrap gap-2">
+                    <a href="/admin/forms/edit/{{ form[0] }}" class="btn btn-primary">Edit</a>
+                    <a href="/admin/forms/preview/{{ form[0] }}" class="btn btn-secondary">Preview</a>
+                    <button onclick="cloneForm({{ form[0] }})" class="btn btn-warning">Clone</button>
+                    {% if form[4] %}
+                    <button onclick="deleteForm({{ form[0] }})" class="btn btn-danger">Delete</button>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% if not forms %}
+        <div class="text-center py-12">
+            <h3 class="text-xl text-gray-600 mb-4">No forms found</h3>
+            <a href="/admin/forms/create" class="btn btn-success">Create Your First Form</a>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        async function cloneForm(formId) {
+            if (!confirm('Create a copy of this form?')) return;
+
+            try {
+                const response = await fetch(`/admin/forms/clone/${formId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    location.reload();
+                } else {
+                    alert('Error cloning form: ' + result.error);
+                }
+            } catch (error) {
+                alert('Error cloning form: ' + error.message);
+            }
+        }
+
+        async function deleteForm(formId) {
+            if (!confirm('Are you sure you want to delete this form? This action cannot be undone.')) return;
+
+            try {
+                const response = await fetch(`/admin/forms/delete/${formId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    location.reload();
+                } else {
+                    alert('Error deleting form: ' + result.error);
+                }
+            } catch (error) {
+                alert('Error deleting form: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>

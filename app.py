@@ -33,10 +33,15 @@ from database import (
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 
-# Checklist for Food Establishment Inspection Form
+# Corrected Checklist for Food Establishment Inspection Form
+# Complete 45-item structure matching the official form
+
 FOOD_CHECKLIST_ITEMS = [
+    # FOOD (1-2)
     {"id": 1, "desc": "Source, Sound Condition, No Spoilage", "wt": 5},
     {"id": 2, "desc": "Original Container, Properly Labeled", "wt": 1},
+
+    # FOOD PROTECTION (3-10)
     {"id": 3, "desc": "Potentially Hazardous Food Meets Temperature Requirements During Storage, Preparation, Display, Service, Transportation", "wt": 5},
     {"id": 4, "desc": "Facilities to Maintain Product Temperature", "wt": 4},
     {"id": 5, "desc": "Thermometers Provided and Conspicuous", "wt": 1},
@@ -45,6 +50,8 @@ FOOD_CHECKLIST_ITEMS = [
     {"id": 8, "desc": "Food Protection During Storage, Preparation, Display, Service, Transportation", "wt": 2},
     {"id": 9, "desc": "Handling of Food (Ice) Minimized", "wt": 1},
     {"id": 10, "desc": "In Use Food (Ice) Dispensing Utensils Properly Stored", "wt": 1},
+
+    # FOOD EQUIPMENT & UTENSILS (11-23)
     {"id": 11, "desc": "Food Contact Surfaces Designed, Constructed, Maintained, Installed, Located", "wt": 2},
     {"id": 12, "desc": "Non-Food Contact Surfaces Designed, Constructed, Maintained, Installed, Located", "wt": 1},
     {"id": 13, "desc": "Dishwashing Facilities Designed, Constructed, Maintained, Installed, Located, Operated", "wt": 2},
@@ -57,30 +64,55 @@ FOOD_CHECKLIST_ITEMS = [
     {"id": 20, "desc": "Wiping Cloths Clean, Use Restricted", "wt": 1},
     {"id": 21, "desc": "Food Contact Surfaces of Equipment and Utensils Clean, Free of Abrasives, Detergents", "wt": 2},
     {"id": 22, "desc": "Non-Food Contact Surfaces of Equipment and Utensils Clean", "wt": 1},
-    {"id": 23, "desc": "Storage Condition, Handled", "wt": 1},
-    {"id": 24, "desc": "Number Convenient, Accessible, Designed, Install", "wt": 4},
-    {"id": 25, "desc": "Toilet Rooms Enclosed, Self-Closing Doors, Fixtures: Good Repair, Clean, Hand Cleanser, Sanitary Towels, Hand Drying Devices Cleaned, Proper Lined Receptacles", "wt": 5},
-    {"id": 26, "desc": "Containers or Receptacles: Covered Adequate Number, Insect/Rodent Proof, Frequency, Cleaned", "wt": 2},
-    {"id": 27, "desc": "Outside Storage Area, Enclosures Properly Constructed, Clean, Controlled Incineration", "wt": 1},
-    {"id": 28, "desc": "Evidence of Insects/Rodents- Outer Openings, protected, No birds, Turtles, Other animals", "wt": 4},
+    {"id": 23, "desc": "Storage, Handling of Clean Equipment/Utensils", "wt": 1},
+
+    # TOILET & HANDWASHING FACILITIES (24-25)
+    {"id": 24, "desc": "Number, Convenient, Accessible, Designed, Installed", "wt": 4},
+    {"id": 25, "desc": "Toilet Rooms Enclosed, Self-Closing Doors, Fixtures: Good Repair, Clean, Hand Cleanser, Sanitary Towels, Hand Drying Devices Provided, Proper Waste Receptacles", "wt": 2},
+
+    # SOLID WASTE MANAGEMENT (26-27)
+    {"id": 26, "desc": "Containers or Receptacles: Covered, Adequate Number, Insect/Rodent Proof, Frequency, Clean", "wt": 2},
+    {"id": 27, "desc": "Outside Storage Area Enclosures Properly Constructed, Clean, Controlled Incineration", "wt": 1},
+
+    # INSECT, RODENT, ANIMAL CONTROL (28)
+    {"id": 28, "desc": "Evidence of Insects/Rodents - Outer Openings, Protected, No Birds, Turtles, Other Animals", "wt": 4},
+
+    # PERSONNEL (29-32)
     {"id": 29, "desc": "Personnel with Infections Restricted", "wt": 5},
-    {"id": 30, "desc": "Hands Washed and Clean Good Hygienic Practices", "wt": 5},
+    {"id": 30, "desc": "Hands Washed and Clean, Good Hygienic Practices", "wt": 5},
     {"id": 31, "desc": "Clean Clothes, Hair Restraints", "wt": 1},
     {"id": 32, "desc": "All employees with valid permits", "wt": 1},
+
+    # LIGHTING (33)
     {"id": 33, "desc": "Lighting Provided as Required, Fixtures Shielded", "wt": 1},
-    {"id": 34, "desc": "Rooms and Equipment - Venting as Required ", "wt": 1},
+
+    # VENTILATION (34)
+    {"id": 34, "desc": "Rooms and Equipment - Venting as Required", "wt": 1},
+
+    # DRESSING ROOMS (35)
     {"id": 35, "desc": "Rooms Clean, Lockers Provided, Facilities Clean", "wt": 1},
-    {"id": 36, "desc": "Water source Safe, Hot & Cold Under Pressure", "wt": 5},
+
+    # WATER (36)
+    {"id": 36, "desc": "Water Source Safe, Hot & Cold Under Pressure", "wt": 5},
+
+    # SEWAGE (37)
     {"id": 37, "desc": "Sewage and Waste Water Disposal", "wt": 4},
+
+    # PLUMBING (38-39)
     {"id": 38, "desc": "Installed, Maintained", "wt": 1},
-    {"id": 39, "desc": "cross Connection, Back Siphonage, Backflow", "wt": 5},
-    {"id": 40, "desc": "Floors Constructed, Drained, Clean, Good Repair, Covering Installation, Dustless Cleaning Method", "wt": 1},
-    {"id": 41, "desc": "Walls, Ceiling, Attached Equipment Constructed, Good Repair, Clean Surfaces, Dustless Cleaning Methods", "wt": 1},
+    {"id": 39, "desc": "Cross Connection, Back Siphonage, Backflow", "wt": 5},
+
+    # FLOORS, WALLS, & CEILINGS (40-41)
+    {"id": 40, "desc": "Floors: Constructed, Drained, Clean, Good Repair, Covering Installation, Dustless Cleaning Methods", "wt": 1},
+    {"id": 41, "desc": "Walls, Ceiling, Attached Equipment: Constructed, Good Repair, Clean Surfaces, Dustless Cleaning Methods", "wt": 1},
+
+    # OTHER OPERATIONS (42-45)
     {"id": 42, "desc": "Toxic Items Properly Stored, Labeled, Used", "wt": 5},
-    {"id": 43, "desc": "Premises Maintained free of Liter, Unnecessary Articles, Cleaning Maintenance Equipment Properly stored, Authorized Personnel", "wt": 1},
-    {"id": 44, "desc": "Complete Separation for living /Sleeping Quarters, Laundry", "wt": 1},
+    {"id": 43, "desc": "Premises Maintained Free of Litter, Unnecessary Articles, Cleaning Maintenance Equipment Properly Stored, Authorized Personnel", "wt": 1},
+    {"id": 44, "desc": "Complete Separation for Living/Sleeping Quarters, Laundry", "wt": 1},
     {"id": 45, "desc": "Clean, Soiled Linen Properly Stored", "wt": 1},
 ]
+
 
 # Checklist for Residential & Non-Residential Inspection Form
 RESIDENTIAL_CHECKLIST_ITEMS = [
@@ -399,37 +431,6 @@ def logout():
     session.clear()  # Clear all session data
     return redirect(url_for('login'))  # Redirect to login page
 
-@app.route('/new_form')
-def new_form():
-    if 'inspector' not in session:
-        return redirect(url_for('login'))
-    # Default inspection data for new form
-    inspection = {
-        'id': '',
-        'establishment_name': '',
-        'owner': '',
-        'address': '',
-        'license_no': '',
-        'inspector_name': '',
-        'inspector_code': '',
-        'inspection_date': '',
-        'inspection_time': '',
-        'type_of_establishment': '',
-        'no_of_employees': '',
-        'purpose_of_visit': '',
-        'action': '',
-        'result': '',
-        'food_inspected': 0.0,
-        'food_condemned': 0.0,
-        'critical_score': 0,
-        'overall_score': 0,
-        'comments': '',
-        'inspector_signature': '',
-        'received_by': '',
-        'scores': {},
-        'created_at': ''
-    }
-    return render_template('inspection_form.html', checklist=FOOD_CHECKLIST_ITEMS, inspections=get_inspections(), show_form=True, establishment_data=get_establishment_data(), read_only=False, inspection=inspection)
 
 
 @app.route('/new_residential_form')
@@ -1595,7 +1596,6 @@ def download_residential_pdf(form_id):
     p.setFont("Helvetica-Bold", 12)
     p.drawString(50, y, "PREMISES INFORMATION")
     y -= 25
-
     p.setFont("Helvetica", 10)
     basic_fields = [
         ("Name of Premises:", details.get('premises_name', '')),
@@ -1869,13 +1869,6 @@ def get_db_connection():
     return conn
 
 
-# ... (previous imports, checklist definitions, and other routes unchanged)
-
-def get_db_connection():
-    conn = sqlite3.connect('inspections.db', timeout=10)
-    conn.row_factory = sqlite3.Row
-    return conn
-
 
 def init_db():
     conn = get_db_connection()
@@ -1999,6 +1992,53 @@ def login_post():
     log_audit_event(username, 'login_failed', ip_address, f'Failed {login_type} login attempt')
 
     return render_template('login.html', error='Invalid credentials')
+
+
+@app.route('/parish_leaderboard')
+def parish_leaderboard():
+    if 'admin' not in session:
+        return redirect(url_for('login'))
+    return render_template('parish_leaderboard.html')
+
+
+@app.route('/api/parish_stats')
+def get_parish_stats():
+    if 'admin' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+
+    conn = sqlite3.connect('inspections.db')
+    c = conn.cursor()
+
+    # Get parish statistics
+    c.execute("""
+        SELECT 
+            parish,
+            COUNT(*) as total_inspections,
+            SUM(CASE WHEN result = 'Pass' OR result = 'Satisfactory' THEN 1 ELSE 0 END) as passes,
+            ROUND(
+                (SUM(CASE WHEN result = 'Pass' OR result = 'Satisfactory' THEN 1 ELSE 0 END) * 100.0 / COUNT(*)), 1
+            ) as pass_rate
+        FROM (
+            SELECT parish, result FROM inspections WHERE parish IS NOT NULL
+            UNION ALL
+            SELECT parish, result FROM residential_inspections WHERE parish IS NOT NULL
+        )
+        GROUP BY parish
+        ORDER BY pass_rate DESC
+    """)
+
+    parish_stats = []
+    for row in c.fetchall():
+        parish_stats.append({
+            'parish': row[0],
+            'total_inspections': row[1],
+            'passes': row[2],
+            'failures': row[1] - row[2],
+            'pass_rate': row[3]
+        })
+
+    conn.close()
+    return jsonify(parish_stats)
 
 
 @app.route('/api/admin/users', methods=['GET'])
@@ -2798,8 +2838,940 @@ def delete_user(user_id):
         conn.close()
 
 
-# ... (rest of the original routes remain unchanged)
+# ==================================================
+# STEP 1: DATABASE SCHEMA UPDATES
+# Add this to your database.py or run directly
+# ==================================================
+
+import sqlite3
+from datetime import datetime
+
+
+def init_form_management_db():
+    """Initialize form management tables"""
+    conn = sqlite3.connect('inspections.db')
+    c = conn.cursor()
+
+    # Form Templates Table - Different types of inspection forms
+    c.execute('''CREATE TABLE IF NOT EXISTS form_templates (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL UNIQUE,
+        description TEXT,
+        form_type TEXT NOT NULL,
+        active INTEGER DEFAULT 1,
+        created_date TEXT DEFAULT CURRENT_TIMESTAMP,
+        version TEXT DEFAULT '1.0',
+        created_by TEXT
+    )''')
+
+    # Form Items Table - Individual checklist items for each form
+    c.execute('''CREATE TABLE IF NOT EXISTS form_items (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        form_template_id INTEGER NOT NULL,
+        item_order INTEGER NOT NULL,
+        category TEXT NOT NULL,
+        description TEXT NOT NULL,
+        weight INTEGER NOT NULL,
+        is_critical INTEGER DEFAULT 0,
+        active INTEGER DEFAULT 1,
+        created_date TEXT DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (form_template_id) REFERENCES form_templates(id)
+    )''')
+
+    # Form Categories Table - For organizing items
+    c.execute('''CREATE TABLE IF NOT EXISTS form_categories (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        description TEXT,
+        display_order INTEGER DEFAULT 0
+    )''')
+
+    # Insert default categories
+    default_categories = [
+        ('FOOD', 'Food related items', 1),
+        ('FOOD PROTECTION', 'Food protection items', 2),
+        ('EQUIPMENT & UTENSILS', 'Equipment and utensils', 3),
+        ('FACILITIES', 'Facility requirements', 4),
+        ('PERSONNEL', 'Personnel requirements', 5),
+        ('SAFETY', 'Safety requirements', 6),
+        ('GENERAL', 'General requirements', 7)
+    ]
+
+    for category in default_categories:
+        c.execute('INSERT OR IGNORE INTO form_categories (name, description, display_order) VALUES (?, ?, ?)', category)
+
+    # Insert existing form templates
+    existing_templates = [
+        ('Food Establishment Inspection', 'Standard food safety inspection form', 'Food Establishment'),
+        ('Residential & Non-Residential Inspection', 'Residential property inspection form', 'Residential'),
+        ('Burial Site Inspection', 'Burial site approval inspection', 'Burial'),
+        ('Spirit Licence Premises Inspection', 'Spirit licence premises inspection', 'Spirit Licence Premises'),
+        ('Swimming Pool Inspection', 'Swimming pool safety inspection', 'Swimming Pool'),
+        ('Small Hotels Inspection', 'Small hotels inspection form', 'Small Hotel')
+    ]
+
+    for template in existing_templates:
+        c.execute('INSERT OR IGNORE INTO form_templates (name, description, form_type) VALUES (?, ?, ?)', template)
+
+    conn.commit()
+    conn.close()
+
+
+# ==================================================
+# STEP 2: FLASK ROUTES TO ADD TO app.py
+# Add these routes to your existing app.py
+# ==================================================
+
+# Form Management Routes
+@app.route('/admin/forms')
+def form_management():
+    """Main form management page"""
+    if 'admin' not in session:
+        return redirect(url_for('login'))
+
+    conn = sqlite3.connect('inspections.db')
+    c = conn.cursor()
+
+    # Get all form templates with item counts
+    c.execute('''
+        SELECT ft.id, ft.name, ft.description, ft.form_type, ft.active, ft.version,
+               COUNT(fi.id) as item_count
+        FROM form_templates ft
+        LEFT JOIN form_items fi ON ft.id = fi.form_template_id AND fi.active = 1
+        GROUP BY ft.id
+        ORDER BY ft.name
+    ''')
+
+    forms = c.fetchall()
+    conn.close()
+
+    return render_template('form_management.html', forms=forms)
+
+
+@app.route('/admin/forms/edit/<int:form_id>')
+def edit_form(form_id):
+    """Edit existing form template"""
+    if 'admin' not in session:
+        return redirect(url_for('login'))
+
+    conn = sqlite3.connect('inspections.db')
+    c = conn.cursor()
+
+    # Get form template
+    c.execute('SELECT * FROM form_templates WHERE id = ?', (form_id,))
+    form_template = c.fetchone()
+
+    if not form_template:
+        conn.close()
+        return redirect(url_for('form_management'))
+
+    # Get form items
+    c.execute('''
+        SELECT id, item_order, category, description, weight, is_critical
+        FROM form_items 
+        WHERE form_template_id = ? AND active = 1
+        ORDER BY item_order
+    ''', (form_id,))
+    items = c.fetchall()
+
+    # Get categories
+    c.execute('SELECT name FROM form_categories ORDER BY display_order')
+    categories = [row[0] for row in c.fetchall()]
+
+    conn.close()
+
+    return render_template('form_editor.html',
+                           form_template=form_template,
+                           items=items,
+                           categories=categories,
+                           is_edit=True)
+
+
+@app.route('/admin/forms/create')
+def create_form():
+    """Create new form template"""
+    if 'admin' not in session:
+        return redirect(url_for('login'))
+
+    conn = sqlite3.connect('inspections.db')
+    c = conn.cursor()
+
+    # Get categories
+    c.execute('SELECT name FROM form_categories ORDER BY display_order')
+    categories = [row[0] for row in c.fetchall()]
+
+    conn.close()
+
+    return render_template('form_editor.html',
+                           form_template=None,
+                           items=[],
+                           categories=categories,
+                           is_edit=False)
+
+
+@app.route('/admin/forms/save', methods=['POST'])
+def save_form():
+    """Save form template and items"""
+    if 'admin' not in session:
+        return jsonify({'success': False, 'error': 'Unauthorized'}), 401
+
+    try:
+        data = request.get_json()
+        form_id = data.get('form_id')
+        form_name = data.get('form_name')
+        form_description = data.get('form_description')
+        form_type = data.get('form_type')
+        items = data.get('items', [])
+
+        conn = sqlite3.connect('inspections.db')
+        c = conn.cursor()
+
+        if form_id:  # Update existing form
+            c.execute('''
+                UPDATE form_templates 
+                SET name = ?, description = ?, form_type = ?, version = ?
+                WHERE id = ?
+            ''', (form_name, form_description, form_type, '1.1', form_id))
+
+            # Deactivate existing items
+            c.execute('UPDATE form_items SET active = 0 WHERE form_template_id = ?', (form_id,))
+
+        else:  # Create new form
+            c.execute('''
+                INSERT INTO form_templates (name, description, form_type, created_by)
+                VALUES (?, ?, ?, ?)
+            ''', (form_name, form_description, form_type, session.get('user_id', 'admin')))
+            form_id = c.lastrowid
+
+        # Insert/update items
+        for item in items:
+            c.execute('''
+                INSERT INTO form_items 
+                (form_template_id, item_order, category, description, weight, is_critical)
+                VALUES (?, ?, ?, ?, ?, ?)
+            ''', (form_id, item['order'], item['category'], item['description'],
+                  item['weight'], 1 if item.get('critical') else 0))
+
+        conn.commit()
+        conn.close()
+
+        return jsonify({'success': True, 'form_id': form_id})
+
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/admin/forms/delete/<int:form_id>', methods=['POST'])
+def delete_form(form_id):
+    """Delete form template"""
+    if 'admin' not in session:
+        return jsonify({'success': False, 'error': 'Unauthorized'}), 401
+
+    try:
+        conn = sqlite3.connect('inspections.db')
+        c = conn.cursor()
+
+        # Soft delete - just mark as inactive
+        c.execute('UPDATE form_templates SET active = 0 WHERE id = ?', (form_id,))
+        c.execute('UPDATE form_items SET active = 0 WHERE form_template_id = ?', (form_id,))
+
+        conn.commit()
+        conn.close()
+
+        return jsonify({'success': True})
+
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/admin/forms/clone/<int:form_id>', methods=['POST'])
+def clone_form(form_id):
+    """Clone existing form template"""
+    if 'admin' not in session:
+        return jsonify({'success': False, 'error': 'Unauthorized'}), 401
+
+    try:
+        conn = sqlite3.connect('inspections.db')
+        c = conn.cursor()
+
+        # Get original form
+        c.execute('SELECT name, description, form_type FROM form_templates WHERE id = ?', (form_id,))
+        original = c.fetchone()
+
+        if not original:
+            return jsonify({'success': False, 'error': 'Form not found'}), 404
+
+        # Create clone
+        clone_name = f"{original[0]} (Copy)"
+        c.execute('''
+            INSERT INTO form_templates (name, description, form_type, created_by)
+            VALUES (?, ?, ?, ?)
+        ''', (clone_name, original[1], original[2], session.get('user_id', 'admin')))
+
+        new_form_id = c.lastrowid
+
+        # Clone items
+        c.execute('''
+            INSERT INTO form_items 
+            (form_template_id, item_order, category, description, weight, is_critical)
+            SELECT ?, item_order, category, description, weight, is_critical
+            FROM form_items WHERE form_template_id = ? AND active = 1
+        ''', (new_form_id, form_id))
+
+        conn.commit()
+        conn.close()
+
+        return jsonify({'success': True, 'form_id': new_form_id})
+
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/admin/forms/preview/<int:form_id>')
+def preview_form(form_id):
+    """Preview form template"""
+    if 'admin' not in session:
+        return redirect(url_for('login'))
+
+    conn = sqlite3.connect('inspections.db')
+    c = conn.cursor()
+
+    # Get form template
+    c.execute('SELECT * FROM form_templates WHERE id = ?', (form_id,))
+    form_template = c.fetchone()
+
+    # Get form items grouped by category
+    c.execute('''
+        SELECT category, description, weight, is_critical
+        FROM form_items 
+        WHERE form_template_id = ? AND active = 1
+        ORDER BY item_order
+    ''', (form_id,))
+
+    items = c.fetchall()
+
+    # Group items by category
+    grouped_items = {}
+    for item in items:
+        category = item[0]
+        if category not in grouped_items:
+            grouped_items[category] = []
+        grouped_items[category].append({
+            'description': item[1],
+            'weight': item[2],
+            'is_critical': item[3]
+        })
+
+    conn.close()
+
+    return render_template('form_preview.html',
+                           form_template=form_template,
+                           grouped_items=grouped_items)
+
+
+@app.route('/api/forms/active')
+def get_active_forms():
+    """Get active forms for inspector dashboard"""
+    if 'inspector' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+
+    conn = sqlite3.connect('inspections.db')
+    c = conn.cursor()
+
+    c.execute('''
+        SELECT ft.id, ft.name, ft.description, ft.form_type,
+               COUNT(fi.id) as item_count
+        FROM form_templates ft
+        LEFT JOIN form_items fi ON ft.id = fi.form_template_id AND fi.active = 1
+        WHERE ft.active = 1
+        GROUP BY ft.id
+        ORDER BY ft.name
+    ''')
+
+    forms = []
+    for row in c.fetchall():
+        forms.append({
+            'id': row[0],
+            'name': row[1],
+            'description': row[2],
+            'form_type': row[3],
+            'item_count': row[4]
+        })
+
+    conn.close()
+    return jsonify({'forms': forms})
+
+
+# Add these routes to your app.py to migrate your existing checklists
+
+@app.route('/debug/forms')
+def debug_forms():
+    """Debug route to check what's in the database"""
+    if 'admin' not in session:
+        return "Admin access required"
+
+    conn = sqlite3.connect('inspections.db')
+    c = conn.cursor()
+
+    # Check templates
+    c.execute('SELECT * FROM form_templates')
+    templates = c.fetchall()
+
+    # Check items
+    c.execute('SELECT * FROM form_items')
+    items = c.fetchall()
+
+    conn.close()
+
+    return f"<h2>Form Templates ({len(templates)}):</h2><pre>{templates}</pre><br><br><h2>Form Items ({len(items)}):</h2><pre>{items}</pre>"
+
+
+@app.route('/admin/migrate_all_checklists')
+def migrate_all_checklists():
+    """Migrate all existing checklists to the database"""
+    if 'admin' not in session:
+        return "Admin access required"
+
+    conn = sqlite3.connect('inspections.db')
+    c = conn.cursor()
+
+    results = []
+
+    # 1. Migrate Food Establishment Checklist
+    try:
+        c.execute('SELECT id FROM form_templates WHERE form_type = ?', ('Food Establishment',))
+        result = c.fetchone()
+
+        if result:
+            template_id = result[0]
+
+            # Check if items already exist
+            c.execute('SELECT COUNT(*) FROM form_items WHERE form_template_id = ?', (template_id,))
+            existing_count = c.fetchone()[0]
+
+            if existing_count == 0:
+                # Define categories for food items
+                categories = {
+                    1: "FOOD", 2: "FOOD",
+                    3: "FOOD PROTECTION", 4: "FOOD PROTECTION", 5: "FOOD PROTECTION",
+                    6: "FOOD PROTECTION", 7: "FOOD PROTECTION", 8: "FOOD PROTECTION",
+                    9: "FOOD PROTECTION", 10: "FOOD PROTECTION",
+                    11: "EQUIPMENT & UTENSILS", 12: "EQUIPMENT & UTENSILS", 13: "EQUIPMENT & UTENSILS",
+                    14: "EQUIPMENT & UTENSILS", 15: "EQUIPMENT & UTENSILS", 16: "EQUIPMENT & UTENSILS",
+                    17: "EQUIPMENT & UTENSILS", 18: "EQUIPMENT & UTENSILS", 19: "EQUIPMENT & UTENSILS",
+                    20: "EQUIPMENT & UTENSILS", 21: "EQUIPMENT & UTENSILS", 22: "EQUIPMENT & UTENSILS",
+                    23: "EQUIPMENT & UTENSILS",
+                    24: "FACILITIES", 25: "FACILITIES", 26: "FACILITIES", 27: "FACILITIES", 28: "FACILITIES",
+                    29: "PERSONNEL", 30: "PERSONNEL", 31: "PERSONNEL", 32: "PERSONNEL",
+                    33: "FACILITIES", 34: "FACILITIES", 35: "FACILITIES", 36: "FACILITIES", 37: "FACILITIES",
+                    38: "FACILITIES", 39: "FACILITIES", 40: "FACILITIES", 41: "FACILITIES",
+                    42: "SAFETY", 43: "GENERAL", 44: "GENERAL", 45: "GENERAL"
+                }
+
+                # Insert each item from FOOD_CHECKLIST_ITEMS
+                for item in FOOD_CHECKLIST_ITEMS:
+                    item_id = item['id']
+                    category = categories.get(item_id, "GENERAL")
+                    is_critical = 1 if item['wt'] >= 4 else 0
+
+                    c.execute('''
+                        INSERT INTO form_items 
+                        (form_template_id, item_order, category, description, weight, is_critical)
+                        VALUES (?, ?, ?, ?, ?, ?)
+                    ''', (template_id, item_id, category, item['desc'], item['wt'], is_critical))
+
+                results.append(f"✅ Food Establishment: Migrated {len(FOOD_CHECKLIST_ITEMS)} items")
+            else:
+                results.append(f"⚠️ Food Establishment: Already has {existing_count} items")
+        else:
+            results.append("❌ Food Establishment template not found")
+    except Exception as e:
+        results.append(f"❌ Food Establishment migration failed: {str(e)}")
+
+    # 2. Migrate Residential Checklist
+    try:
+        c.execute('SELECT id FROM form_templates WHERE form_type = ?', ('Residential',))
+        result = c.fetchone()
+
+        if result:
+            template_id = result[0]
+
+            c.execute('SELECT COUNT(*) FROM form_items WHERE form_template_id = ?', (template_id,))
+            existing_count = c.fetchone()[0]
+
+            if existing_count == 0:
+                # Define categories for residential items
+                residential_categories = {
+                    1: "BUILDING CONDITION", 2: "BUILDING CONDITION", 3: "BUILDING CONDITION",
+                    4: "BUILDING CONDITION", 5: "BUILDING CONDITION", 6: "BUILDING CONDITION",
+                    7: "BUILDING CONDITION", 8: "BUILDING CONDITION",
+                    9: "WATER SUPPLY", 10: "WATER SUPPLY",
+                    11: "DRAINAGE", 12: "DRAINAGE",
+                    13: "VECTOR CONTROL - MOSQUITOES", 14: "VECTOR CONTROL - MOSQUITOES",
+                    15: "VECTOR CONTROL - FLIES", 16: "VECTOR CONTROL - FLIES",
+                    17: "VECTOR CONTROL - RODENTS", 18: "VECTOR CONTROL - RODENTS",
+                    19: "TOILET FACILITIES", 20: "TOILET FACILITIES", 21: "TOILET FACILITIES", 22: "TOILET FACILITIES",
+                    23: "SOLID WASTE", 24: "SOLID WASTE",
+                    25: "GENERAL"
+                }
+
+                for item in RESIDENTIAL_CHECKLIST_ITEMS:
+                    item_id = item['id']
+                    category = residential_categories.get(item_id, "GENERAL")
+                    is_critical = 1 if item['wt'] >= 5 else 0
+
+                    c.execute('''
+                        INSERT INTO form_items 
+                        (form_template_id, item_order, category, description, weight, is_critical)
+                        VALUES (?, ?, ?, ?, ?, ?)
+                    ''', (template_id, item_id, category, item['desc'], item['wt'], is_critical))
+
+                results.append(f"✅ Residential: Migrated {len(RESIDENTIAL_CHECKLIST_ITEMS)} items")
+            else:
+                results.append(f"⚠️ Residential: Already has {existing_count} items")
+        else:
+            results.append("❌ Residential template not found")
+    except Exception as e:
+        results.append(f"❌ Residential migration failed: {str(e)}")
+
+    # 3. Migrate Spirit Licence Checklist
+    try:
+        c.execute('SELECT id FROM form_templates WHERE form_type = ?', ('Spirit Licence Premises',))
+        result = c.fetchone()
+
+        if result:
+            template_id = result[0]
+
+            c.execute('SELECT COUNT(*) FROM form_items WHERE form_template_id = ?', (template_id,))
+            existing_count = c.fetchone()[0]
+
+            if existing_count == 0:
+                # Define categories for spirit licence items
+                spirit_categories = {
+                    1: "BUILDING CONDITION", 2: "BUILDING CONDITION", 3: "BUILDING CONDITION",
+                    4: "BUILDING CONDITION", 5: "BUILDING CONDITION", 6: "BUILDING CONDITION",
+                    7: "BUILDING CONDITION", 8: "BUILDING CONDITION", 9: "BUILDING CONDITION",
+                    10: "LIGHTING", 11: "LIGHTING",
+                    12: "WASHING FACILITIES", 13: "WASHING FACILITIES", 14: "WASHING FACILITIES",
+                    15: "WASHING FACILITIES",
+                    16: "WATER SUPPLY", 17: "WATER SUPPLY", 18: "WATER SUPPLY",
+                    19: "STORAGE", 20: "STORAGE", 21: "STORAGE", 22: "STORAGE",
+                    23: "SANITARY FACILITIES", 24: "SANITARY FACILITIES", 25: "SANITARY FACILITIES",
+                    26: "SANITARY FACILITIES", 27: "SANITARY FACILITIES", 28: "SANITARY FACILITIES",
+                    29: "WASTE MANAGEMENT", 30: "WASTE MANAGEMENT", 31: "WASTE MANAGEMENT", 32: "WASTE MANAGEMENT",
+                    33: "PEST CONTROL", 34: "PEST CONTROL"
+                }
+
+                for item in SPIRIT_LICENCE_CHECKLIST_ITEMS:
+                    item_id = item['id']
+                    category = spirit_categories.get(item_id, "GENERAL")
+                    is_critical = 1 if item['wt'] >= 5 else 0
+
+                    c.execute('''
+                        INSERT INTO form_items 
+                        (form_template_id, item_order, category, description, weight, is_critical)
+                        VALUES (?, ?, ?, ?, ?, ?)
+                    ''', (template_id, item_id, category, item['description'], item['wt'], is_critical))
+
+                results.append(f"✅ Spirit Licence: Migrated {len(SPIRIT_LICENCE_CHECKLIST_ITEMS)} items")
+            else:
+                results.append(f"⚠️ Spirit Licence: Already has {existing_count} items")
+        else:
+            results.append("❌ Spirit Licence template not found")
+    except Exception as e:
+        results.append(f"❌ Spirit Licence migration failed: {str(e)}")
+
+    # 4. Migrate Swimming Pool Checklist
+    try:
+        c.execute('SELECT id FROM form_templates WHERE form_type = ?', ('Swimming Pool',))
+        result = c.fetchone()
+
+        if result:
+            template_id = result[0]
+
+            c.execute('SELECT COUNT(*) FROM form_items WHERE form_template_id = ?', (template_id,))
+            existing_count = c.fetchone()[0]
+
+            if existing_count == 0:
+                for i, item in enumerate(SWIMMING_POOL_CHECKLIST_ITEMS):
+                    category = item.get('category', 'GENERAL')
+                    is_critical = 1 if item['wt'] >= 5 else 0
+
+                    c.execute('''
+                        INSERT INTO form_items 
+                        (form_template_id, item_order, category, description, weight, is_critical)
+                        VALUES (?, ?, ?, ?, ?, ?)
+                    ''', (template_id, i + 1, category, item['desc'], item['wt'], is_critical))
+
+                results.append(f"✅ Swimming Pool: Migrated {len(SWIMMING_POOL_CHECKLIST_ITEMS)} items")
+            else:
+                results.append(f"⚠️ Swimming Pool: Already has {existing_count} items")
+        else:
+            results.append("❌ Swimming Pool template not found")
+    except Exception as e:
+        results.append(f"❌ Swimming Pool migration failed: {str(e)}")
+
+    # 5. Migrate Small Hotels Checklist
+    try:
+        c.execute('SELECT id FROM form_templates WHERE form_type = ?', ('Small Hotel',))
+        result = c.fetchone()
+
+        if result:
+            template_id = result[0]
+
+            c.execute('SELECT COUNT(*) FROM form_items WHERE form_template_id = ?', (template_id,))
+            existing_count = c.fetchone()[0]
+
+            if existing_count == 0:
+                for i, item in enumerate(SMALL_HOTELS_CHECKLIST_ITEMS):
+                    # Determine category based on item ID pattern
+                    item_id = item['id']
+                    if item_id.startswith('1'):
+                        category = "DOCUMENTATION"
+                    elif item_id.startswith('2'):
+                        category = "PERSONNEL"
+                    elif item_id.startswith('3'):
+                        category = "FOOD STORAGE"
+                    elif item_id.startswith('4'):
+                        category = "FOOD PREPARATION"
+                    elif item_id.startswith('5'):
+                        category = "WASTE MANAGEMENT"
+                    elif item_id.startswith('6'):
+                        category = "WASTE MANAGEMENT"
+                    elif item_id.startswith('8'):
+                        category = "SAFETY"
+                    elif item_id.startswith('9'):
+                        category = "FOOD SERVICE"
+                    elif item_id.startswith('10'):
+                        category = "FACILITIES"
+                    elif item_id.startswith('12'):
+                        category = "EQUIPMENT"
+                    elif item_id.startswith('13'):
+                        category = "OPERATIONS"
+                    elif item_id.startswith('15'):
+                        category = "UTILITIES"
+                    elif item_id.startswith('16'):
+                        category = "UTILITIES"
+                    else:
+                        category = "GENERAL"
+
+                    is_critical = 1 if item.get('critical', False) else 0
+
+                    c.execute('''
+                        INSERT INTO form_items 
+                        (form_template_id, item_order, category, description, weight, is_critical)
+                        VALUES (?, ?, ?, ?, ?, ?)
+                    ''', (template_id, i + 1, category, item['description'], 2.5, is_critical))
+
+                results.append(f"✅ Small Hotels: Migrated {len(SMALL_HOTELS_CHECKLIST_ITEMS)} items")
+            else:
+                results.append(f"⚠️ Small Hotels: Already has {existing_count} items")
+        else:
+            results.append("❌ Small Hotels template not found")
+    except Exception as e:
+        results.append(f"❌ Small Hotels migration failed: {str(e)}")
+
+    conn.commit()
+    conn.close()
+
+    # Format results as HTML
+    html_results = "<h1>Checklist Migration Results</h1><ul>"
+    for result in results:
+        html_results += f"<li>{result}</li>"
+    html_results += "</ul>"
+    html_results += "<br><a href='/admin/forms'>Go to Form Management</a> | <a href='/debug/forms'>Debug Database</a>"
+
+    return html_results
+
+
+@app.route('/admin/reset_database')
+def reset_database():
+    """Reset and reinitialize the form management database"""
+    if 'admin' not in session:
+        return "Admin access required"
+
+    conn = sqlite3.connect('inspections.db')
+    c = conn.cursor()
+
+    # Clear existing data
+    c.execute('DELETE FROM form_items')
+    c.execute('DELETE FROM form_templates')
+    c.execute('DELETE FROM form_categories')
+
+    conn.commit()
+    conn.close()
+
+    # Reinitialize
+    init_form_management_db()
+
+    return "Database reset complete! <a href='/admin/migrate_all_checklists'>Run migration now</a>"
+# ==================================================
+# STEP 3: UPDATE EXISTING CHECKLIST LOADING
+# Replace your existing checklist variables with dynamic loading
+# ==================================================
+
+def get_form_items(form_template_id):
+    """Get form items for a specific template"""
+    conn = sqlite3.connect('inspections.db')
+    c = conn.cursor()
+
+    c.execute('''
+        SELECT id, item_order, category, description, weight, is_critical
+        FROM form_items 
+        WHERE form_template_id = ? AND active = 1
+        ORDER BY item_order
+    ''', (form_template_id,))
+
+    items = []
+    for row in c.fetchall():
+        items.append({
+            'id': row[0],
+            'order': row[1],
+            'category': row[2],
+            'desc': row[3],
+            'description': row[3],  # For compatibility
+            'wt': row[4],
+            'weight': row[4],  # For compatibility
+            'critical': bool(row[5])
+        })
+
+    conn.close()
+    return items
+
+
+def get_form_template_by_type(form_type):
+    """Get form template by type"""
+    conn = sqlite3.connect('inspections.db')
+    c = conn.cursor()
+
+    c.execute('SELECT id FROM form_templates WHERE form_type = ? AND active = 1', (form_type,))
+    row = c.fetchone()
+
+    conn.close()
+    return row[0] if row else None
+
+
+@app.route('/new_form')
+def new_form():
+    if 'inspector' not in session:
+        return redirect(url_for('login'))
+
+    # Try to get dynamic checklist first, fallback to static
+    try:
+        template_id = get_form_template_by_type('Food Establishment')
+        if template_id:
+            checklist = get_form_items(template_id)
+        else:
+            checklist = FOOD_CHECKLIST_ITEMS  # Your existing static checklist
+    except:
+        checklist = FOOD_CHECKLIST_ITEMS  # Fallback if dynamic fails
+
+    # Default inspection data for new form (your existing code)
+    inspection = {
+        'id': '',
+        'establishment_name': '',
+        'owner': '',
+        'address': '',
+        'license_no': '',
+        'inspector_name': '',
+        'inspector_code': '',
+        'inspection_date': '',
+        'inspection_time': '',
+        'type_of_establishment': '',
+        'no_of_employees': '',
+        'purpose_of_visit': '',
+        'action': '',
+        'result': '',
+        'food_inspected': 0.0,
+        'food_condemned': 0.0,
+        'critical_score': 0,
+        'overall_score': 0,
+        'comments': '',
+        'inspector_signature': '',
+        'received_by': '',
+        'scores': {},
+        'created_at': ''
+    }
+
+    return render_template('inspection_form.html',
+                           checklist=checklist,
+                           inspections=get_inspections(),
+                           show_form=True,
+                           establishment_data=get_establishment_data(),
+                           read_only=False,
+                           inspection=inspection)
+
+
+@app.route('/debug/forms_check')
+def debug_forms_check():
+    """Debug route to check what's in the database"""
+    if 'admin' not in session:
+        return "Admin access required"
+
+    conn = sqlite3.connect('inspections.db')
+    c = conn.cursor()
+
+    # Check templates
+    c.execute('SELECT * FROM form_templates')
+    templates = c.fetchall()
+
+    # Check items
+    c.execute('SELECT * FROM form_items')
+    items = c.fetchall()
+
+    conn.close()
+
+    return f"<h2>Form Templates ({len(templates)}):</h2><pre>{templates}</pre><br><br><h2>Form Items ({len(items)}):</h2><pre>{items}</pre>"
+
+
+@app.route('/admin/migrate_food_checklist')
+def migrate_food_checklist():
+    if 'admin' not in session:
+        return "Admin access required"
+
+    conn = sqlite3.connect('inspections.db')
+    c = conn.cursor()
+
+    # Get Food Establishment template ID
+    c.execute('SELECT id FROM form_templates WHERE form_type = ?', ('Food Establishment',))
+    result = c.fetchone()
+
+    if not result:
+        return "Food Establishment template not found"
+
+    template_id = result[0]
+
+    # Check if items already exist
+    c.execute('SELECT COUNT(*) FROM form_items WHERE form_template_id = ?', (template_id,))
+    existing_count = c.fetchone()[0]
+
+    if existing_count > 0:
+        return f"Items already exist: {existing_count} items found"
+
+    # Insert your 45 FOOD_CHECKLIST_ITEMS
+    categories = {
+        1: "FOOD", 2: "FOOD",
+        3: "FOOD PROTECTION", 4: "FOOD PROTECTION", 5: "FOOD PROTECTION",
+        6: "FOOD PROTECTION", 7: "FOOD PROTECTION", 8: "FOOD PROTECTION",
+        9: "FOOD PROTECTION", 10: "FOOD PROTECTION",
+        11: "EQUIPMENT & UTENSILS", 12: "EQUIPMENT & UTENSILS", 13: "EQUIPMENT & UTENSILS",
+        14: "EQUIPMENT & UTENSILS", 15: "EQUIPMENT & UTENSILS", 16: "EQUIPMENT & UTENSILS",
+        17: "EQUIPMENT & UTENSILS", 18: "EQUIPMENT & UTENSILS", 19: "EQUIPMENT & UTENSILS",
+        20: "EQUIPMENT & UTENSILS", 21: "EQUIPMENT & UTENSILS", 22: "EQUIPMENT & UTENSILS",
+        23: "EQUIPMENT & UTENSILS",
+        24: "FACILITIES", 25: "FACILITIES", 26: "FACILITIES", 27: "FACILITIES", 28: "FACILITIES",
+        29: "PERSONNEL", 30: "PERSONNEL", 31: "PERSONNEL", 32: "PERSONNEL",
+        33: "FACILITIES", 34: "FACILITIES", 35: "FACILITIES", 36: "FACILITIES", 37: "FACILITIES",
+        38: "FACILITIES", 39: "FACILITIES", 40: "FACILITIES", 41: "FACILITIES",
+        42: "SAFETY", 43: "GENERAL", 44: "GENERAL", 45: "GENERAL"
+    }
+
+    # Insert each item from your FOOD_CHECKLIST_ITEMS
+    for item in FOOD_CHECKLIST_ITEMS:
+        item_id = item['id']
+        category = categories.get(item_id, "GENERAL")
+        is_critical = 1 if item['wt'] >= 4 else 0
+
+        c.execute('''
+            INSERT INTO form_items 
+            (form_template_id, item_order, category, description, weight, is_critical)
+            VALUES (?, ?, ?, ?, ?, ?)
+        ''', (template_id, item_id, category, item['desc'], item['wt'], is_critical))
+
+    conn.commit()
+    conn.close()
+
+    return f"Successfully migrated {len(FOOD_CHECKLIST_ITEMS)} items! <a href='/admin/forms'>Check Form Management</a>"
+
+
+@app.route('/admin/migrate_remaining_fixed')
+def migrate_remaining_fixed():
+    if 'admin' not in session:
+        return "Admin access required"
+
+    conn = sqlite3.connect('inspections.db')
+    c = conn.cursor()
+    results = []
+
+    # 1. Migrate Residential (Template ID 2)
+    try:
+        template_id = 2  # From your debug output
+        c.execute('SELECT COUNT(*) FROM form_items WHERE form_template_id = ?', (template_id,))
+        if c.fetchone()[0] == 0:
+            residential_categories = {
+                1: "BUILDING", 2: "BUILDING", 3: "BUILDING", 4: "BUILDING", 5: "BUILDING", 6: "BUILDING", 7: "BUILDING",
+                8: "BUILDING",
+                9: "WATER SUPPLY", 10: "WATER SUPPLY", 11: "DRAINAGE", 12: "DRAINAGE",
+                13: "VECTOR CONTROL", 14: "VECTOR CONTROL", 15: "VECTOR CONTROL", 16: "VECTOR CONTROL",
+                17: "VECTOR CONTROL", 18: "VECTOR CONTROL",
+                19: "TOILET FACILITIES", 20: "TOILET FACILITIES", 21: "TOILET FACILITIES", 22: "TOILET FACILITIES",
+                23: "SOLID WASTE", 24: "SOLID WASTE", 25: "GENERAL"
+            }
+            for item in RESIDENTIAL_CHECKLIST_ITEMS:
+                c.execute('''INSERT INTO form_items (form_template_id, item_order, category, description, weight, is_critical)
+                            VALUES (?, ?, ?, ?, ?, ?)''',
+                          (template_id, item['id'], residential_categories.get(item['id'], "GENERAL"),
+                           item['desc'], item['wt'], 1 if item['wt'] >= 5 else 0))
+            results.append(f"✅ Residential: {len(RESIDENTIAL_CHECKLIST_ITEMS)} items")
+        else:
+            results.append("⚠️ Residential: Already migrated")
+    except Exception as e:
+        results.append(f"❌ Residential failed: {str(e)}")
+
+    # 2. Migrate Spirit Licence (Template ID 4)
+    try:
+        template_id = 4  # From your debug output
+        c.execute('SELECT COUNT(*) FROM form_items WHERE form_template_id = ?', (template_id,))
+        if c.fetchone()[0] == 0:
+            for i, item in enumerate(SPIRIT_LICENCE_CHECKLIST_ITEMS):
+                c.execute('''INSERT INTO form_items (form_template_id, item_order, category, description, weight, is_critical)
+                            VALUES (?, ?, ?, ?, ?, ?)''',
+                          (template_id, i + 1, "GENERAL", item['description'], item['wt'], 1 if item['wt'] >= 5 else 0))
+            results.append(f"✅ Spirit Licence: {len(SPIRIT_LICENCE_CHECKLIST_ITEMS)} items")
+        else:
+            results.append("⚠️ Spirit Licence: Already migrated")
+    except Exception as e:
+        results.append(f"❌ Spirit Licence failed: {str(e)}")
+
+    # 3. Migrate Swimming Pool (Template ID 5)
+    try:
+        template_id = 5  # From your debug output
+        c.execute('SELECT COUNT(*) FROM form_items WHERE form_template_id = ?', (template_id,))
+        if c.fetchone()[0] == 0:
+            for i, item in enumerate(SWIMMING_POOL_CHECKLIST_ITEMS):
+                c.execute('''INSERT INTO form_items (form_template_id, item_order, category, description, weight, is_critical)
+                            VALUES (?, ?, ?, ?, ?, ?)''',
+                          (template_id, i + 1, item.get('category', 'GENERAL'), item['desc'], item['wt'],
+                           1 if item['wt'] >= 5 else 0))
+            results.append(f"✅ Swimming Pool: {len(SWIMMING_POOL_CHECKLIST_ITEMS)} items")
+        else:
+            results.append("⚠️ Swimming Pool: Already migrated")
+    except Exception as e:
+        results.append(f"❌ Swimming Pool failed: {str(e)}")
+
+    # 4. Migrate Small Hotels (Template ID 6)
+    try:
+        template_id = 6  # From your debug output
+        c.execute('SELECT COUNT(*) FROM form_items WHERE form_template_id = ?', (template_id,))
+        if c.fetchone()[0] == 0:
+            for i, item in enumerate(SMALL_HOTELS_CHECKLIST_ITEMS):
+                c.execute('''INSERT INTO form_items (form_template_id, item_order, category, description, weight, is_critical)
+                            VALUES (?, ?, ?, ?, ?, ?)''',
+                          (template_id, i + 1, "GENERAL", item['description'], 2.5,
+                           1 if item.get('critical', False) else 0))
+            results.append(f"✅ Small Hotels: {len(SMALL_HOTELS_CHECKLIST_ITEMS)} items")
+        else:
+            results.append("⚠️ Small Hotels: Already migrated")
+    except Exception as e:
+        results.append(f"❌ Small Hotels failed: {str(e)}")
+
+    conn.commit()
+    conn.close()
+
+    return "<h1>Migration Results:</h1><ul>" + "".join(
+        [f"<li>{r}</li>" for r in results]) + "</ul><br><a href='/admin/forms'>Check Form Management</a>"
 
 if __name__ == '__main__':
     init_db()
+    init_form_management_db()
     app.run(debug=True, port=5001)

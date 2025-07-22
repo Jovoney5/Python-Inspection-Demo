@@ -229,7 +229,7 @@
             z-index: 999;
             display: none;
             grid-template-columns: repeat(2, 1fr);
-            grid-template-rows: repeat(5, 1fr);
+            grid-template-rows: repeat(6, 1fr);
             gap: 10px;
             width: 320px;
         }
@@ -852,17 +852,22 @@
         </div>
 
         <div id="admin-tools-container" class="admin-tools-container">
-            <div class="sidebar-button" data-modal="active_users">Active Users</div>
-            <div class="sidebar-button" data-modal="audit_log">Audit Log</div>
-            <div class="sidebar-button" data-modal="inspector_performance">Inspector Performance</div>
-            <div class="sidebar-button" data-modal="alerts">Alerts</div>
-            <div class="sidebar-button" data-modal="inspection_map">Inspection Map</div>
-            <div class="sidebar-button" data-modal="custom_reports">Custom Reports</div>
-            <div class="sidebar-button" data-modal="user_management">User Management</div>
-            <div class="sidebar-button" data-modal="system_health">System Health</div>
-            <div class="sidebar-button" data-modal="task_assignment">Task Assignment</div>
-            <div class="sidebar-button" data-modal="security_metrics">Security Metrics</div>
-        </div>
+    <div class="sidebar-button" data-modal="active_users">Active Users</div>
+    <div class="sidebar-button" data-modal="audit_log">Audit Log</div>
+    <div class="sidebar-button" data-modal="inspector_performance">Inspector Performance</div>
+    <div class="sidebar-button" data-modal="alerts">Alerts</div>
+    <div class="sidebar-button" data-modal="inspection_map">Inspection Map</div>
+    <div class="sidebar-button" data-modal="custom_reports">Custom Reports</div>
+    <div class="sidebar-button" data-modal="user_management">User Management</div>
+    <div class="sidebar-button" data-modal="system_health">System Health</div>
+    <div class="sidebar-button" data-modal="task_assignment">Task Assignment</div>
+    <div class="sidebar-button" data-modal="security_metrics">Security Metrics</div>
+    <div class="sidebar-button" onclick="window.location.href='/admin/forms'" style="background-color: #17a2b8;">
+        📝 Manage Forms
+    </div>
+            <!-- NEW: Parish Leaderboard Button -->
+    <div class="sidebar-button" onclick="window.open('/parish_leaderboard', '_blank')" style="background-color: #009b3a;">🏆 Parish Rankings</div>
+</div>
 
         <div class="chat-container">
             <div class="chat-icon" onclick="toggleChat()">

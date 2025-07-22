@@ -415,5 +415,62 @@ def get_residential_inspection_details(inspection_id):
     conn.close()
     return None
 
+
+def update_database_schema():
+    """Update database schema to handle all form types properly"""
+    conn = sqlite3.connect('inspections.db')
+    c = conn.cursor()
+
+    # Add missing columns with error handling
+    columns_to_add = [
+        ('no_with_fhc', 'INTEGER DEFAULT 0'),
+        ('no_wo_fhc', 'INTEGER DEFAULT 0'),
+        ('status', 'TEXT'),
+        ('manager_signature', 'TEXT'),
+        ('manager_date', 'TEXT'),
+        ('parish', 'TEXT'),
+        ('physical_location', 'TEXT')
+    ]
+
+    for column_name, column_def in columns_to_add:
+        try:
+            c.execute(f"ALTER TABLE inspections ADD COLUMN {column_name} {column_def}")
+            print(f"Added column: {column_name}")
+        except sqlite3.OperationalError as e:
+            if "duplicate column name" not in str(e):
+                print(f"Error adding {column_name}: {e}")
+            # Column already exists, continue
+
+    # Add missing columns for residential_inspections
+    try:
+        c.execute("ALTER TABLE residential_inspections ADD COLUMN parish TEXT")
+    except sqlite3.OperationalError:
+        pass
+
+    # Add missing swimming pool score columns
+    for item in SWIMMING_POOL_CHECKLIST_ITEMS:
+        try:
+            c.execute(f'ALTER TABLE inspections ADD COLUMN score_{item["id"]} REAL DEFAULT 0')
+        except sqlite3.OperationalError:
+            pass
+
+    # Create indexes for better performance
+    indexes = [
+        "CREATE INDEX IF NOT EXISTS idx_inspections_form_type ON inspections(form_type)",
+        "CREATE INDEX IF NOT EXISTS idx_inspections_date ON inspections(inspection_date)",
+        "CREATE INDEX IF NOT EXISTS idx_inspections_inspector ON inspections(inspector_name)",
+        "CREATE INDEX IF NOT EXISTS idx_users_username ON users(username)",
+        "CREATE INDEX IF NOT EXISTS idx_login_history_user ON login_history(user_id)"
+    ]
+
+    for index in indexes:
+        try:
+            c.execute(index)
+        except sqlite3.OperationalError:
+            pass
+
+    conn.commit()
+    conn.close()
+
 if __name__ == "__main__":
     init_db()

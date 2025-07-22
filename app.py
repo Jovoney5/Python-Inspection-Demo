@@ -1743,42 +1743,72 @@ def view_small_hotels(inspection_id):
                           inspection=inspection_dict,
                           checklist_items=SMALL_HOTELS_CHECKLIST_ITEMS)
 
+
 @app.route('/spirit_licence/inspection/<int:id>')
 def spirit_licence_inspection_detail(id):
     if 'inspector' not in session and 'admin' not in session:
         return redirect(url_for('login'))
+
     conn = sqlite3.connect('inspections.db')
+    conn.row_factory = sqlite3.Row  # This allows column access by name
     c = conn.cursor()
-    c.execute("SELECT id, establishment_name, owner, address, license_no, inspector_name, inspection_date, inspection_time, type_of_establishment, purpose_of_visit, action, result, scores, comments, created_at, form_type, no_of_employees, critical_score, overall_score FROM inspections WHERE id = ? AND form_type = 'Spirit Licence Premises'", (id,))
+
+    c.execute("""SELECT * FROM inspections 
+                 WHERE id = ? AND form_type = 'Spirit Licence Premises'""", (id,))
     inspection = c.fetchone()
     conn.close()
+
     if inspection:
-        # Parse scores - now creating string keys for template compatibility
-        scores = [int(x) for x in inspection[12].split(',')] if inspection[12] else [0] * 25  # Changed to 25 items
+        # Parse scores safely
+        scores_str = inspection['scores'] if inspection['scores'] else ''
+        if scores_str:
+            try:
+                scores = [int(x) for x in scores_str.split(',')]
+                while len(scores) < 25:
+                    scores.append(0)
+            except ValueError:
+                scores = [0] * 25
+        else:
+            scores = [0] * 25
+
+        # Helper function to safely get values from Row object
+        def safe_get(row, key, default=''):
+            try:
+                value = row[key]
+                return value if value is not None else default
+            except (KeyError, IndexError):
+                return default
+
         inspection_data = {
-            'id': inspection[0],
-            'establishment_name': inspection[1] or '',
-            'owner': inspection[2] or '',
-            'address': inspection[3] or '',
-            'license_no': inspection[4] or '',
-            'inspector_name': inspection[5] or '',
-            'inspection_date': inspection[6] or '',
-            'inspection_time': inspection[7] or '',
-            'type_of_establishment': inspection[8] or '',
-            'purpose_of_visit': inspection[9] or '',
-            'action': inspection[10] or '',
-            'result': inspection[11] or '',
-            'scores': dict(zip([str(i) for i in range(1, 26)], scores)),  # String keys for items 1-25
-            'comments': inspection[13] or '',
-            'inspector_signature': inspection[5] or '',
-            'received_by': inspection[2] or '',
-            'overall_score': inspection[18] or 0,
-            'critical_score': inspection[17] or 0,
-            'form_type': inspection[15] or '',
-            'no_of_employees': inspection[16] or '',
-            'created_at': inspection[14] or ''
+            'id': inspection['id'],
+            'establishment_name': safe_get(inspection, 'establishment_name'),
+            'owner': safe_get(inspection, 'owner'),
+            'address': safe_get(inspection, 'address'),
+            'license_no': safe_get(inspection, 'license_no'),
+            'inspector_name': safe_get(inspection, 'inspector_name'),
+            'inspection_date': safe_get(inspection, 'inspection_date'),
+            'inspection_time': safe_get(inspection, 'inspection_time'),
+            'type_of_establishment': safe_get(inspection, 'type_of_establishment'),
+            'purpose_of_visit': safe_get(inspection, 'purpose_of_visit'),
+            'action': safe_get(inspection, 'action'),
+            'result': safe_get(inspection, 'result'),
+            'scores': {str(i): scores[i-1] for i in range(1, 26)},
+            'comments': safe_get(inspection, 'comments'),
+            'inspector_signature': safe_get(inspection, 'inspector_signature'),
+            'received_by': safe_get(inspection, 'received_by'),
+            'overall_score': safe_get(inspection, 'overall_score', 0),
+            'critical_score': safe_get(inspection, 'critical_score', 0),
+            'form_type': safe_get(inspection, 'form_type'),
+            'no_of_employees': safe_get(inspection, 'no_of_employees'),
+            'no_with_fhc': safe_get(inspection, 'no_with_fhc', 0),
+            'no_wo_fhc': safe_get(inspection, 'no_wo_fhc', 0),
+            'status': safe_get(inspection, 'status'),
+            'created_at': safe_get(inspection, 'created_at')
         }
-        return render_template('spirit_licence_inspection_detail.html', checklist=[], inspection=inspection_data)
+
+        return render_template('spirit_licence_inspection_detail.html',
+                              checklist=[], inspection=inspection_data)
+
     return "Not Found", 404
 
 
@@ -2121,6 +2151,18 @@ def get_audit_log():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+
+@app.route('/admin/update_database_schema')
+def update_schema():
+    """Run this once to update your database schema"""
+    if 'admin' not in session:
+        return "Admin access required"
+
+    try:
+        update_database_schema()
+        return "✅ Database schema updated successfully! <a href='/admin'>Back to Admin</a>"
+    except Exception as e:
+        return f"❌ Error updating schema: {str(e)}"
 
 # Add these routes to your app.py file
 

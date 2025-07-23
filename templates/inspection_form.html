@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Food Establishment Inspection Form</title>
+    <script src="{{ url_for('static', filename='js/offline-forms.js') }}" defer></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -378,7 +379,7 @@
     <div class="form-container">
         {% if show_form %}
             <h1>Food Establishment Inspection Form</h1>
-            <form id="inspectionForm" method="POST" action="{{ url_for('submit_form', form_type='inspection') }}">
+            <form id="inspectionForm" method="POST" action="{{ url_for('submit_form', form_type='inspection') }}" data-offline-form="true">
                 <div class="form-section">
                     <h2>Establishment Details</h2>
                     <table class="pair-table">

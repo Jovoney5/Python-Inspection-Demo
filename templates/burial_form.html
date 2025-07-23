@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Burial Site Inspection Report</title>
+    <script src="{{ url_for('static', filename='js/offline-forms.js') }}" defer></script>
     <style>
         body {
             font-family: "Times New Roman", Times, serif;
@@ -150,44 +151,11 @@
         }
     </style>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            if (!document.getElementById('burialForm')) {
-                console.log('Not burial_form.html, exiting script');
-                return;
-            }
-
-            const form = document.getElementById('burialForm');
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-                const formData = new FormData(this);
-                const actionUrl = '{{ url_for("submit_burial") | safe }}';
-                console.log('Submitting burial form to:', actionUrl);
-                fetch(actionUrl, {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => {
-                    console.log('Response status:', response.status);
-                    return response.json();
-                })
-                .then(data => {
-                    console.log('Response data:', data);
-                    if (data.message === 'Submit successfully') {
-                        const modal = document.querySelector('.modal');
-                        const success = document.querySelector('.success');
-                        const message = document.querySelector('.submission-complete');
-                        message.textContent = 'Successfully Complete';
-                        modal.classList.add('show');
-                        success.classList.add('show');
-                        form.reset();
-                    }
-                });
-            });
-        });
+        // Form submission is now handled by the offline system
     </script>
 </head>
 <body>
-    <form id="burialForm" method="POST" action="{{ url_for('submit_burial') }}">
+    <form id="burialForm" method="POST" action="{{ url_for('submit_burial') }}" data-offline-form="true">
         <div class="form-container">
             <h1>Burial Site Inspection Report</h1>
             <input type="hidden" name="id" value="{{ inspection.id if inspection else '' }}">

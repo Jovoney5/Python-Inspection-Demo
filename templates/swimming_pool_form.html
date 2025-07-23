@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Swimming Pool Inspection Form - Jamaica</title>
+    <script src="{{ url_for('static', filename='js/offline-forms.js') }}" defer></script>
     <style>
         body {
             font-family: 'Verdana', sans-serif;
@@ -189,7 +190,7 @@
     <div class="form-container">
         <div class="form-header">Swimming Pool Inspection Form</div>
         <div class="score-box">Score: <span id="percentageScore">0%</span></div>
-        <form id="inspectionForm" method="POST" action="/submit_swimming_pools">
+        <form id="inspectionForm" method="POST" action="/submit_swimming_pools" data-offline-form="true">
             <table>
                 <tr>
                     <td>Operator</td>
@@ -513,26 +514,7 @@
             radio.addEventListener('change', updateScore);
         });
 
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            try {
-                const response = await fetch('/submit_swimming_pools', {
-                    method: 'POST',
-                    body: new FormData(form)
-                });
-                const data = await response.json();
-                if (data.status === 'success') {
-                    successModal.style.display = 'flex';
-                } else {
-                    alert(data.message || 'Submission failed!');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Submission error!');
-            }
-        });
-
-        updateScore();
+        // Form submission is now handled by the offline system
     </script>
 </body>
 </html>

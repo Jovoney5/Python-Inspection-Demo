@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Small Hotels Inspection Form - Jamaica</title>
+    <script src="{{ url_for('static', filename='js/offline-forms.js') }}" defer></script>
     <style>
         body {
             font-family: 'Verdana', sans-serif;
@@ -39,21 +40,36 @@
         .form-top {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 25px;
+            margin-bottom: 30px;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            border: 2px solid #ffd200;
+        }
+        .form-top > div {
+            margin-bottom: 15px;
         }
         .form-top label {
             font-weight: bold;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
             display: block;
+            color: #009b3a;
+            font-size: 14px;
         }
         .form-top input {
             width: 100%;
-            padding: 8px;
-            border: 1px solid #ccc;
+            padding: 10px;
+            border: 2px solid #ccc;
             border-radius: 5px;
             font-size: 14px;
-            background: #f5f5f5;
+            background: #f9f9f9;
+            transition: border-color 0.3s;
+        }
+        .form-top input:focus {
+            border-color: #009b3a;
+            outline: none;
+            background: #fff;
         }
         .form-top .address {
             grid-column: span 2;
@@ -126,24 +142,35 @@
         }
         .score-tabs {
             margin: 20px 0;
-            padding: 10px;
+            padding: 15px;
             background: #f4f4f4;
-            border-radius: 5px;
+            border-radius: 8px;
             display: flex;
-            gap: 20px;
+            gap: 30px;
+            justify-content: center;
+            border: 2px solid #009b3a;
+        }
+        .score-tabs > div {
+            text-align: center;
         }
         .score-tabs label {
             font-weight: bold;
+            font-size: 16px;
+            color: #009b3a;
+            display: block;
+            margin-bottom: 8px;
         }
         .score-tabs input {
-            width: 100px;
-            padding: 8px;
-            border: 1px solid #ccc;
+            width: 120px;
+            padding: 10px;
+            border: 2px solid #009b3a;
             border-radius: 5px;
             background: #fff;
-            font-size: 14px;
+            font-size: 18px;
             text-align: center;
             pointer-events: none;
+            font-weight: bold;
+            color: #009b3a;
         }
         .buttons {
             margin-top: 20px;
@@ -206,7 +233,7 @@
 <body>
     <div class="form-container">
         <div class="form-header">Small Hotels Inspection Form - Jamaica</div>
-        <form id="inspection-form" method="POST" action="{{ url_for('submit_small_hotels') }}">
+        <form id="inspection-form" method="POST" action="{{ url_for('submit_small_hotels') }}" data-offline-form="true">
             <div class="form-top">
                 <div>
                     <label>Hotel Name</label>
@@ -867,11 +894,11 @@
             <div class="score-tabs">
                 <div>
                     <label>Critical Score:</label>
-                    <input type="text" id="critical_score" readonly value="0">
+                    <input type="text" id="critical_score" readonly value="0%">
                 </div>
                 <div>
                     <label>Overall Score:</label>
-                    <input type="text" id="overall_score" readonly value="0">
+                    <input type="text" id="overall_score" readonly value="0%">
                 </div>
             </div>
 
@@ -916,71 +943,61 @@
         {% endif %}
     </div>
     <script>
-        let checklistItems = {{ checklist_items | tojson | safe }};
-        if (!checklistItems) {
-            console.warn('checklistItems is undefined, using empty array');
-            checklistItems = [];
-        }
+        // Fixed scoring system for Small Hotels form
         const errorInputs = document.querySelectorAll('.error-input');
         const criticalScoreInput = document.getElementById('critical_score');
         const overallScoreInput = document.getElementById('overall_score');
 
+        // Define which items are critical (based on your form's blue highlighting)
+        const criticalItems = [
+            '2a', '2e', '3a', '3d', '3f', '3h', '3i', '4a', '4b', '4c', '4d', '4e',
+            '5a', '5c', '6a', '8a', '8b', '9a', '9b', '9c', '10a', '10b', '12b',
+            '12c', '13a', '13b', '15a', '16a', '16b'
+        ];
+
+        // Total possible items
+        const totalCriticalItems = criticalItems.length; // 29 critical items
+        const totalItems = errorInputs.length; // Total items in form
+
         function updateScores() {
-            let criticalScore = 0;
-            let overallScore = 0;
+            let criticalItemsCompleted = 0;
+            let totalItemsCompleted = 0;
+
             errorInputs.forEach(input => {
-                const itemId = input.name.replace('error_', '').toLowerCase();
-                const item = checklistItems.find(i => i && i.id && i.id.toLowerCase() === itemId);
-                if (item) {
-                    const error = parseInt(input.value) || 0;
-                    const score = error === 0 ? 2.5 : 0;
-                    overallScore += score;
-                    if (item.critical) {
-                        criticalScore += score;
+                const itemId = input.name.replace('error_', '');
+                const error = parseInt(input.value) || 0;
+
+                // Item is "completed" (gets score) if error = 0
+                if (error === 0) {
+                    totalItemsCompleted++;
+
+                    // Add to critical count if this is a critical item
+                    if (criticalItems.includes(itemId)) {
+                        criticalItemsCompleted++;
                     }
                 }
             });
-            criticalScoreInput.value = criticalScore.toFixed(1);
-            overallScoreInput.value = overallScore.toFixed(1);
+
+            // Calculate percentages
+            const criticalPercentage = Math.round((criticalItemsCompleted / totalCriticalItems) * 100);
+            const overallPercentage = Math.round((totalItemsCompleted / totalItems) * 100);
+
+            // Update display
+            criticalScoreInput.value = criticalPercentage + '%';
+            overallScoreInput.value = overallPercentage + '%';
         }
 
+        // Add event listeners for real-time scoring
         errorInputs.forEach(input => {
             input.addEventListener('input', updateScores);
+            input.addEventListener('change', updateScores);
         });
 
+        // Initial score calculation (should show 0% for both)
         updateScores();
 
-        document.getElementById('inspection-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const formData = new FormData(this);
-            fetch('/submit_small_hotels', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => {
-                if (response.status === 401) {
-                    alert('Session expired. Please log in again.');
-                    window.location.href = '/';
-                    return Promise.reject('Unauthorized');
-                }
-                if (!response.ok) {
-                    return response.text().then(text => Promise.reject(`Server error: ${text}`));
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.status === 'success') {
-                    alert('Inspection submitted successfully!');
-                    window.location.href = '/dashboard';
-                } else {
-                    alert('Error: ' + data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Submission error:', error);
-                alert('Error submitting form: ' + error);
-            });
-        });
+        // Form submission is now handled by the offline system
+        // The manual form submission code has been removed
     </script>
 </body>
 </html>

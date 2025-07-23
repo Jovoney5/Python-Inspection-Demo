@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Spirit Licence Premises Inspection Form</title>
+    <script src="{{ url_for('static', filename='js/offline-forms.js') }}" defer></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
         body {
@@ -133,7 +134,7 @@
     </style>
 </head>
 <body>
-    <form id="spirit-licence-form" method="POST" action="{{ url_for('submit_spirit_licence') }}">
+    <form id="spirit-licence-form" method="POST" action="{{ url_for('submit_spirit_licence') }}" data-offline-form="true">
         <div class="form-container">
             <h1>Spirit Licence Premises Inspection Form</h1>
             <table>
@@ -578,27 +579,10 @@
             input.addEventListener('change', updateScores);
         });
 
-        // Initial score calculation
+       // Initial score calculation
         updateScores();
 
-        // AJAX form submission
-        $('#spirit-licence-form').on('submit', function(e) {
-            e.preventDefault();
-            $.ajax({
-                url: $(this).attr('action'),
-                type: 'POST',
-                data: $(this).serialize(),
-                success: function(response) {
-                    $('#success-modal').css('display', 'flex');
-                    setTimeout(() => {
-                        window.location.href = "{{ url_for('dashboard') }}";
-                    }, 2000);
-                },
-                error: function(xhr) {
-                    alert('Submission failed: ' + xhr.responseJSON?.message || xhr.statusText);
-                }
-            });
-        });
+        // Form submission is now handled by the offline system
     </script>
 </body>
 </html>

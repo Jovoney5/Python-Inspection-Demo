@@ -77,40 +77,39 @@ FOOD_CHECKLIST_ITEMS = [
     # INSECT, RODENT, ANIMAL CONTROL (28)
     {"id": 28, "desc": "Evidence of Insects/Rodents - Outer Openings, Protected, No Birds, Turtles, Other Animals", "wt": 4},
 
-    # PERSONNEL (29-32)
+    # PERSONNEL (29-31) - REMOVED OLD ITEM 32, RENUMBERED EVERYTHING AFTER
     {"id": 29, "desc": "Personnel with Infections Restricted", "wt": 5},
     {"id": 30, "desc": "Hands Washed and Clean, Good Hygienic Practices", "wt": 5},
-    {"id": 31, "desc": "Clean Clothes, Hair Restraints", "wt": 1},
-    {"id": 32, "desc": "All employees with valid permits", "wt": 1},
+    {"id": 31, "desc": "Clean Clothes, Hair Restraints", "wt": 2},  # INCREASED FROM 1 TO 2
 
-    # LIGHTING (33)
-    {"id": 33, "desc": "Lighting Provided as Required, Fixtures Shielded", "wt": 1},
+    # LIGHTING (32) - RENUMBERED FROM 33
+    {"id": 32, "desc": "Lighting Provided as Required, Fixtures Shielded", "wt": 1},
 
-    # VENTILATION (34)
-    {"id": 34, "desc": "Rooms and Equipment - Venting as Required", "wt": 1},
+    # VENTILATION (33) - RENUMBERED FROM 34
+    {"id": 33, "desc": "Rooms and Equipment - Venting as Required", "wt": 1},
 
-    # DRESSING ROOMS (35)
-    {"id": 35, "desc": "Rooms Clean, Lockers Provided, Facilities Clean", "wt": 1},
+    # DRESSING ROOMS (34) - RENUMBERED FROM 35
+    {"id": 34, "desc": "Rooms Clean, Lockers Provided, Facilities Clean", "wt": 1},
 
-    # WATER (36)
-    {"id": 36, "desc": "Water Source Safe, Hot & Cold Under Pressure", "wt": 5},
+    # WATER (35) - RENUMBERED FROM 36
+    {"id": 35, "desc": "Water Source Safe, Hot & Cold Under Pressure", "wt": 5},
 
-    # SEWAGE (37)
-    {"id": 37, "desc": "Sewage and Waste Water Disposal", "wt": 4},
+    # SEWAGE (36) - RENUMBERED FROM 37
+    {"id": 36, "desc": "Sewage and Waste Water Disposal", "wt": 4},
 
-    # PLUMBING (38-39)
-    {"id": 38, "desc": "Installed, Maintained", "wt": 1},
-    {"id": 39, "desc": "Cross Connection, Back Siphonage, Backflow", "wt": 5},
+    # PLUMBING (37-38) - RENUMBERED FROM 38-39
+    {"id": 37, "desc": "Installed, Maintained", "wt": 1},
+    {"id": 38, "desc": "Cross Connection, Back Siphonage, Backflow", "wt": 5},
 
-    # FLOORS, WALLS, & CEILINGS (40-41)
-    {"id": 40, "desc": "Floors: Constructed, Drained, Clean, Good Repair, Covering Installation, Dustless Cleaning Methods", "wt": 1},
-    {"id": 41, "desc": "Walls, Ceiling, Attached Equipment: Constructed, Good Repair, Clean Surfaces, Dustless Cleaning Methods", "wt": 1},
+    # FLOORS, WALLS, & CEILINGS (39-40) - RENUMBERED FROM 40-41
+    {"id": 39, "desc": "Floors: Constructed, Drained, Clean, Good Repair, Covering Installation, Dustless Cleaning Methods", "wt": 1},
+    {"id": 40, "desc": "Walls, Ceiling, Attached Equipment: Constructed, Good Repair, Clean Surfaces, Dustless Cleaning Methods", "wt": 1},
 
-    # OTHER OPERATIONS (42-45)
-    {"id": 42, "desc": "Toxic Items Properly Stored, Labeled, Used", "wt": 5},
-    {"id": 43, "desc": "Premises Maintained Free of Litter, Unnecessary Articles, Cleaning Maintenance Equipment Properly Stored, Authorized Personnel", "wt": 1},
-    {"id": 44, "desc": "Complete Separation for Living/Sleeping Quarters, Laundry", "wt": 1},
-    {"id": 45, "desc": "Clean, Soiled Linen Properly Stored", "wt": 1},
+    # OTHER OPERATIONS (41-44) - RENUMBERED FROM 42-45
+    {"id": 41, "desc": "Toxic Items Properly Stored, Labeled, Used", "wt": 5},
+    {"id": 42, "desc": "Premises Maintained Free of Litter, Unnecessary Articles, Cleaning Maintenance Equipment Properly Stored, Authorized Personnel", "wt": 1},
+    {"id": 43, "desc": "Complete Separation for Living/Sleeping Quarters, Laundry", "wt": 1},
+    {"id": 44, "desc": "Clean, Soiled Linen Properly Stored", "wt": 1},
 ]
 
 
@@ -3599,15 +3598,8 @@ def new_form():
     if 'inspector' not in session:
         return redirect(url_for('login'))
 
-    # Try to get dynamic checklist first, fallback to static
-    try:
-        template_id = get_form_template_by_type('Food Establishment')
-        if template_id:
-            checklist = get_form_items(template_id)
-        else:
-            checklist = FOOD_CHECKLIST_ITEMS  # Your existing static checklist
-    except:
-        checklist = FOOD_CHECKLIST_ITEMS  # Fallback if dynamic fails
+    # Force use static checklist (bypassing database)
+    checklist = FOOD_CHECKLIST_ITEMS
 
     # Default inspection data for new form (your existing code)
     inspection = {

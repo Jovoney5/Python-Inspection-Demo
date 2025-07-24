@@ -257,7 +257,7 @@
                 </div>
             </div>
 
-            <div class="category-header">1 - Documentation (8%)</div>
+            <div class="category-header">1 - Documentation</div>
             <table>
                 <tr>
                     <th>Item</th>
@@ -271,7 +271,7 @@
                     <td><input type="text" class="input-field" name="obser_1a" value="{{ inspection.obser.get('1a', '') if inspection else '' }}"></td>
                     <td><input type="number" class="input-field error-input" name="error_1a" min="0" max="1" value="{{ inspection.error.get('1a', '0') if inspection else '0' }}"></td>
                 </tr>
-                <tr class="critical">
+                <tr>
                     <td>B</td>
                     <td>Food Handlers have valid food handlers permits</td>
                     <td><input type="text" class="input-field" name="obser_1b" value="{{ inspection.obser.get('1b', '') if inspection else '' }}"></td>
@@ -285,7 +285,7 @@
                 </tr>
                 <tr>
                     <td>D</td>
-                    <td>Establishments have a written policy for the proper handling of solid waste</td>
+                    <td>Establishments have a written policy for the proper disposal of waste</td>
                     <td><input type="text" class="input-field" name="obser_1d" value="{{ inspection.obser.get('1d', '') if inspection else '' }}"></td>
                     <td><input type="number" class="input-field error-input" name="error_1d" min="0" max="1" value="{{ inspection.error.get('1d', '0') if inspection else '0' }}"></td>
                 </tr>
@@ -297,7 +297,7 @@
                 </tr>
                 <tr>
                     <td>F</td>
-                    <td>Material safety data sheet available for chemicals being used</td>
+                    <td>Material safety data sheet available for record of hazardous chemicals used</td>
                     <td><input type="text" class="input-field" name="obser_1f" value="{{ inspection.obser.get('1f', '') if inspection else '' }}"></td>
                     <td><input type="number" class="input-field error-input" name="error_1f" min="0" max="1" value="{{ inspection.error.get('1f', '0') if inspection else '0' }}"></td>
                 </tr>
@@ -315,7 +315,7 @@
                 </tr>
             </table>
 
-            <div class="category-header">2 - Food Handlers (5%)</div>
+            <div class="category-header">2 - Food Safety Inspection</div>
             <table>
                 <tr>
                     <th>Item</th>
@@ -325,7 +325,7 @@
                 </tr>
                 <tr class="critical">
                     <td>A</td>
-                    <td>Clean appropriate protective garments worn</td>
+                    <td>Clean appropriate protective garments</td>
                     <td><input type="text" class="input-field" name="obser_2a" value="{{ inspection.obser.get('2a', '') if inspection else '' }}"></td>
                     <td><input type="number" class="input-field error-input" name="error_2a" min="0" max="1" value="{{ inspection.error.get('2a', '0') if inspection else '0' }}"></td>
                 </tr>
@@ -355,7 +355,7 @@
                 </tr>
             </table>
 
-            <div class="category-header">3 - Food Storage (13%)</div>
+            <div class="category-header">3 - Food Storage</div>
             <table>
                 <tr>
                     <th>Item</th>
@@ -419,7 +419,7 @@
                 </tr>
             </table>
 
-            <div class="category-header">4 - Food Holding and Preparation Practices (8%)</div>
+            <div class="category-header">4 - Food Holding and Preparation Practices</div>
             <table>
                 <tr>
                     <th>Item</th>
@@ -471,223 +471,7 @@
                 </tr>
             </table>
 
-            <div class="category-header">5 - Post-Preparation (10.5%)</div>
-            <table>
-                <tr>
-                    <th>Item</th>
-                    <th>Details</th>
-                    <th>Obser</th>
-                    <th>Error</th>
-                </tr>
-                <tr class="critical">
-                    <td>A</td>
-                    <td>Food protected during transportation</td>
-                    <td><input type="text" class="input-field" name="obser_5a" value="{{ inspection.obser.get('5a', '') if inspection else '' }}"></td>
-                    <td><input type="number" class="input-field error-input" name="error_5a" min="0" max="1" value="{{ inspection.error.get('5a', '0') if inspection else '0' }}"></td>
-                </tr>
-                <tr class="critical">
-                    <td>B</td>
-                    <td>Dishes identified and labelled</td>
-                    <td><input type="text" class="input-field" name="obser_5b" value="{{ inspection.obser.get('5b', '') if inspection else '' }}"></td>
-                    <td><input type="number" class="input-field error-input" name="error_5b" min="0" max="1" value="{{ inspection.error.get('5b', '0') if inspection else '0' }}"></td>
-                </tr>
-                <tr class="critical">
-                    <td>C</td>
-                    <td>Food covered or protected from contamination</td>
-                    <td><input type="text" class="input-field" name="obser_5c" value="{{ inspection.obser.get('5c', '') if inspection else '' }}"></td>
-                    <td><input type="number" class="input-field error-input" name="error_5c" min="0" max="1" value="{{ inspection.error.get('5c', '0') if inspection else '0' }}"></td>
-                </tr>
-                <tr>
-                    <td>D</td>
-                    <td>Sufficient, appropriate utensils on service line</td>
-                    <td><input type="text" class="input-field" name="obser_5d" value="{{ inspection.obser.get('5d', '') if inspection else '' }}"></td>
-                    <td><input type="number" class="input-field error-input" name="error_5d" min="0" max="1" value="{{ inspection.error.get('5d', '0') if inspection else '0' }}"></td>
-                </tr>
-                <tr>
-                    <td>E</td>
-                    <td>Hot holding temperatures > 63°C</td>
-                    <td><input type="text" class="input-field" name="obser_5e" value="{{ inspection.obser.get('5e', '') if inspection else '' }}"></td>
-                    <td><input type="number" class="input-field error-input" name="error_5e" min="0" max="1" value="{{ inspection.error.get('5e', '0') if inspection else '0' }}"></td>
-                </tr>
-                <tr>
-                    <td>F</td>
-                    <td>Cold holding temperatures ≤ 5°C</td>
-                    <td><input type="text" class="input-field" name="obser_5f" value="{{ inspection.obser.get('5f', '') if inspection else '' }}"></td>
-                    <td><input type="number" class="input-field error-input" name="error_5f" min="0" max="1" value="{{ inspection.error.get('5f', '0') if inspection else '0' }}"></td>
-                </tr>
-            </table>
-
-            <div class="category-header">6 - Hand Washing Facilities (3%)</div>
-            <table>
-                <tr>
-                    <th>Item</th>
-                    <th>Details</th>
-                    <th>Obser</th>
-                    <th>Error</th>
-                </tr>
-                <tr class="critical">
-                    <td>A</td>
-                    <td>Hand washing facility installed and maintained for every 40 square meters of floor space or in each principal area</td>
-                    <td><input type="text" class="input-field" name="obser_6a" value="{{ inspection.obser.get('6a', '') if inspection else '' }}"></td>
-                    <td><input type="number" class="input-field error-input" name="error_6a" min="0" max="1" value="{{ inspection.error.get('6a', '0') if inspection else '0' }}"></td>
-                </tr>
-                <tr class="critical">
-                    <td>B</td>
-                    <td>Equipped with hot and cold water, soap a dispenser and hand drying facility</td>
-                    <td><input type="text" class="input-field" name="obser_6b" value="{{ inspection.obser.get('6b', '') if inspection else '' }}"></td>
-                    <td><input type="number" class="input-field error-input" name="error_6b" min="0" max="1" value="{{ inspection.error.get('6b', '0') if inspection else '0' }}"></td>
-                </tr>
-            </table>
-
-            <div class="category-header">7 - Building (6.5%)</div>
-            <table>
-                <tr>
-                    <th>Item</th>
-                    <th>Details</th>
-                    <th>Obser</th>
-                    <th>Error</th>
-                </tr>
-                <tr>
-                    <td>A</td>
-                    <td>Provides adequate space</td>
-                    <td><input type="text" class="input-field" name="obser_7a" value="{{ inspection.obser.get('7a', '') if inspection else '' }}"></td>
-                    <td><input type="number" class="input-field error-input" name="error_7a" min="0" max="1" value="{{ inspection.error.get('7a', '0') if inspection else '0' }}"></td>
-                </tr>
-                <tr>
-                    <td>B</td>
-                    <td>Food areas kept clean, free from vermin and unpleasant odours</td>
-                    <td><input type="text" class="input-field" name="obser_7b" value="{{ inspection.obser.get('7b', '') if inspection else '' }}"></td>
-                    <td><input type="number" class="input-field error-input" name="error_7b" min="0" max="1" value="{{ inspection.error.get('7b', '0') if inspection else '0' }}"></td>
-                </tr>
-                <tr>
-                    <td>C</td>
-                    <td>Floor, walls and ceiling clean, in good repair</td>
-                    <td><input type="text" class="input-field" name="obser_7c" value="{{ inspection.obser.get('7c', '') if inspection else '' }}"></td>
-                    <td><input type="number" class="input-field error-input" name="error_7c" min="0" max="1" value="{{ inspection.error.get('7c', '0') if inspection else '0' }}"></td>
-                </tr>
-                <tr>
-                    <td>D</td>
-                    <td>Mechanical ventilation operable where required</td>
-                    <td><input type="text" class="input-field" name="obser_7d" value="{{ inspection.obser.get('7d', '') if inspection else '' }}"></td>
-                    <td><input type="number" class="input-field error-input" name="error_7d" min="0" max="1" value="{{ inspection.error.get('7d', '0') if inspection else '0' }}"></td>
-                </tr>
-                <tr>
-                    <td>E</td>
-                    <td>Lighting adequate for food preparation and cleaning</td>
-                    <td><input type="text" class="input-field" name="obser_7e" value="{{ inspection.obser.get('7e', '') if inspection else '' }}"></td>
-                    <td><input type="number" class="input-field error-input" name="error_7e" min="0" max="1" value="{{ inspection.error.get('7e', '0') if inspection else '0' }}"></td>
-                </tr>
-                <tr>
-                    <td>F</td>
-                    <td>General housekeeping satisfactory</td>
-                    <td><input type="text" class="input-field" name="obser_7f" value="{{ inspection.obser.get('7f', '') if inspection else '' }}"></td>
-                    <td><input type="number" class="input-field error-input" name="error_7f" min="0" max="1" value="{{ inspection.error.get('7f', '0') if inspection else '0' }}"></td>
-                </tr>
-                <tr>
-                    <td>G</td>
-                    <td>Animals, insect and pest excluded</td>
-                    <td><input type="text" class="input-field" name="obser_7g" value="{{ inspection.obser.get('7g', '') if inspection else '' }}"></td>
-                    <td><input type="number" class="input-field error-input" name="error_7g" min="0" max="1" value="{{ inspection.error.get('7g', '0') if inspection else '0' }}"></td>
-                </tr>
-            </table>
-
-            <div class="category-header">8 - Food Contact Surfaces (3%)</div>
-            <table>
-                <tr>
-                    <th>Item</th>
-                    <th>Details</th>
-                    <th>Obser</th>
-                    <th>Error</th>
-                </tr>
-                <tr>
-                    <td>A</td>
-                    <td>Made from material which is non-absorbent and non-toxic</td>
-                    <td><input type="text" class="input-field" name="obser_8a" value="{{ inspection.obser.get('8a', '') if inspection else '' }}"></td>
-                    <td><input type="number" class="input-field error-input" name="error_8a" min="0" max="1" value="{{ inspection.error.get('8a', '0') if inspection else '0' }}"></td>
-                </tr>
-                <tr class="critical">
-                    <td>B</td>
-                    <td>Smooth, cleanable, corrosion resistant</td>
-                    <td><input type="text" class="input-field" name="obser_8b" value="{{ inspection.obser.get('8b', '') if inspection else '' }}"></td>
-                    <td><input type="number" class="input-field error-input" name="error_8b" min="0" max="1" value="{{ inspection.error.get('8b', '0') if inspection else '0' }}"></td>
-                </tr>
-                <tr class="critical">
-                    <td>C</td>
-                    <td>Proper storage and use of clean utensils</td>
-                    <td><input type="text" class="input-field" name="obser_8c" value="{{ inspection.obser.get('8c', '') if inspection else '' }}"></td>
-                    <td><input type="number" class="input-field error-input" name="error_8c" min="0" max="1" value="{{ inspection.error.get('8c', '0') if inspection else '0' }}"></td>
-                </tr>
-            </table>
-
-            <div class="category-header">9 - Food Flow (5.5%)</div>
-            <table>
-                <tr>
-                    <th>Item</th>
-                    <th>Details</th>
-                    <th>Obser</th>
-                    <th>Error</th>
-                </tr>
-                <tr class="critical">
-                    <td>A</td>
-                    <td>Employee traffic pattern avoids food cross-contamination</td>
-                    <td><input type="text" class="input-field" name="obser_9a" value="{{ inspection.obser.get('9a', '') if inspection else '' }}"></td>
-                    <td><input type="number" class="input-field error-input" name="error_9a" min="0" max="1" value="{{ inspection.error.get('9a', '0') if inspection else '0' }}"></td>
-                </tr>
-                <tr class="critical">
-                    <td>B</td>
-                    <td>Product flow not at risk for cross-contamination</td>
-                    <td><input type="text" class="input-field" name="obser_9b" value="{{ inspection.obser.get('9b', '') if inspection else '' }}"></td>
-                    <td><input type="number" class="input-field error-input" name="error_9b" min="0" max="1" value="{{ inspection.error.get('9b', '0') if inspection else '0' }}"></td>
-                </tr>
-                <tr>
-                    <td>C</td>
-                    <td>Living quarters, toilets, washrooms, locker separated from areas where food is handled</td>
-                    <td><input type="text" class="input-field" name="obser_9c" value="{{ inspection.obser.get('9c', '') if inspection else '' }}"></td>
-                    <td><input type="number" class="input-field error-input" name="error_9c" min="0" max="1" value="{{ inspection.error.get('9c', '0') if inspection else '0' }}"></td>
-                </tr>
-            </table>
-
-            <div class="category-header">10 - Equipment And Utensil Sanitization (9.5%)</div>
-            <table>
-                <tr>
-                    <th>Item</th>
-                    <th>Details</th>
-                    <th>Obser</th>
-                    <th>Error</th>
-                </tr>
-                <tr>
-                    <td>A</td>
-                    <td>Mechanical dishwashing: Wash-rinse water clean</td>
-                    <td><input type="text" class="input-field" name="obser_10a" value="{{ inspection.obser.get('10a', '') if inspection else '' }}"></td>
-                    <td><input type="number" class="input-field error-input" name="error_10a" min="0" max="1" value="{{ inspection.error.get('10a', '0') if inspection else '0' }}"></td>
-                </tr>
-                <tr>
-                    <td>B</td>
-                    <td>Proper water temperature</td>
-                    <td><input type="text" class="input-field" name="obser_10b" value="{{ inspection.obser.get('10b', '') if inspection else '' }}"></td>
-                    <td><input type="number" class="input-field error-input" name="error_10b" min="0" max="1" value="{{ inspection.error.get('10b', '0') if inspection else '0' }}"></td>
-                </tr>
-                <tr>
-                    <td>C</td>
-                    <td>Proper timing of cycles</td>
-                    <td><input type="text" class="input-field" name="obser_10c" value="{{ inspection.obser.get('10c', '') if inspection else '' }}"></td>
-                    <td><input type="number" class="input-field error-input" name="error_10c" min="0" max="1" value="{{ inspection.error.get('10c', '0') if inspection else '0' }}"></td>
-                </tr>
-                <tr>
-                    <td>D</td>
-                    <td>Sanitizer for low temperature</td>
-                    <td><input type="text" class="input-field" name="obser_10d" value="{{ inspection.obser.get('10d', '') if inspection else '' }}"></td>
-                    <td><input type="number" class="input-field error-input" name="error_10d" min="0" max="1" value="{{ inspection.error.get('10d', '0') if inspection else '0' }}"></td>
-                </tr>
-                <tr>
-                    <td>E</td>
-                    <td>Proper handling of hazardous materials</td>
-                    <td><input type="text" class="input-field" name="obser_10e" value="{{ inspection.obser.get('10e', '') if inspection else '' }}"></td>
-                    <td><input type="number" class="input-field error-input" name="error_10e" min="0" max="1" value="{{ inspection.error.get('10e', '0') if inspection else '0' }}"></td>
-                </tr>
-            </table>
-
-            <div class="category-header">11 - Waste Management: Waste Containers (3%)</div>
+            <div class="category-header">5 - Waste Management: Waste Contain</div>
             <table>
                 <tr>
                     <th>Item</th>
@@ -698,24 +482,24 @@
                 <tr class="critical">
                     <td>A</td>
                     <td>Appropriate design, convenient placement</td>
-                    <td><input type="text" class="input-field" name="obser_11a" value="{{ inspection.obser.get('11a', '') if inspection else '' }}"></td>
-                    <td><input type="number" class="input-field error-input" name="error_11a" min="0" max="1" value="{{ inspection.error.get('11a', '0') if inspection else '0' }}"></td>
+                    <td><input type="text" class="input-field" name="obser_5a" value="{{ inspection.obser.get('5a', '') if inspection else '' }}"></td>
+                    <td><input type="number" class="input-field error-input" name="error_5a" min="0" max="1" value="{{ inspection.error.get('5a', '0') if inspection else '0' }}"></td>
                 </tr>
                 <tr>
                     <td>B</td>
                     <td>Kept covered when not in continuous use</td>
-                    <td><input type="text" class="input-field" name="obser_11b" value="{{ inspection.obser.get('11b', '') if inspection else '' }}"></td>
-                    <td><input type="number" class="input-field error-input" name="error_11b" min="0" max="1" value="{{ inspection.error.get('11b', '0') if inspection else '0' }}"></td>
+                    <td><input type="text" class="input-field" name="obser_5b" value="{{ inspection.obser.get('5b', '') if inspection else '' }}"></td>
+                    <td><input type="number" class="input-field error-input" name="error_5b" min="0" max="1" value="{{ inspection.error.get('5b', '0') if inspection else '0' }}"></td>
                 </tr>
                 <tr class="critical">
                     <td>C</td>
                     <td>Emptied as often as necessary</td>
-                    <td><input type="text" class="input-field" name="obser_11c" value="{{ inspection.obser.get('11c', '') if inspection else '' }}"></td>
-                    <td><input type="number" class="input-field error-input" name="error_11c" min="0" max="1" value="{{ inspection.error.get('11c', '0') if inspection else '0' }}"></td>
+                    <td><input type="text" class="input-field" name="obser_5c" value="{{ inspection.obser.get('5c', '') if inspection else '' }}"></td>
+                    <td><input type="number" class="input-field error-input" name="error_5c" min="0" max="1" value="{{ inspection.error.get('5c', '0') if inspection else '0' }}"></td>
                 </tr>
             </table>
 
-            <div class="category-header">12 - Solid Waste Storage Area (4%)</div>
+            <div class="category-header">6 - Solid Waste Storage</div>
             <table>
                 <tr>
                     <th>Item</th>
@@ -726,134 +510,30 @@
                 <tr class="critical">
                     <td>A</td>
                     <td>Insect and vermin-proof containers provided where required</td>
-                    <td><input type="text" class="input-field" name="obser_12a" value="{{ inspection.obser.get('12a', '') if inspection else '' }}"></td>
-                    <td><input type="number" class="input-field error-input" name="error_12a" min="0" max="1" value="{{ inspection.error.get('12a', '0') if inspection else '0' }}"></td>
+                    <td><input type="text" class="input-field" name="obser_6a" value="{{ inspection.obser.get('6a', '') if inspection else '' }}"></td>
+                    <td><input type="number" class="input-field error-input" name="error_6a" min="0" max="1" value="{{ inspection.error.get('6a', '0') if inspection else '0' }}"></td>
                 </tr>
                 <tr>
                     <td>B</td>
                     <td>The area around each waste container kept clean</td>
-                    <td><input type="text" class="input-field" name="obser_12b" value="{{ inspection.obser.get('12b', '') if inspection else '' }}"></td>
-                    <td><input type="number" class="input-field error-input" name="error_12b" min="0" max="1" value="{{ inspection.error.get('12b', '0') if inspection else '0' }}"></td>
+                    <td><input type="text" class="input-field" name="obser_6b" value="{{ inspection.obser.get('6b', '') if inspection else '' }}"></td>
+                    <td><input type="number" class="input-field error-input" name="error_6b" min="0" max="1" value="{{ inspection.error.get('6b', '0') if inspection else '0' }}"></td>
                 </tr>
                 <tr>
                     <td>C</td>
                     <td>Effluent from waste bins disposed of in a sanitary manner</td>
-                    <td><input type="text" class="input-field" name="obser_12c" value="{{ inspection.obser.get('12c', '') if inspection else '' }}"></td>
-                    <td><input type="number" class="input-field error-input" name="error_12c" min="0" max="1" value="{{ inspection.error.get('12c', '0') if inspection else '0' }}"></td>
+                    <td><input type="text" class="input-field" name="obser_6c" value="{{ inspection.obser.get('6c', '') if inspection else '' }}"></td>
+                    <td><input type="number" class="input-field error-input" name="error_6c" min="0" max="1" value="{{ inspection.error.get('6c', '0') if inspection else '0' }}"></td>
                 </tr>
                 <tr>
                     <td>D</td>
                     <td>Frequency of garbage removal adequate</td>
-                    <td><input type="text" class="input-field" name="obser_12d" value="{{ inspection.obser.get('12d', '') if inspection else '' }}"></td>
-                    <td><input type="number" class="input-field error-input" name="error_12d" min="0" max="1" value="{{ inspection.error.get('12d', '0') if inspection else '0' }}"></td>
+                    <td><input type="text" class="input-field" name="obser_6d" value="{{ inspection.obser.get('6d', '') if inspection else '' }}"></td>
+                    <td><input type="number" class="input-field error-input" name="error_6d" min="0" max="1" value="{{ inspection.error.get('6d', '0') if inspection else '0' }}"></td>
                 </tr>
             </table>
 
-            <div class="category-header">13 - Sanitary Facilities (4%)</div>
-            <table>
-                <tr>
-                    <th>Item</th>
-                    <th>Details</th>
-                    <th>Obser</th>
-                    <th>Error</th>
-                </tr>
-                <tr class="critical">
-                    <td>A</td>
-                    <td>Approved Sewage Disposal System</td>
-                    <td><input type="text" class="input-field" name="obser_13a" value="{{ inspection.obser.get('13a', '') if inspection else '' }}"></td>
-                    <td><input type="number" class="input-field error-input" name="error_13a" min="0" max="1" value="{{ inspection.error.get('13a', '0') if inspection else '0' }}"></td>
-                </tr>
-                <tr>
-                    <td>B</td>
-                    <td>Sanitary maintenance of facilities and protections against the entrance of vermin, rodents, dust, and fumes</td>
-                    <td><input type="text" class="input-field" name="obser_13b" value="{{ inspection.obser.get('13b', '') if inspection else '' }}"></td>
-                    <td><input type="number" class="input-field error-input" name="error_13b" min="0" max="1" value="{{ inspection.error.get('13b', '0') if inspection else '0' }}"></td>
-                </tr>
-            </table>
-
-            <div class="category-header">14 - Pest Control (2%)</div>
-            <table>
-                <tr>
-                    <th>Item</th>
-                    <th>Details</th>
-                    <th>Obser</th>
-                    <th>Error</th>
-                </tr>
-                <tr>
-                    <td>A</td>
-                    <td>Adequate provision against the entrance of insects, vermin, rodents, dust and fumes</td>
-                    <td><input type="text" class="input-field" name="obser_14a" value="{{ inspection.obser.get('14a', '') if inspection else '' }}"></td>
-                    <td><input type="number" class="input-field error-input" name="error_14a" min="0" max="1" value="{{ inspection.error.get('14a', '0') if inspection else '0' }}"></td>
-                </tr>
-                <tr>
-                    <td>B</td>
-                    <td>Suitable pest control programme</td>
-                    <td><input type="text" class="input-field" name="obser_14b" value="{{ inspection.obser.get('14b', '') if inspection else '' }}"></td>
-                    <td><input type="number" class="input-field error-input" name="error_14b" min="0" max="1" value="{{ inspection.error.get('14b', '0') if inspection else '0' }}"></td>
-                </tr>
-            </table>
-
-            <div class="category-header">15 - Sanitary Engineering: Water Supply (3%)</div>
-            <table>
-                <tr>
-                    <th>Item</th>
-                    <th>Details</th>
-                    <th>Obser</th>
-                    <th>Error</th>
-                </tr>
-                <tr class="critical">
-                    <td>A</td>
-                    <td>Approved source(s), sufficient pressure and capacity</td>
-                    <td><input type="text" class="input-field" name="obser_15a" value="{{ inspection.obser.get('15a', '') if inspection else '' }}"></td>
-                    <td><input type="number" class="input-field error-input" name="error_15a" min="0" max="1" value="{{ inspection.error.get('15a', '0') if inspection else '0' }}"></td>
-                </tr>
-                <tr class="critical">
-                    <td>B</td>
-                    <td>Water quality satisfactory</td>
-                    <td><input type="text" class="input-field" name="obser_15b" value="{{ inspection.obser.get('15b', '') if inspection else '' }}"></td>
-                    <td><input type="number" class="input-field error-input" name="error_15b" min="0" max="1" value="{{ inspection.error.get('15b', '0') if inspection else '0' }}"></td>
-                </tr>
-            </table>
-
-            <div class="category-header">16 - Sanitary Engineering: Ice (1.5%)</div>
-            <table>
-                <tr>
-                    <th>Item</th>
-                    <th>Details</th>
-                    <th>Obser</th>
-                    <th>Error</th>
-                </tr>
-                <tr>
-                    <td>A</td>
-                    <td>Satisfactory Ice storage conditions</td>
-                    <td><input type="text" class="input-field" name="obser_16a" value="{{ inspection.obser.get('16a', '') if inspection else '' }}"></td>
-                    <td><input type="number" class="input-field error-input" name="error_16a" min="0" max="1" value="{{ inspection.error.get('16a', '0') if inspection else '0' }}"></td>
-                </tr>
-            </table>
-
-            <div class="category-header">17 - Sanitary Engineering: Grey Water Facilities (1%)</div>
-            <table>
-                <tr>
-                    <th>Item</th>
-                    <th>Details</th>
-                    <th>Obser</th>
-                    <th>Error</th>
-                </tr>
-                <tr>
-                    <td>A</td>
-                    <td>Traps and vent in good condition</td>
-                    <td><input type="text" class="input-field" name="obser_17a" value="{{ inspection.obser.get('17a', '') if inspection else '' }}"></td>
-                    <td><input type="number" class="input-field error-input" name="error_17a" min="0" max="1" value="{{ inspection.error.get('17a', '0') if inspection else '0' }}"></td>
-                </tr>
-                <tr>
-                    <td>B</td>
-                    <td>Floor drains clear and drain freely</td>
-                    <td><input type="text" class="input-field" name="obser_17b" value="{{ inspection.obser.get('17b', '') if inspection else '' }}"></td>
-                    <td><input type="number" class="input-field error-input" name="error_17b" min="0" max="1" value="{{ inspection.error.get('17b', '0') if inspection else '0' }}"></td>
-                </tr>
-            </table>
-
-            <div class="category-header">18 - Disposal of Solid Waste (2%)</div>
+            <div class="category-header">7 - Disposal of Solid Waste</div>
             <table>
                 <tr>
                     <th>Item</th>
@@ -864,12 +544,12 @@
                 <tr>
                     <td>A</td>
                     <td>Garbage, refuse properly disposed of, facilities maintained</td>
-                    <td><input type="text" class="input-field" name="obser_18a" value="{{ inspection.obser.get('18a', '') if inspection else '' }}"></td>
-                    <td><input type="number" class="input-field error-input" name="error_18a" min="0" max="1" value="{{ inspection.error.get('18a', '0') if inspection else '0' }}"></td>
+                    <td><input type="text" class="input-field" name="obser_7a" value="{{ inspection.obser.get('7a', '') if inspection else '' }}"></td>
+                    <td><input type="number" class="input-field error-input" name="error_7a" min="0" max="1" value="{{ inspection.error.get('7a', '0') if inspection else '0' }}"></td>
                 </tr>
             </table>
 
-            <div class="category-header">19 - Hazardous Materials Storage, Handling and Disposal (4%)</div>
+            <div class="category-header">8 - Hazardous Materials Storage, Handling and Disposal</div>
             <table>
                 <tr>
                     <th>Item</th>
@@ -880,18 +560,322 @@
                 <tr class="critical">
                     <td>A</td>
                     <td>Hazardous materials stored in properly labelled containers</td>
-                    <td><input type="text" class="input-field" name="obser_19a" value="{{ inspection.obser.get('19a', '') if inspection else '' }}"></td>
-                    <td><input type="number" class="input-field error-input" name="error_19a" min="0" max="1" value="{{ inspection.error.get('19a', '0') if inspection else '0' }}"></td>
+                    <td><input type="text" class="input-field" name="obser_8a" value="{{ inspection.obser.get('8a', '') if inspection else '' }}"></td>
+                    <td><input type="number" class="input-field error-input" name="error_8a" min="0" max="1" value="{{ inspection.error.get('8a', '0') if inspection else '0' }}"></td>
                 </tr>
                 <tr class="critical">
                     <td>B</td>
                     <td>Stored away from living quarters and food areas</td>
-                    <td><input type="text" class="input-field" name="obser_19b" value="{{ inspection.obser.get('19b', '') if inspection else '' }}"></td>
-                    <td><input type="number" class="input-field error-input" name="error_19b" min="0" max="1" value="{{ inspection.error.get('19b', '0') if inspection else '0' }}"></td>
+                    <td><input type="text" class="input-field" name="obser_8b" value="{{ inspection.obser.get('8b', '') if inspection else '' }}"></td>
+                    <td><input type="number" class="input-field error-input" name="error_8b" min="0" max="1" value="{{ inspection.error.get('8b', '0') if inspection else '0' }}"></td>
                 </tr>
             </table>
 
-            <div class="category-header">20 - Sanitary Engineering: Manholes (0.5%)</div>
+            <div class="category-header">9 - Post-Preparation</div>
+            <table>
+                <tr>
+                    <th>Item</th>
+                    <th>Details</th>
+                    <th>Obser</th>
+                    <th>Error</th>
+                </tr>
+                <tr class="critical">
+                    <td>A</td>
+                    <td>Food protected during transportation</td>
+                    <td><input type="text" class="input-field" name="obser_9a" value="{{ inspection.obser.get('9a', '') if inspection else '' }}"></td>
+                    <td><input type="number" class="input-field error-input" name="error_9a" min="0" max="1" value="{{ inspection.error.get('9a', '0') if inspection else '0' }}"></td>
+                </tr>
+                <tr class="critical">
+                    <td>B</td>
+                    <td>Dishes identified and labelled</td>
+                    <td><input type="text" class="input-field" name="obser_9b" value="{{ inspection.obser.get('9b', '') if inspection else '' }}"></td>
+                    <td><input type="number" class="input-field error-input" name="error_9b" min="0" max="1" value="{{ inspection.error.get('9b', '0') if inspection else '0' }}"></td>
+                </tr>
+                <tr class="critical">
+                    <td>C</td>
+                    <td>Food covered or protected from contamination</td>
+                    <td><input type="text" class="input-field" name="obser_9c" value="{{ inspection.obser.get('9c', '') if inspection else '' }}"></td>
+                    <td><input type="number" class="input-field error-input" name="error_9c" min="0" max="1" value="{{ inspection.error.get('9c', '0') if inspection else '0' }}"></td>
+                </tr>
+                <tr>
+                    <td>D</td>
+                    <td>Sufficient, appropriate utensils on service line</td>
+                    <td><input type="text" class="input-field" name="obser_9d" value="{{ inspection.obser.get('9d', '') if inspection else '' }}"></td>
+                    <td><input type="number" class="input-field error-input" name="error_9d" min="0" max="1" value="{{ inspection.error.get('9d', '0') if inspection else '0' }}"></td>
+                </tr>
+                <tr>
+                    <td>E</td>
+                    <td>Hot holding temperatures > 63°C</td>
+                    <td><input type="text" class="input-field" name="obser_9e" value="{{ inspection.obser.get('9e', '') if inspection else '' }}"></td>
+                    <td><input type="number" class="input-field error-input" name="error_9e" min="0" max="1" value="{{ inspection.error.get('9e', '0') if inspection else '0' }}"></td>
+                </tr>
+                <tr>
+                    <td>F</td>
+                    <td>Cold holding temperatures ≤ 5°C</td>
+                    <td><input type="text" class="input-field" name="obser_9f" value="{{ inspection.obser.get('9f', '') if inspection else '' }}"></td>
+                    <td><input type="number" class="input-field error-input" name="error_9f" min="0" max="1" value="{{ inspection.error.get('9f', '0') if inspection else '0' }}"></td>
+                </tr>
+            </table>
+
+            <div class="category-header">10 - Hand Washing Facilities</div>
+            <table>
+                <tr>
+                    <th>Item</th>
+                    <th>Details</th>
+                    <th>Obser</th>
+                    <th>Error</th>
+                </tr>
+                <tr class="critical">
+                    <td>-</td>
+                    <td>Hand washing facility installed and maintained for every 40 square meters of floor space or in each principal area</td>
+                    <td><input type="text" class="input-field" name="obser_10a" value="{{ inspection.obser.get('10a', '') if inspection else '' }}"></td>
+                    <td><input type="number" class="input-field error-input" name="error_10a" min="0" max="1" value="{{ inspection.error.get('10a', '0') if inspection else '0' }}"></td>
+                </tr>
+                <tr class="critical">
+                    <td>-</td>
+                    <td>Equipped with hot and cold water, soap a dispenser and hand drying facility</td>
+                    <td><input type="text" class="input-field" name="obser_10b" value="{{ inspection.obser.get('10b', '') if inspection else '' }}"></td>
+                    <td><input type="number" class="input-field error-input" name="error_10b" min="0" max="1" value="{{ inspection.error.get('10b', '0') if inspection else '0' }}"></td>
+                </tr>
+            </table>
+
+            <div class="category-header">11 - Building</div>
+            <table>
+                <tr>
+                    <th>Item</th>
+                    <th>Details</th>
+                    <th>Obser</th>
+                    <th>Error</th>
+                </tr>
+                <tr>
+                    <td>A</td>
+                    <td>Provides adequate space</td>
+                    <td><input type="text" class="input-field" name="obser_11a" value="{{ inspection.obser.get('11a', '') if inspection else '' }}"></td>
+                    <td><input type="number" class="input-field error-input" name="error_11a" min="0" max="1" value="{{ inspection.error.get('11a', '0') if inspection else '0' }}"></td>
+                </tr>
+                <tr>
+                    <td>B</td>
+                    <td>Food areas kept clean, free from vermin and unpleasant odours</td>
+                    <td><input type="text" class="input-field" name="obser_11b" value="{{ inspection.obser.get('11b', '') if inspection else '' }}"></td>
+                    <td><input type="number" class="input-field error-input" name="error_11b" min="0" max="1" value="{{ inspection.error.get('11b', '0') if inspection else '0' }}"></td>
+                </tr>
+                <tr>
+                    <td>C</td>
+                    <td>Floor, walls and ceiling clean, in good repair</td>
+                    <td><input type="text" class="input-field" name="obser_11c" value="{{ inspection.obser.get('11c', '') if inspection else '' }}"></td>
+                    <td><input type="number" class="input-field error-input" name="error_11c" min="0" max="1" value="{{ inspection.error.get('11c', '0') if inspection else '0' }}"></td>
+                </tr>
+                <tr>
+                    <td>D</td>
+                    <td>Mechanical ventilation operable where required</td>
+                    <td><input type="text" class="input-field" name="obser_11d" value="{{ inspection.obser.get('11d', '') if inspection else '' }}"></td>
+                    <td><input type="number" class="input-field error-input" name="error_11d" min="0" max="1" value="{{ inspection.error.get('11d', '0') if inspection else '0' }}"></td>
+                </tr>
+                <tr>
+                    <td>E</td>
+                    <td>Lighting adequate for food preparation and cleaning</td>
+                    <td><input type="text" class="input-field" name="obser_11e" value="{{ inspection.obser.get('11e', '') if inspection else '' }}"></td>
+                    <td><input type="number" class="input-field error-input" name="error_11e" min="0" max="1" value="{{ inspection.error.get('11e', '0') if inspection else '0' }}"></td>
+                </tr>
+                <tr>
+                    <td>F</td>
+                    <td>General housekeeping satisfactory</td>
+                    <td><input type="text" class="input-field" name="obser_11f" value="{{ inspection.obser.get('11f', '') if inspection else '' }}"></td>
+                    <td><input type="number" class="input-field error-input" name="error_11f" min="0" max="1" value="{{ inspection.error.get('11f', '0') if inspection else '0' }}"></td>
+                </tr>
+                <tr>
+                    <td>G</td>
+                    <td>Animals, insect and pest excluded</td>
+                    <td><input type="text" class="input-field" name="obser_11g" value="{{ inspection.obser.get('11g', '') if inspection else '' }}"></td>
+                    <td><input type="number" class="input-field error-input" name="error_11g" min="0" max="1" value="{{ inspection.error.get('11g', '0') if inspection else '0' }}"></td>
+                </tr>
+            </table>
+
+            <div class="category-header">12 - Food Contact Surfaces</div>
+            <table>
+                <tr>
+                    <th>Item</th>
+                    <th>Details</th>
+                    <th>Obser</th>
+                    <th>Error</th>
+                </tr>
+                <tr>
+                    <td>A</td>
+                    <td>Made from material which is non-absorbent and non-toxic</td>
+                    <td><input type="text" class="input-field" name="obser_12a" value="{{ inspection.obser.get('12a', '') if inspection else '' }}"></td>
+                    <td><input type="number" class="input-field error-input" name="error_12a" min="0" max="1" value="{{ inspection.error.get('12a', '0') if inspection else '0' }}"></td>
+                </tr>
+                <tr class="critical">
+                    <td>B</td>
+                    <td>Smooth, cleanable, corrosion resistant</td>
+                    <td><input type="text" class="input-field" name="obser_12b" value="{{ inspection.obser.get('12b', '') if inspection else '' }}"></td>
+                    <td><input type="number" class="input-field error-input" name="error_12b" min="0" max="1" value="{{ inspection.error.get('12b', '0') if inspection else '0' }}"></td>
+                </tr>
+                <tr class="critical">
+                    <td>C</td>
+                    <td>Proper storage and use of clean utensils</td>
+                    <td><input type="text" class="input-field" name="obser_12c" value="{{ inspection.obser.get('12c', '') if inspection else '' }}"></td>
+                    <td><input type="number" class="input-field error-input" name="error_12c" min="0" max="1" value="{{ inspection.error.get('12c', '0') if inspection else '0' }}"></td>
+                </tr>
+            </table>
+
+            <div class="category-header">13 - Food Flow</div>
+            <table>
+                <tr>
+                    <th>Item</th>
+                    <th>Details</th>
+                    <th>Obser</th>
+                    <th>Error</th>
+                </tr>
+                <tr class="critical">
+                    <td>A</td>
+                    <td>Employee traffic pattern avoids food cross-contamination</td>
+                    <td><input type="text" class="input-field" name="obser_13a" value="{{ inspection.obser.get('13a', '') if inspection else '' }}"></td>
+                    <td><input type="number" class="input-field error-input" name="error_13a" min="0" max="1" value="{{ inspection.error.get('13a', '0') if inspection else '0' }}"></td>
+                </tr>
+                <tr class="critical">
+                    <td>B</td>
+                    <td>Product flow not at risk for cross-contamination</td>
+                    <td><input type="text" class="input-field" name="obser_13b" value="{{ inspection.obser.get('13b', '') if inspection else '' }}"></td>
+                    <td><input type="number" class="input-field error-input" name="error_13b" min="0" max="1" value="{{ inspection.error.get('13b', '0') if inspection else '0' }}"></td>
+                </tr>
+                <tr>
+                    <td>C</td>
+                    <td>Living quarters, toilets, washrooms, locker separated from areas where food is handled</td>
+                    <td><input type="text" class="input-field" name="obser_13c" value="{{ inspection.obser.get('13c', '') if inspection else '' }}"></td>
+                    <td><input type="number" class="input-field error-input" name="error_13c" min="0" max="1" value="{{ inspection.error.get('13c', '0') if inspection else '0' }}"></td>
+                </tr>
+            </table>
+
+            <div class="category-header">14 - Equipment and Utensil Sanitization</div>
+            <table>
+                <tr>
+                    <th>Item</th>
+                    <th>Details</th>
+                    <th>Obser</th>
+                    <th>Error</th>
+                </tr>
+                <tr>
+                    <td>A</td>
+                    <td>Mechanical dishwashing wash-rinse water clean</td>
+                    <td><input type="text" class="input-field" name="obser_14a" value="{{ inspection.obser.get('14a', '') if inspection else '' }}"></td>
+                    <td><input type="number" class="input-field error-input" name="error_14a" min="0" max="1" value="{{ inspection.error.get('14a', '0') if inspection else '0' }}"></td>
+                </tr>
+                <tr>
+                    <td>B</td>
+                    <td>Proper water temperature</td>
+                    <td><input type="text" class="input-field" name="obser_14b" value="{{ inspection.obser.get('14b', '') if inspection else '' }}"></td>
+                    <td><input type="number" class="input-field error-input" name="error_14b" min="0" max="1" value="{{ inspection.error.get('14b', '0') if inspection else '0' }}"></td>
+                </tr>
+                <tr>
+                    <td>C</td>
+                    <td>Proper timing of cycles</td>
+                    <td><input type="text" class="input-field" name="obser_14c" value="{{ inspection.obser.get('14c', '') if inspection else '' }}"></td>
+                    <td><input type="number" class="input-field error-input" name="error_14c" min="0" max="1" value="{{ inspection.error.get('14c', '0') if inspection else '0' }}"></td>
+                </tr>
+                <tr>
+                    <td>D</td>
+                    <td>Sanitizer for low temperature</td>
+                    <td><input type="text" class="input-field" name="obser_14d" value="{{ inspection.obser.get('14d', '') if inspection else '' }}"></td>
+                    <td><input type="number" class="input-field error-input" name="error_14d" min="0" max="1" value="{{ inspection.error.get('14d', '0') if inspection else '0' }}"></td>
+                </tr>
+                <tr>
+                    <td>E</td>
+                    <td>Proper handling of hazardous materials</td>
+                    <td><input type="text" class="input-field" name="obser_14e" value="{{ inspection.obser.get('14e', '') if inspection else '' }}"></td>
+                    <td><input type="number" class="input-field error-input" name="error_14e" min="0" max="1" value="{{ inspection.error.get('14e', '0') if inspection else '0' }}"></td>
+                </tr>
+            </table>
+
+            <div class="category-header">15 - Sanitary Facilities</div>
+            <table>
+                <tr>
+                    <th>Item</th>
+                    <th>Details</th>
+                    <th>Obser</th>
+                    <th>Error</th>
+                </tr>
+                <tr class="critical">
+                    <td>A</td>
+                    <td>Approved Sewage Disposal System</td>
+                    <td><input type="text" class="input-field" name="obser_15a" value="{{ inspection.obser.get('15a', '') if inspection else '' }}"></td>
+                    <td><input type="number" class="input-field error-input" name="error_15a" min="0" max="1" value="{{ inspection.error.get('15a', '0') if inspection else '0' }}"></td>
+                </tr>
+                <tr>
+                    <td>B</td>
+                    <td>Sanitary maintenance of facilities and protections against the entrance of vermin, rodents, dust, and fumes</td>
+                    <td><input type="text" class="input-field" name="obser_15b" value="{{ inspection.obser.get('15b', '') if inspection else '' }}"></td>
+                    <td><input type="number" class="input-field error-input" name="error_15b" min="0" max="1" value="{{ inspection.error.get('15b', '0') if inspection else '0' }}"></td>
+                </tr>
+                <tr>
+                    <td>C</td>
+                    <td>Suitable pest control programme</td>
+                    <td><input type="text" class="input-field" name="obser_15c" value="{{ inspection.obser.get('15c', '') if inspection else '' }}"></td>
+                    <td><input type="number" class="input-field error-input" name="error_15c" min="0" max="1" value="{{ inspection.error.get('15c', '0') if inspection else '0' }}"></td>
+                </tr>
+            </table>
+
+            <div class="category-header">16 - Sanitary Engineering: Water Supply</div>
+            <table>
+                <tr>
+                    <th>Item</th>
+                    <th>Details</th>
+                    <th>Obser</th>
+                    <th>Error</th>
+                </tr>
+                <tr class="critical">
+                    <td>A</td>
+                    <td>Approved source(s), sufficient pressure and capacity</td>
+                    <td><input type="text" class="input-field" name="obser_16a" value="{{ inspection.obser.get('16a', '') if inspection else '' }}"></td>
+                    <td><input type="number" class="input-field error-input" name="error_16a" min="0" max="1" value="{{ inspection.error.get('16a', '0') if inspection else '0' }}"></td>
+                </tr>
+                <tr class="critical">
+                    <td>B</td>
+                    <td>Water quality satisfactory</td>
+                    <td><input type="text" class="input-field" name="obser_16b" value="{{ inspection.obser.get('16b', '') if inspection else '' }}"></td>
+                    <td><input type="number" class="input-field error-input" name="error_16b" min="0" max="1" value="{{ inspection.error.get('16b', '0') if inspection else '0' }}"></td>
+                </tr>
+            </table>
+
+            <div class="category-header">17 - Sanitary Engineering: Ice</div>
+            <table>
+                <tr>
+                    <th>Item</th>
+                    <th>Details</th>
+                    <th>Obser</th>
+                    <th>Error</th>
+                </tr>
+                <tr>
+                    <td>A</td>
+                    <td>Satisfactory Ice storage conditions</td>
+                    <td><input type="text" class="input-field" name="obser_17a" value="{{ inspection.obser.get('17a', '') if inspection else '' }}"></td>
+                    <td><input type="number" class="input-field error-input" name="error_17a" min="0" max="1" value="{{ inspection.error.get('17a', '0') if inspection else '0' }}"></td>
+                </tr>
+            </table>
+
+            <div class="category-header">18 - Sanitary Engineering: Grey Water Facilities</div>
+            <table>
+                <tr>
+                    <th>Item</th>
+                    <th>Details</th>
+                    <th>Obser</th>
+                    <th>Error</th>
+                </tr>
+                <tr>
+                    <td>A</td>
+                    <td>Traps and vent in good condition</td>
+                    <td><input type="text" class="input-field" name="obser_18a" value="{{ inspection.obser.get('18a', '') if inspection else '' }}"></td>
+                    <td><input type="number" class="input-field error-input" name="error_18a" min="0" max="1" value="{{ inspection.error.get('18a', '0') if inspection else '0' }}"></td>
+                </tr>
+                <tr>
+                    <td>B</td>
+                    <td>Floor drains clear and drain freely</td>
+                    <td><input type="text" class="input-field" name="obser_18b" value="{{ inspection.obser.get('18b', '') if inspection else '' }}"></td>
+                    <td><input type="number" class="input-field error-input" name="error_18b" min="0" max="1" value="{{ inspection.error.get('18b', '0') if inspection else '0' }}"></td>
+                </tr>
+            </table>
+
+            <div class="category-header">19 - Sanitary Engineering: Manholes</div>
             <table>
                 <tr>
                     <th>Item</th>
@@ -902,8 +886,8 @@
                 <tr>
                     <td>A</td>
                     <td>Properly constructed with vents and traps where necessary</td>
-                    <td><input type="text" class="input-field" name="obser_20a" value="{{ inspection.obser.get('20a', '') if inspection else '' }}"></td>
-                    <td><input type="number" class="input-field error-input" name="error_20a" min="0" max="1" value="{{ inspection.error.get('20a', '0') if inspection else '0' }}"></td>
+                    <td><input type="text" class="input-field" name="obser_19a" value="{{ inspection.obser.get('19a', '') if inspection else '' }}"></td>
+                    <td><input type="number" class="input-field error-input" name="error_19a" min="0" max="1" value="{{ inspection.error.get('19a', '0') if inspection else '0' }}"></td>
                 </tr>
             </table>
 
@@ -959,71 +943,81 @@
         {% endif %}
     </div>
     <script>
-        // Total possible items
-        const totalCriticalItems = criticalItems.length; // 30 critical items
-        const totalItems = errorInputs.length; // Total items in form
+        // Fixed scoring system for Small Hotels form
+const errorInputs = document.querySelectorAll('.error-input');
+const criticalScoreInput = document.getElementById('critical_score');
+const overallScoreInput = document.getElementById('overall_score');
 
-        function updateScores() {
-            let criticalItemsPassed = 0;
-            let totalItemsPassed = 0;
-            let itemsInspected = 0;
+// Define which items are critical (based on your form's blue highlighting)
+const criticalItems = [
+    '2a', '2e', '3a', '3d', '3f', '3h', '3i', '4a', '4b', '4c', '4d', '4e',
+    '5a', '5c', '6a', '8a', '8b', '9a', '9b', '9c', '10a', '10b', '12b',
+    '12c', '13a', '13b', '15a', '16a', '16b'
+];
 
-            errorInputs.forEach(input => {
-                const itemId = input.name.replace('error_', '');
-                const error = parseInt(input.value) || 0;
+// Total possible items
+const totalCriticalItems = criticalItems.length; // 29 critical items
+const totalItems = errorInputs.length; // Total items in form
 
-                // Count items that have been inspected (marked with error = 1)
-                if (error === 1) {
-                    itemsInspected++;
-                }
+function updateScores() {
+    let criticalItemsPassed = 0;
+    let totalItemsPassed = 0;
 
-                // Item "passes" (gets score) if error = 0 (no error found)
-                if (error === 0) {
-                    totalItemsPassed++;
+    errorInputs.forEach(input => {
+        const itemId = input.name.replace('error_', '');
+        const error = parseInt(input.value) || 0;
 
-                    // Add to critical count if this is a critical item
-                    if (criticalItems.includes(itemId)) {
-                        criticalItemsPassed++;
-                    }
-                }
-            });
+        // Item "passes" (gets score) if error = 0 (no error found)
+        // Item "fails" (no score) if error = 1 (error found)
+        if (error === 0) {
+            totalItemsPassed++;
 
-            // If no items have been marked with errors yet, show 0%
-            if (itemsInspected === 0) {
-                criticalScoreInput.value = '0%';
-                overallScoreInput.value = '0%';
-                return;
+            // Add to critical count if this is a critical item
+            if (criticalItems.includes(itemId)) {
+                criticalItemsPassed++;
             }
-
-            // Calculate percentages based on passed items
-            const criticalPercentage = Math.round((criticalItemsPassed / totalCriticalItems) * 100);
-            const overallPercentage = Math.round((totalItemsPassed / totalItems) * 100);
-
-            // Update display
-            criticalScoreInput.value = criticalPercentage + '%';
-            overallScoreInput.value = overallPercentage + '%';
         }
+    });
 
-        // Add event listeners for real-time scoring
-        errorInputs.forEach(input => {
-            input.addEventListener('input', updateScores);
-            input.addEventListener('change', updateScores);
-        });
+    // Calculate percentages - but only count items that have been "touched" or marked
+    // To start at 0%, we need to check if any items have been actually inspected
 
-        // Initial score calculation (should show 0% for both)
-        updateScores();
+    // Count how many items have been marked with an error (error = 1)
+    let itemsInspected = 0;
+    errorInputs.forEach(input => {
+        const error = parseInt(input.value) || 0;
+        if (error === 1) {
+            itemsInspected++;
+        }
+    });
+
+    // If no items have been marked with errors yet, show 0%
+    if (itemsInspected === 0) {
+        criticalScoreInput.value = '0%';
+        overallScoreInput.value = '0%';
+        return;
+    }
+
+    // Calculate percentages based on passed items
+    const criticalPercentage = Math.round((criticalItemsPassed / totalCriticalItems) * 100);
+    const overallPercentage = Math.round((totalItemsPassed / totalItems) * 100);
+
+    // Update display
+    criticalScoreInput.value = criticalPercentage + '%';
+    overallScoreInput.value = overallPercentage + '%';
+}
+
+// Add event listeners for real-time scoring
+errorInputs.forEach(input => {
+    input.addEventListener('input', updateScores);
+    input.addEventListener('change', updateScores);
+});
+
+// Initial score calculation (should show 0% for both)
+updateScores();
+
+        // Form submission is now handled by the offline system
+        // The manual form submission code has been removed
     </script>
 </body>
-</html> Corrected scoring system for Small Hotels form - starts at 0%
-        const errorInputs = document.querySelectorAll('.error-input');
-        const criticalScoreInput = document.getElementById('critical_score');
-        const overallScoreInput = document.getElementById('overall_score');
-
-        // Define which items are critical (based on corrected form's blue highlighting)
-        const criticalItems = [
-            '1b', '2a', '2e', '3a', '3d', '3f', '3h', '3i', '4a', '4b', '4c', '4d', '4e',
-            '5a', '5b', '5c', '6a', '6b', '8b', '8c', '9a', '9b', '11a', '11c', '12a',
-            '13a', '15a', '15b', '19a', '19b'
-        ];
-
-        //
+</html>

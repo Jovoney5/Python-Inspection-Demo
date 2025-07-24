@@ -243,16 +243,6 @@
                 document.querySelector('.success').classList.add('show');
             {% endif %}
 
-            document.querySelectorAll('tr').forEach(row => {
-                const weightCell = row.querySelector('td:nth-child(3)');
-                if (weightCell) {
-                    const weight = parseInt(weightCell.textContent);
-                    if (weight >= 4) {
-                        row.classList.add('important-weight');
-                    }
-                }
-            });
-
             function calculateScores() {
                 let criticalScore = 0;
                 let totalScore = 0;
@@ -260,24 +250,25 @@
                     const weightCell = row.querySelector('td:nth-child(3)');
                     const scoreSelect = row.querySelector('select[name^="score_"]');
                     if (weightCell && scoreSelect) {
-                        const weight = parseInt(weightCell.textContent);
-                        const score = parseInt(scoreSelect.value);
+                        const weight = parseFloat(weightCell.textContent);
+                        const score = parseFloat(scoreSelect.value);
                         const points = score > 0 ? weight : 0;
                         totalScore += points;
-                        if (weight >= 4) {
+                        const itemId = row.querySelector('td:nth-child(1)').textContent;
+                        if ((weight >= 4 || itemId === '16') && itemId !== '11' && itemId !== '12') {
                             criticalScore += points;
                         }
                     }
                 });
 
-                document.querySelector('input[name="critical_score"]').value = criticalScore;
-                document.querySelector('input[name="overall_score"]').value = totalScore;
+                document.querySelector('input[name="critical_score"]').value = criticalScore.toFixed(1);
+                document.querySelector('input[name="overall_score"]').value = totalScore.toFixed(1);
 
                 const messageDiv = document.getElementById('scoreMessage');
-                const pass = criticalScore >= 59 && totalScore >= 70;
+                const pass = criticalScore >= 50 && totalScore >= 70;
                 messageDiv.textContent = pass ?
-                    `Pass: Critical Score = ${criticalScore}, Total Score = ${totalScore}` :
-                    `Fail: Critical Score = ${criticalScore} (needs 59+), Total Score = ${totalScore} (needs 70+)`;
+                    `Pass: Critical Score = ${criticalScore.toFixed(1)}, Total Score = ${totalScore.toFixed(1)}` :
+                    `Fail: Critical Score = ${criticalScore.toFixed(1)} (needs 50+), Total Score = ${totalScore.toFixed(1)} (needs 70+)`;
                 messageDiv.className = `score-message ${pass ? 'pass' : ''}`;
 
                 const resultSelect = document.querySelector('select[name="result"]');
@@ -344,6 +335,7 @@
                             <td><label>Type of Treatment Facility:
                                 <select name="treatment_facility">
                                     <option value="Onsite/Individual">Onsite/Individual</option>
+                                    <option value="Onsite/Communal">Onsite/Communal</option>
                                     <option value="Public">Public</option>
                                 </select>
                             </label></td>
@@ -382,6 +374,7 @@
                         </tr>
                         <tr>
                             <td><label>Building Construction Type: <input type="text" name="building_construction_type"></label></td>
+                            <td><label>Purpose of Building: <input type="text" name="purpose_of_building"></label></td>
                             <td><label>Purpose of Visit:
                                 <select name="purpose_of_visit">
                                     <option value="Routine">Routine</option>
@@ -389,13 +382,17 @@
                                     <option value="Complaint">Complaint</option>
                                 </select>
                             </label></td>
+                        </tr>
+                        <tr>
                             <td><label>Action:
                                 <select name="action">
                                     <option value="Notice">Notice</option>
                                     <option value="Follow-up" selected>Follow-up</option>
-                                    <option value="N/A">N/A</option>
+                                    <option value="NAI">NAI</option>
                                 </select>
                             </label></td>
+                            <td><label>No. of Bedrooms: <input type="number" name="no_of_bedrooms"></label></td>
+                            <td><label>Total Population (Males/Females/Boys/Girls): <input type="text" name="total_population"></label></td>
                         </tr>
                         <tr>
                             <td><label>Barcode:
@@ -404,8 +401,7 @@
                                     <div class="barcode-line"></div>
                                 </div>
                             </label></td>
-                            <td><label>No. of Bedrooms: <input type="number" name="no_of_bedrooms"></label></td>
-                            <td><label>Total Population (Males/Females/Boys/Girls): <input type="text" name="total_population"></label></td>
+                            <td colspan="2"></td>
                         </tr>
                     </table>
                     <div id="scoreMessage" class="score-message"></div>
@@ -450,6 +446,20 @@
                         {% endfor %}
                         <tr class="category-header"><td colspan="4">DRAINAGE (11-12)</td></tr>
                         {% for item in checklist if 11 <= item.id <= 12 %}
+                        <tr class="{% if item.wt|float >= 4 and item.id != 11 %}important-weight{% endif %}">
+                            <td>{{ item.id }}</td>
+                            <td>{{ item.desc }}</td>
+                            <td>{{ item.wt }}</td>
+                            <td>
+                                <select name="score_{{ item.id }}" required>
+                                    <option value="0">0</option>
+                                    <option value="{{ item.wt }}">{{ item.wt }}</option>
+                                </select>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        <tr class="category-header"><td colspan="4">MOSQUITO CONTROL (13-14)</td></tr>
+                        {% for item in checklist if 13 <= item.id <= 14 %}
                         <tr class="{% if item.wt|float >= 4 %}important-weight{% endif %}">
                             <td>{{ item.id }}</td>
                             <td>{{ item.desc }}</td>
@@ -462,9 +472,9 @@
                             </td>
                         </tr>
                         {% endfor %}
-                        <tr class="category-header"><td colspan="4">MOSQUITO CONTROL (13-16)</td></tr>
-                        {% for item in checklist if 13 <= item.id <= 16 %}
-                        <tr class="{% if item.wt|float >= 4 %}important-weight{% endif %}">
+                        <tr class="category-header"><td colspan="4">RODENT CONTROL (15-16)</td></tr>
+                        {% for item in checklist if 15 <= item.id <= 16 %}
+                        <tr class="{% if item.wt|float >= 4 or item.id == 16 %}important-weight{% endif %}">
                             <td>{{ item.id }}</td>
                             <td>{{ item.desc }}</td>
                             <td>{{ item.wt }}</td>
@@ -506,6 +516,20 @@
                         {% endfor %}
                         <tr class="category-header"><td colspan="4">OTHER OPERATIONS (22)</td></tr>
                         {% for item in checklist if item.id == 22 %}
+                        <tr>
+                            <td>{{ item.id }}</td>
+                            <td>{{ item.desc }}</td>
+                            <td>{{ item.wt }}</td>
+                            <td>
+                                <select name="score_{{ item.id }}" required>
+                                    <option value="0">0</option>
+                                    <option value="{{ item.wt }}">{{ item.wt }}</option>
+                                </select>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        <tr class="category-header"><td colspan="4">SOLID WASTE MANAGEMENT (23-24)</td></tr>
+                        {% for item in checklist if 23 <= item.id <= 24 %}
                         <tr class="{% if item.wt|float >= 4 %}important-weight{% endif %}">
                             <td>{{ item.id }}</td>
                             <td>{{ item.desc }}</td>
@@ -518,20 +542,10 @@
                             </td>
                         </tr>
                         {% endfor %}
-                    </table>
-                </div>
-
-                <div class="form-section">
-                    <h2>Solid Waste Management</h2>
-                    <table>
-                        <tr>
-                            <th>Description</th>
-                            <th>Weight</th>
-                            <th>Score</th>
-                        </tr>
-                        <tr class="category-header"><td colspan="3">SOLID WASTE MANAGEMENT</td></tr>
-                        {% for item in checklist if 23 <= item.id <= 25 %}
-                        <tr class="{% if item.wt|float >= 4 %}important-weight{% endif %}">
+                        <tr class="category-header"><td colspan="4">COMPOUND (25-26)</td></tr>
+                        {% for item in checklist if 25 <= item.id <= 26 %}
+                        <tr class="{% if item.wt|float >= 4 or item.id == 26 %}important-weight{% endif %}">
+                            <td>{{ item.id }}</td>
                             <td>{{ item.desc }}</td>
                             <td>{{ item.wt }}</td>
                             <td>

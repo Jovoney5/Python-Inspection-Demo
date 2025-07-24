@@ -113,33 +113,33 @@ FOOD_CHECKLIST_ITEMS = [
 ]
 
 
+# Checklist for Residential & Non-Residential Inspection Form
 RESIDENTIAL_CHECKLIST_ITEMS = [
     {"id": 1, "desc": "Sound and clean exterior of building", "wt": 3},
     {"id": 2, "desc": "Sound and clean interior of building", "wt": 3},
-    {"id": 3, "desc": "Sound and clean floors", "wt": 3},
+    {"id": 3, "desc": "Sound and clean floors", "wt": 2},
     {"id": 4, "desc": "Sound and clean walls", "wt": 2},
-    {"id": 5, "desc": "Sound and clean ceiling", "wt": 3},
+    {"id": 5, "desc": "Sound and clean ceiling", "wt": 2},
     {"id": 6, "desc": "Adequate ventilation in rooms", "wt": 3},
-    {"id": 7, "desc": "Sufficient lighting", "wt": 3},
-    {"id": 8, "desc": "Adequate accommodation", "wt": 5},
-    {"id": 9, "desc": "Potability", "wt": 5},
-    {"id": 10, "desc": "Accessibility", "wt": 5},
-    {"id": 11, "desc": "Graded", "wt": 3},
-    {"id": 12, "desc": "Unobstructed", "wt": 3},
+    {"id": 7, "desc": "Sufficient lighting", "wt": 2},
+    {"id": 8, "desc": "Adequate accommodation", "wt": 4},
+    {"id": 9, "desc": "Potability", "wt": 6},
+    {"id": 10, "desc": "Accessibility", "wt": 4},
+    {"id": 11, "desc": "Graded", "wt": 4},
+    {"id": 12, "desc": "Unobstructed", "wt": 6},
     {"id": 13, "desc": "No active breeding", "wt": 5},
-    {"id": 14, "desc": "No potential breeding source", "wt": 4},
-    {"id": 15, "desc": "No potential breeding source", "wt": 1},
+    {"id": 14, "desc": "No potential breeding source", "wt": 5},
+    {"id": 15, "desc": "No active breeding", "wt": 5},
     {"id": 16, "desc": "No potential breeding source", "wt": 5},
     {"id": 17, "desc": "No active breeding", "wt": 3},
     {"id": 18, "desc": "No potential breeding source", "wt": 3},
-    {"id": 19, "desc": "Clean", "wt": 5},
+    {"id": 19, "desc": "Clean", "wt": 4},
     {"id": 20, "desc": "Safe and sound", "wt": 5},
-    {"id": 21, "desc": "Fly/rodentproof", "wt": 5},
-    {"id": 22, "desc": "Adequate health and safety provisions", "wt": 3},
-    {"id": 23, "desc": "Storage", "wt": 5},
-    {"id": 24, "desc": "Disposal", "wt": 5},
-    {"id": 25, "desc": "Proper lairage for animals", "wt": 5},
-    {"id": 26, "desc": "Controlled vegetation", "wt": 5},
+    {"id": 21, "desc": "Fly/rodentproof", "wt": 4},
+    {"id": 22, "desc": "Adequate health and safety provisions", "wt": 4},
+    {"id": 23, "desc": "Storage", "wt": 4},
+    {"id": 24, "desc": "Disposal", "wt": 4},
+    {"id": 25, "desc": "Proper lairage for animals, Controlled vegetation", "wt": 4},
 ]
 
 SPIRIT_LICENCE_CHECKLIST_ITEMS = [
@@ -225,19 +225,20 @@ SWIMMING_POOL_CHECKLIST_ITEMS = [
 ]
 
 # Define checklist items (40 items, 28 critical)
+
 SMALL_HOTELS_CHECKLIST_ITEMS = [
     # 1 - Documentation (8%)
     {"id": "1a", "description": "Action plan for foodborne illness occurrence", "critical": False},
     {"id": "1b", "description": "Food Handlers have valid food handlers permits", "critical": True},
     {"id": "1c", "description": "Relevant policy in place to restrict activities of sick employees", "critical": False},
-    {"id": "1d", "description": "Establishments have a written policy for the proper disposal of waste", "critical": False},
+    {"id": "1d", "description": "Establishments have a written policy for the proper handling of solid waste", "critical": False},
     {"id": "1e", "description": "Cleaning schedule for equipment utensil etc available", "critical": False},
-    {"id": "1f", "description": "Material safety data sheet available for record of hazardous chemicals used", "critical": False},
+    {"id": "1f", "description": "Material safety data sheet available for chemicals being used", "critical": False},
     {"id": "1g", "description": "Record of hazardous chemicals used", "critical": False},
     {"id": "1h", "description": "Food suppliers list available", "critical": False},
 
     # 2 - Food Handlers (5%)
-    {"id": "2a", "description": "Clean appropriate protective garments", "critical": True},
+    {"id": "2a", "description": "Clean appropriate protective garments worn", "critical": True},
     {"id": "2b", "description": "Hands free of jewellery", "critical": False},
     {"id": "2c", "description": "Suitable hair restraints", "critical": False},
     {"id": "2d", "description": "Nails clean, short and unpolished", "critical": False},
@@ -263,76 +264,83 @@ SMALL_HOTELS_CHECKLIST_ITEMS = [
     {"id": "4f", "description": "Food contact surfaces washed-rinsed-sanitized before & after each use", "critical": False},
     {"id": "4g", "description": "Wiping cloths handled properly (sanitizing solution used)", "critical": False},
 
-    # 5 - Post preparation (10%)
+    # 5 - Post-Preparation (10.5%)
     {"id": "5a", "description": "Food protected during transportation", "critical": True},
-    {"id": "5b", "description": "Dishes identified and labelled", "critical": False},
+    {"id": "5b", "description": "Dishes identified and labelled", "critical": True},
     {"id": "5c", "description": "Food covered or protected from contamination", "critical": True},
-    {"id": "5d", "description": "Sufficient, appropriate utensils on service line", "critical": True},
-    {"id": "5e", "description": "Hot holding temperatures > 63°C", "critical": True},
-    {"id": "5f", "description": "Cold holding temperatures ≤ 5°C", "critical": True},
+    {"id": "5d", "description": "Sufficient, appropriate utensils on service line", "critical": False},
+    {"id": "5e", "description": "Hot holding temperatures > 63°C", "critical": False},
+    {"id": "5f", "description": "Cold holding temperatures ≤ 5°C", "critical": False},
 
     # 6 - Hand Washing Facilities (3%)
-    {"id": "6a", "description": "Hand washing facility installed and maintained for every 40 square meters of floor space or in each principal food area", "critical": True},
-    {"id": "6b", "description": "Equipped with hot and cold water, soap dispenser and hand drying facility", "critical": False},
+    {"id": "6a", "description": "Hand washing facility installed and maintained for every 40 square meters of floor space or in each principal area", "critical": True},
+    {"id": "6b", "description": "Equipped with hot and cold water, soap a dispenser and hand drying facility", "critical": True},
 
-    # 7 - Building (8.5%)
+    # 7 - Building (6.5%)
     {"id": "7a", "description": "Provides adequate space", "critical": False},
-    {"id": "7b", "description": "Food areas kept clean, free from vermin and unpleasant odours", "critical": True},
+    {"id": "7b", "description": "Food areas kept clean, free from vermin and unpleasant odours", "critical": False},
     {"id": "7c", "description": "Floor, walls and ceiling clean, in good repair", "critical": False},
     {"id": "7d", "description": "Mechanical ventilation operable where required", "critical": False},
     {"id": "7e", "description": "Lighting adequate for food preparation and cleaning", "critical": False},
     {"id": "7f", "description": "General housekeeping satisfactory", "critical": False},
     {"id": "7g", "description": "Animals, insect and pest excluded", "critical": False},
 
-    # 8 - Food contact surfaces (3%)
+    # 8 - Food Contact Surfaces (3%)
     {"id": "8a", "description": "Made from material which is non-absorbent and non-toxic", "critical": False},
-    {"id": "8b", "description": "Smooth, cleanable, corrosion resistant", "critical": False},
-    {"id": "8c", "description": "Proper storage and use of clean utensils", "critical": False},
+    {"id": "8b", "description": "Smooth, cleanable, corrosion resistant", "critical": True},
+    {"id": "8c", "description": "Proper storage and use of clean utensils", "critical": True},
 
-    # 9 - Food flow (5.5%)
+    # 9 - Food Flow (5.5%)
     {"id": "9a", "description": "Employee traffic pattern avoids food cross-contamination", "critical": True},
     {"id": "9b", "description": "Product flow not at risk for cross-contamination", "critical": True},
-    {"id": "9c", "description": "Living quarters, toilets, washrooms, locker separated from areas where food is handled", "critical": True},
+    {"id": "9c", "description": "Living quarters, toilets, washrooms, locker separated from areas where food is handled", "critical": False},
 
-    # 10 - Equipment and utensils sanitization (9.5%)
+    # 10 - Equipment And Utensil Sanitization (9.5%)
     {"id": "10a", "description": "Mechanical dishwashing: Wash-rinse water clean", "critical": False},
     {"id": "10b", "description": "Proper water temperature", "critical": False},
-    {"id": "10c", "description": "Proper timing of cycles", "critical": True},
+    {"id": "10c", "description": "Proper timing of cycles", "critical": False},
     {"id": "10d", "description": "Sanitizer for low temperature", "critical": False},
     {"id": "10e", "description": "Proper handling of hazardous materials", "critical": False},
 
     # 11 - Waste Management: Waste Containers (3%)
-    {"id": "11a", "description": "Appropriate design, convenient placement", "critical": False},
+    {"id": "11a", "description": "Appropriate design, convenient placement", "critical": True},
     {"id": "11b", "description": "Kept covered when not in continuous use", "critical": False},
-    {"id": "11c", "description": "Emptied as often as necessary", "critical": False},
+    {"id": "11c", "description": "Emptied as often as necessary", "critical": True},
 
     # 12 - Solid Waste Storage Area (4%)
-    {"id": "12d", "description": "Insect and vermin-proof containers provided where required", "critical": False},
-    {"id": "12e", "description": "The area around each waste container kept clean", "critical": True},
-    {"id": "12f", "description": "Effluent from waste bins disposed of in a sanitary manner", "critical": False},
-    {"id": "12g", "description": "Frequency of garbage removal adequate", "critical": False},
+    {"id": "12a", "description": "Insect and vermin-proof containers provided where required", "critical": True},
+    {"id": "12b", "description": "The area around each waste container kept clean", "critical": False},
+    {"id": "12c", "description": "Effluent from waste bins disposed of in a sanitary manner", "critical": False},
+    {"id": "12d", "description": "Frequency of garbage removal adequate", "critical": False},
 
-    # 13 - Disposal of solid waste
-    {"id": "13h", "description": "Garbage, refuse properly disposed of, facilities maintained", "critical": True},
+    # 13 - Sanitary Facilities (4%)
+    {"id": "13a", "description": "Approved Sewage Disposal System", "critical": True},
+    {"id": "13b", "description": "Sanitary maintenance of facilities and protections against the entrance of vermin, rodents, dust, and fumes", "critical": False},
 
-    # 14 - Hazardous Materials Storage, Handling and Disposal (4%)
-    {"id": "14a", "description": "Hazardous materials stored in properly labelled containers", "critical": False},
-    {"id": "14b", "description": "Stored away from living quarters and food areas", "critical": True},
+    # 14 - Pest Control (2%)
+    {"id": "14a", "description": "Adequate provision against the entrance of insects, vermin, rodents, dust and fumes", "critical": False},
+    {"id": "14b", "description": "Suitable pest control programme", "critical": False},
 
-    # 15 - Sanitary Facilities (4%)
-    {"id": "15a", "description": "Approved Sewage Disposal System", "critical": True},
-    {"id": "15b", "description": "Sanitary maintenance of facilities and protection against the entrance of vermin, rodents, dust, and fumes", "critical": True},
+    # 15 - Sanitary Engineering: Water Supply (3%)
+    {"id": "15a", "description": "Approved source(s), sufficient pressure and capacity", "critical": True},
+    {"id": "15b", "description": "Water quality satisfactory", "critical": True},
 
-    # 16 - Pest Control (2%)
-    {"id": "16a", "description": "Adequate provision against the entrance of insects, vermin, rodents, dust and fumes", "critical": False},
-    {"id": "16b", "description": "Suitable pest control programme", "critical": False},
+    # 16 - Sanitary Engineering: Ice (1.5%)
+    {"id": "16a", "description": "Satisfactory Ice storage conditions", "critical": False},
 
-    # 17 - Sanitary Engineering: Water supply (3%)
-    {"id": "17a", "description": "Approved source(s) sufficient pressure and capacity", "critical": False},
-    {"id": "17b", "description": "Water quality satisfactory", "critical": False},
+    # 17 - Sanitary Engineering: Grey Water Facilities (1%)
+    {"id": "17a", "description": "Traps and vent in good condition", "critical": False},
+    {"id": "17b", "description": "Floor drains clear and drain freely", "critical": False},
 
-    # 18 - Sanitary Engineering: Ice (1.5%)
-    {"id": "18a", "description": "Satisfactory ice storage conditions", "critical": False},
+    # 18 - Disposal of Solid Waste (2%)
+    {"id": "18a", "description": "Garbage, refuse properly disposed of, facilities maintained", "critical": False},
+
+    # 19 - Hazardous Materials Storage, Handling and Disposal (4%)
+    {"id": "19a", "description": "Hazardous materials stored in properly labelled containers", "critical": True},
+    {"id": "19b", "description": "Stored away from living quarters and food areas", "critical": True},
+
+    # 20 - Sanitary Engineering: Manholes (0.5%)
+    {"id": "20a", "description": "Properly constructed with vents and traps where necessary", "critical": False},
 ]
 # ... (Other checklists omitted as per your request; paste them back if needed)
 
@@ -706,14 +714,6 @@ def submit_form(form_type):
 def submit_residential():
     if 'inspector' not in session:
         return redirect(url_for('login'))
-
-    # Helper function to safely convert to int
-    def safe_int_convert(value, default=0):
-        try:
-            return int(float(value)) if value else default
-        except (ValueError, TypeError):
-            return default
-
     data = {
         'premises_name': request.form['premises_name'],
         'owner': request.form['owner'],
@@ -730,8 +730,8 @@ def submit_residential():
         'action': request.form['action'],
         'no_of_bedrooms': request.form.get('no_of_bedrooms', ''),
         'total_population': request.form.get('total_population', ''),
-        'critical_score': safe_int_convert(request.form['critical_score']),
-        'overall_score': safe_int_convert(request.form['overall_score']),
+        'critical_score': int(request.form['critical_score']),
+        'overall_score': int(request.form['overall_score']),
         'comments': request.form.get('comments', ''),
         'inspector_signature': request.form['inspector_signature'],
         'received_by': request.form.get('received_by', ''),
@@ -743,19 +743,13 @@ def submit_residential():
     c = conn.cursor()
     for item in RESIDENTIAL_CHECKLIST_ITEMS:
         score = request.form.get(f'score_{item["id"]}', '0')
-        # Also apply safe conversion to checklist scores
-        safe_score = safe_int_convert(score, 0)
         c.execute("INSERT INTO residential_checklist_scores (form_id, item_id, score) VALUES (?, ?, ?)",
-                  (inspection_id, item["id"], safe_score))
+                  (inspection_id, item["id"], score))
     conn.commit()
     conn.close()
 
-    return render_template('residential_form.html',
-                           checklist=RESIDENTIAL_CHECKLIST_ITEMS,
-                           inspections=get_residential_inspections(),
-                           show_form=True,
-                           establishment_data=get_establishment_data(),
-                           success=True)
+    return render_template('residential_form.html', checklist=RESIDENTIAL_CHECKLIST_ITEMS, inspections=get_residential_inspections(), show_form=True, establishment_data=get_establishment_data(), success=True)
+
 
 @app.route('/submit_burial', methods=['POST'])
 def submit_burial():

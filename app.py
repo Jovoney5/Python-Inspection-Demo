@@ -128,7 +128,7 @@ RESIDENTIAL_CHECKLIST_ITEMS = [
     {"id": 12, "desc": "Unobstructed", "wt": 3},
     {"id": 13, "desc": "No active breeding", "wt": 5},
     {"id": 14, "desc": "No potential breeding source", "wt": 4},
-    {"id": 15, "desc": "No potential breeding source", "wt": 1},
+    {"id": 15, "desc": "No active breeding", "wt": 1},
     {"id": 16, "desc": "No potential breeding source", "wt": 5},
     {"id": 17, "desc": "No active breeding", "wt": 3},
     {"id": 18, "desc": "No potential breeding source", "wt": 3},

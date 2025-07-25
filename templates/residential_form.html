@@ -446,7 +446,7 @@
                         {% endfor %}
                         <tr class="category-header"><td colspan="4">DRAINAGE (11-12)</td></tr>
                         {% for item in checklist if 11 <= item.id <= 12 %}
-                        <tr class="{% if item.wt|float >= 4 and item.id != 11 %}important-weight{% endif %}">
+                        <tr class="{% if item.id == 12 %}important-weight{% endif %}">
                             <td>{{ item.id }}</td>
                             <td>{{ item.desc }}</td>
                             <td>{{ item.wt }}</td>
@@ -544,7 +544,7 @@
                         {% endfor %}
                         <tr class="category-header"><td colspan="4">COMPOUND (25-26)</td></tr>
                         {% for item in checklist if 25 <= item.id <= 26 %}
-                        <tr class="{% if item.wt|float >= 4 or item.id == 26 %}important-weight{% endif %}">
+                        <tr class="{% if item.id == 26 %}important-weight{% endif %}">
                             <td>{{ item.id }}</td>
                             <td>{{ item.desc }}</td>
                             <td>{{ item.wt }}</td>

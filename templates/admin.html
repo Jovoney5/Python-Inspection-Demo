@@ -445,7 +445,7 @@
                             <td class="px-6 py-4 whitespace-nowrap">30 min</td>
                             <td class="px-6 py-4 whitespace-nowrap">{{ form[3] }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">{{ form[4] or 'N/A' }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ 'Pass' if form[5] in ['Pass', 'Completed'] else 'Fail' }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ 'Pass' if form[5] in ['Pass', 'Completed', 'Satisfactory'] else 'Fail' }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="form-actions">
                                     <button class="form-action-button" onclick="viewForm('{{ form[0] }}', '{{ form[1] }}')">View</button>
@@ -501,7 +501,7 @@
                             <td class="px-6 py-4 whitespace-nowrap">30 min</td>
                             <td class="px-6 py-4 whitespace-nowrap">{{ form[3] }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">{{ form[4] or 'N/A' }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ 'Pass' if form[5] in ['Pass', 'Completed'] else 'Fail' }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ 'Pass' if form[5] in ['Pass', 'Completed', 'Satisfactory'] else 'Fail' }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="form-actions">
                                     <button class="form-action-button" onclick="viewForm('{{ form[0] }}', '{{ form[1] }}')">View</button>

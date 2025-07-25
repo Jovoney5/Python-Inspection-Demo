@@ -436,7 +436,8 @@ def process_metrics(results, time_frame):
             data['fail'].append(0)
 
         idx = data['dates'].index(formatted_date)
-        if result == 'Pass' or result == 'Completed':
+        # Updated to include 'Satisfactory' as a passing result
+        if result in ['Pass', 'Completed', 'Satisfactory']:
             data['pass'][idx] += count
         else:
             data['fail'][idx] += count
